@@ -4,7 +4,7 @@ import { parseStrEmpty } from '@/utils/ruoyi'
 // 查询用户列表
 export function listUser(query) {
   return request({
-    url: '/system/user/list',
+    url: '/sys-user/page',
     method: 'get',
     params: query
   })
@@ -129,7 +129,7 @@ export function updateAuthRole(data) {
 // 查询部门下拉树结构
 export function deptTreeSelect() {
   return request({
-    url: '/system/user/deptTree',
+    url: '/sys-dept/tree',
     method: 'get'
   })
 }

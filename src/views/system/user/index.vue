@@ -145,7 +145,7 @@
 
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center"/>
-          <el-table-column label="用户编号" align="center" key="userId" prop="userId" v-if="columns[0].visible"/>
+          <el-table-column label="用户编号" align="center" key="id" prop="id" v-if="columns[0].visible"/>
           <el-table-column label="用户名称" align="center" key="userName" prop="userName" v-if="columns[1].visible"
                            :show-overflow-tooltip="true"
           />
@@ -509,8 +509,8 @@ export default {
     getList() {
       this.loading = true
       listUser(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.userList = response.rows
-          this.total = response.total
+          this.userList = response.body.content
+          this.total = response.body.total
           this.loading = false
         }
       )
@@ -518,7 +518,7 @@ export default {
     /** 查询部门下拉树结构 */
     getDeptTree() {
       deptTreeSelect().then(response => {
-        this.deptOptions = response.data
+        this.deptOptions = response.body
       })
     },
     // 筛选节点
