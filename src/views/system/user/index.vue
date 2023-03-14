@@ -218,7 +218,7 @@
         <pagination
           v-show="total>0"
           :total="total"
-          :page.sync="queryParams.pageNum"
+          :page.sync="queryParams.pageNumber"
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
         />
@@ -449,7 +449,7 @@ export default {
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
-        Q_EQ_deptId: undefined
+        deptId: undefined
       },
       // 列信息
       columns: [
@@ -567,7 +567,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.queryParams.pageNumber = 1
       this.getList()
     },
     /** 重置按钮操作 */
