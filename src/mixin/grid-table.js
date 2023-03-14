@@ -256,8 +256,8 @@ export const gridTable = {
         }, {});
     },
     async handleUpdate(row, type = 2) {
-      const { data } = await this.fetch.getRowData(row[this.fetch.id]);
-      this.addEditFormDialog.options = data;
+      const { body } = await this.fetch.getRowData(row[this.fetch.id]);
+      this.addEditFormDialog.options = body;
       if (type === 3) {
         this.addEditFormDialog.options.viewFormDesc = this.getViewFormDesc();
       }

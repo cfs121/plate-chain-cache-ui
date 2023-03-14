@@ -10,10 +10,19 @@ export function listUser(query) {
   })
 }
 
+// 获取用户详情
+export function sysUserInfo(query) {
+  return request({
+    url: '/sys-user/info',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询用户详细
 export function getUser(userId) {
   return request({
-    url: '/system/user/' + parseStrEmpty(userId),
+    url: '/sys-user/' + parseStrEmpty(userId),
     method: 'get'
   })
 }
@@ -58,15 +67,11 @@ export function resetUserPwd(userId, password) {
 }
 
 // 用户状态修改
-export function changeUserStatus(userId, status) {
-  const data = {
-    userId,
-    status
-  }
+export function changeUserStatus(data) {
   return request({
     url: '/system/user/changeStatus',
     method: 'put',
-    data: data
+    data
   })
 }
 

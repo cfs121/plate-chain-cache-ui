@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Notification, MessageBox, Message, Loading } from 'element-ui'
+const { Message, MessageBox, Notification, Loading } = require("element-ui");
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
@@ -128,7 +128,7 @@ export function download(url, params, filename, config) {
     transformRequest: [(params) => {
       return tansParams(params)
     }], headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, responseType: 'blob', ...config
-  }).then(async(data) => {
+  }).then(async (data) => {
     const isBlob = blobValidate(data)
     if (isBlob) {
       const blob = new Blob([data])

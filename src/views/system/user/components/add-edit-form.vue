@@ -24,10 +24,12 @@ import { addEditForm } from "@/mixin/add-edit-form";
 
 export default {
   mixins: [addEditForm],
-  dicts: ["trace_type", "product_type", "commen_status"],
+  dicts: ["sys_user_sex", "sys_normal_disable"],
   data() {
     return {
-      title: "产品维护",
+      title: "用户",
+      postOptions: [],
+      roleOptions: [],
       formDesc: {
         // <el-col :span="12">
         //   <el-form-item label="" prop="deptId">
@@ -51,7 +53,7 @@ export default {
           layout: 12,
           required: true,
         },
-        phonenumber: {
+        phoneNumber: {
           type: "input",
           label: "手机号码",
           layout: 12,
@@ -180,9 +182,14 @@ export default {
     };
   },
   methods: {
-    handleOpen() {
+    async handleOpen() {
       this.formData = this.options;
       this.initFormDesc();
+
+      if (this.getIsAdd) {
+        const { body } = await this.getConfigKey("sys.user.initPassword");
+        this.formData.password = body;
+      }
     },
     async handleSubmit() {
       const apiMap = {

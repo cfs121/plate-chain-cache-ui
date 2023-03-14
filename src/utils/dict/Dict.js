@@ -21,6 +21,7 @@ export default class Dict {
   }
 
   init(options) {
+    debugger
     if (options instanceof Array) {
       options = { types: options }
     }
