@@ -444,12 +444,12 @@ export default {
       },
       // 查询参数
       queryParams: {
-        pageNum: 1,
+        pageNumber: 1,
         pageSize: 10,
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
-        deptId: undefined
+        Q_EQ_deptId: undefined
       },
       // 列信息
       columns: [
@@ -501,7 +501,7 @@ export default {
     this.getList()
     this.getDeptTree()
     this.getConfigKey('sys.user.initPassword').then(response => {
-      this.initPassword = response.msg
+      this.initPassword = response.body
     })
   },
   methods: {
