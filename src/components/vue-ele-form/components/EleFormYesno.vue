@@ -1,0 +1,40 @@
+<template>
+  <el-checkbox
+    v-model="newValue"
+    :class="desc.class"
+    :style="desc.style"
+    v-bind="attrs"
+    v-on="onEvents"
+  >
+    {{ desc.title }}
+    <template v-if="slots && slots.default" #default>
+      <extend-slot :render="slots.default" />
+    </template>
+  </el-checkbox>
+</template>
+
+<script>
+import formMixin from '../mixins/formMixin'
+import { is } from '../tools/utils'
+
+export default {
+  name: 'EleFormYesno',
+  mixins: [formMixin],
+  data() {
+    return {
+      mockRule: '@boolean'
+    }
+  },
+  methods: {
+    customInit(val) {
+      return Boolean(val)
+    },
+    handleChange(value) {
+      if (is(this.value, 'Number')) {
+        value = Number(value)
+      }
+      this.$emit('input', value)
+    }
+  }
+}
+</script>
