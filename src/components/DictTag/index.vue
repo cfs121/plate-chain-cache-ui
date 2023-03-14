@@ -7,12 +7,11 @@
           :key="item.value"
           :index="index"
           :class="item.raw.cssClass"
-        >{{ item.label }}</span
-        >
+        >{{ item.label }}</span>
         <el-tag
           v-else
-          :disable-transitions="true"
           :key="item.value"
+          :disable-transitions="true"
           :index="index"
           :type="item.raw.listClass == 'primary' ? '' : item.raw.listClass"
           :class="item.raw.cssClass"

@@ -6,7 +6,7 @@
     :preview-src-list="realSrcList"
   >
     <div slot="error" class="image-slot">
-      <i class="el-icon-picture-outline"></i>
+      <i class="el-icon-picture-outline" />
     </div>
   </el-image>
 </template>
@@ -35,7 +35,7 @@ export default {
       if (!this.src) {
         return
       }
-      let real_src = this.src.split(',')[0]
+      const real_src = this.src.split(',')[0]
       if (isExternal(real_src)) {
         return real_src
       }
@@ -45,8 +45,8 @@ export default {
       if (!this.src) {
         return
       }
-      let real_src_list = this.src.split(',')
-      let srcList = []
+      const real_src_list = this.src.split(',')
+      const srcList = []
       real_src_list.forEach(item => {
         if (isExternal(item)) {
           return srcList.push(item)
@@ -56,10 +56,10 @@ export default {
       return srcList
     },
     realWidth() {
-      return typeof this.width == 'string' ? this.width : `${this.width}px`
+      return typeof this.width === 'string' ? this.width : `${this.width}px`
     },
     realHeight() {
-      return typeof this.height == 'string' ? this.height : `${this.height}px`
+      return typeof this.height === 'string' ? this.height : `${this.height}px`
     }
   }
 }
@@ -67,27 +67,24 @@ export default {
 
 <style lang="scss" scoped>
 .el-image {
-  border-radius: 5px;
   background-color: #ebeef5;
+  border-radius: 5px;
   box-shadow: 0 0 5px 1px #ccc;
-
   ::v-deep .el-image__inner {
-    transition: all 0.3s;
     cursor: pointer;
-
+    transition: all 0.3s;
     &:hover {
       transform: scale(1.2);
     }
   }
-
   ::v-deep .image-slot {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    color: #909399;
     font-size: 30px;
+    color: #909399;
   }
 }
 </style>

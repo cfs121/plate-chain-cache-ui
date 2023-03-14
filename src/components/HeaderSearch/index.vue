@@ -1,6 +1,6 @@
 <template>
   <div :class="{'show':show}" class="header-search">
-    <svg-icon class-name="search-icon" icon-class="search" @click.stop="click"/>
+    <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
     <el-select
       ref="headerSearchSelect"
       v-model="search"
@@ -12,9 +12,7 @@
       class="header-search-select"
       @change="change"
     >
-      <el-option v-for="option in options" :key="option.item.path" :value="option.item"
-                 :label="option.item.title.join(' > ')"
-      />
+      <el-option v-for="option in options" :key="option.item.path" :value="option.item" :label="option.item.title.join(' > ')" />
     </el-select>
   </div>
 </template>
@@ -92,6 +90,7 @@ export default {
         threshold: 0.4,
         location: 0,
         distance: 100,
+        maxPatternLength: 32,
         minMatchCharLength: 1,
         keys: [{
           name: 'title',
@@ -109,9 +108,7 @@ export default {
 
       for (const router of routes) {
         // skip hidden router
-        if (router.hidden) {
-          continue
-        }
+        if (router.hidden) { continue }
 
         const data = {
           path: !this.ishttp(router.path) ? path.resolve(basePath, router.path) : router.path,
@@ -157,29 +154,29 @@ export default {
   font-size: 0 !important;
 
   .search-icon {
-    cursor: pointer;
     font-size: 18px;
     vertical-align: middle;
+    cursor: pointer;
   }
 
   .header-search-select {
-    font-size: 18px;
-    transition: width 0.2s;
+    display: inline-block;
     width: 0;
     overflow: hidden;
+    font-size: 18px;
+    vertical-align: middle;
     background: transparent;
     border-radius: 0;
-    display: inline-block;
-    vertical-align: middle;
+    transition: width 0.2s;
 
     ::v-deep .el-input__inner {
-      border-radius: 0;
-      border: 0;
-      padding-left: 0;
       padding-right: 0;
-      box-shadow: none !important;
-      border-bottom: 1px solid #d9d9d9;
+      padding-left: 0;
       vertical-align: middle;
+      border: 0;
+      border-bottom: 1px solid #d9d9d9;
+      border-radius: 0;
+      box-shadow: none !important;
     }
   }
 

@@ -62,7 +62,8 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+    }
   },
   computed: {
     currentPage: {
@@ -104,10 +105,9 @@ export default {
 
 <style scoped>
 .pagination-container {
-  background: #fff;
   padding: 32px 16px;
+  background: #fff;
 }
-
 .pagination-container.hidden {
   display: none;
 }

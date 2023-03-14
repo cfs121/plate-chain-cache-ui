@@ -2,7 +2,7 @@
   <div :style="{zIndex:zIndex,height:height,width:width}" class="pan-item">
     <div class="pan-info">
       <div class="pan-info-roles-container">
-        <slot/>
+        <slot />
       </div>
     </div>
     <!-- eslint-disable-next-line -->
@@ -36,12 +36,12 @@ export default {
 
 <style scoped>
 .pan-item {
+  position: relative;
+  display: inline-block;
   width: 200px;
   height: 200px;
-  border-radius: 50%;
-  display: inline-block;
-  position: relative;
   cursor: default;
+  border-radius: 50%;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
@@ -51,15 +51,15 @@ export default {
 }
 
 .pan-thumb {
+  position: absolute;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   background-position: center center;
   background-size: cover;
   border-radius: 50%;
-  overflow: hidden;
-  position: absolute;
-  transform-origin: 95% 40%;
   transition: all 0.3s ease-in-out;
+  transform-origin: 95% 40%;
 }
 
 /* .pan-thumb:after {
@@ -79,49 +79,49 @@ export default {
   position: absolute;
   width: inherit;
   height: inherit;
-  border-radius: 50%;
   overflow: hidden;
+  border-radius: 50%;
   box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.05);
 }
 
 .pan-info h3 {
-  color: #fff;
-  text-transform: uppercase;
   position: relative;
-  letter-spacing: 2px;
-  font-size: 18px;
-  margin: 0 60px;
-  padding: 22px 0 0 0;
   height: 85px;
+  padding: 22px 0 0 0;
+  margin: 0 60px;
   font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 18px;
+  color: #fff;
   text-shadow: 0 0 1px #fff, 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .pan-info p {
-  color: #fff;
   padding: 10px 5px;
-  font-style: italic;
   margin: 0 30px;
   font-size: 12px;
+  font-style: italic;
+  color: #fff;
   border-top: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .pan-info p a {
   display: block;
-  color: #333;
   width: 80px;
   height: 80px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  color: #fff;
-  font-style: normal;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 9px;
-  letter-spacing: 1px;
   padding-top: 24px;
   margin: 7px auto 0;
   font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 700;
+  color: #333;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
   opacity: 0;
   transition: transform 0.3s ease-in-out 0.2s, opacity 0.3s ease-in-out 0.2s, background 0.2s linear 0s;
   transform: translateX(60px) rotate(90deg);

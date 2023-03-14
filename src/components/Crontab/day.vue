@@ -15,28 +15,23 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
         周期从
-        <el-input-number v-model="cycle01" :min="1" :max="30"/>
-        -
-        <el-input-number v-model="cycle02" :min="cycle01 ? cycle01 + 1 : 2" :max="31"/>
-        日
+        <el-input-number v-model="cycle01" :min="1" :max="30" /> -
+        <el-input-number v-model="cycle02" :min="cycle01 ? cycle01 + 1 : 2" :max="31" /> 日
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
         从
-        <el-input-number v-model="average01" :min="1" :max="30"/>
-        号开始，每
-        <el-input-number v-model="average02" :min="1" :max="31 - average01 || 1"/>
-        日执行一次
+        <el-input-number v-model="average01" :min="1" :max="30" /> 号开始，每
+        <el-input-number v-model="average02" :min="1" :max="31 - average01 || 1" /> 日执行一次
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="5">
         每月
-        <el-input-number v-model="workday" :min="1" :max="31"/>
-        号最近的那个工作日
+        <el-input-number v-model="workday" :min="1" :max="31" /> 号最近的那个工作日
       </el-radio>
     </el-form-item>
 
@@ -49,7 +44,7 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="7">
         指定
-        <el-select clearable v-model="checkboxList" placeholder="可多选" multiple style="width:100%">
+        <el-select v-model="checkboxList" clearable placeholder="可多选" multiple style="width:100%">
           <el-option v-for="item in 31" :key="item" :value="item">{{ item }}</el-option>
         </el-select>
       </el-radio>
@@ -59,6 +54,8 @@
 
 <script>
 export default {
+  name: 'CrontabDay',
+  props: ['check', 'cron'],
   data() {
     return {
       radioValue: 1,
@@ -71,8 +68,37 @@ export default {
       checkNum: this.$options.propsData.check
     }
   },
-  name: 'crontab-day',
-  props: ['check', 'cron'],
+  computed: {
+    // 计算两个周期值
+    cycleTotal: function() {
+      const cycle01 = this.checkNum(this.cycle01, 1, 30)
+      const cycle02 = this.checkNum(this.cycle02, cycle01 ? cycle01 + 1 : 2, 31, 31)
+      return cycle01 + '-' + cycle02
+    },
+    // 计算平均用到的值
+    averageTotal: function() {
+      const average01 = this.checkNum(this.average01, 1, 30)
+      const average02 = this.checkNum(this.average02, 1, 31 - average01 || 0)
+      return average01 + '/' + average02
+    },
+    // 计算工作日格式
+    workdayCheck: function() {
+      const workday = this.checkNum(this.workday, 1, 31)
+      return workday
+    },
+    // 计算勾选的checkbox值合集
+    checkboxString: function() {
+      const str = this.checkboxList.join()
+      return str == '' ? '*' : str
+    }
+  },
+  watch: {
+    'radioValue': 'radioChange',
+    'cycleTotal': 'cycleChange',
+    'averageTotal': 'averageChange',
+    'workdayCheck': 'workdayChange',
+    'checkboxString': 'checkboxChange'
+  },
   methods: {
     // 单选按钮值变化时
     radioChange() {
@@ -129,37 +155,6 @@ export default {
       if (this.radioValue == '7') {
         this.$emit('update', 'day', this.checkboxString)
       }
-    }
-  },
-  watch: {
-    'radioValue': 'radioChange',
-    'cycleTotal': 'cycleChange',
-    'averageTotal': 'averageChange',
-    'workdayCheck': 'workdayChange',
-    'checkboxString': 'checkboxChange'
-  },
-  computed: {
-    // 计算两个周期值
-    cycleTotal: function() {
-      const cycle01 = this.checkNum(this.cycle01, 1, 30)
-      const cycle02 = this.checkNum(this.cycle02, cycle01 ? cycle01 + 1 : 2, 31, 31)
-      return cycle01 + '-' + cycle02
-    },
-    // 计算平均用到的值
-    averageTotal: function() {
-      const average01 = this.checkNum(this.average01, 1, 30)
-      const average02 = this.checkNum(this.average02, 1, 31 - average01 || 0)
-      return average01 + '/' + average02
-    },
-    // 计算工作日格式
-    workdayCheck: function() {
-      const workday = this.checkNum(this.workday, 1, 31)
-      return workday
-    },
-    // 计算勾选的checkbox值合集
-    checkboxString: function() {
-      let str = this.checkboxList.join()
-      return str == '' ? '*' : str
     }
   }
 }

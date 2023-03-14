@@ -15,26 +15,24 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
         周期从星期
-        <el-select clearable v-model="cycle01">
+        <el-select v-model="cycle01" clearable>
           <el-option
             v-for="(item,index) of weekList"
             :key="index"
             :label="item.value"
             :value="item.key"
             :disabled="item.key === 1"
-          >{{ item.value }}
-          </el-option>
+          >{{ item.value }}</el-option>
         </el-select>
         -
-        <el-select clearable v-model="cycle02">
+        <el-select v-model="cycle02" clearable>
           <el-option
             v-for="(item,index) of weekList"
             :key="index"
             :label="item.value"
             :value="item.key"
             :disabled="item.key < cycle01 && item.key !== 1"
-          >{{ item.value }}
-          </el-option>
+          >{{ item.value }}</el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -42,12 +40,9 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
         第
-        <el-input-number v-model="average01" :min="1" :max="4"/>
-        周的星期
-        <el-select clearable v-model="average02">
-          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">
-            {{ item.value }}
-          </el-option>
+        <el-input-number v-model="average01" :min="1" :max="4" /> 周的星期
+        <el-select v-model="average02" clearable>
+          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{ item.value }}</el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -55,10 +50,8 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="5">
         本月最后一个星期
-        <el-select clearable v-model="weekday">
-          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">
-            {{ item.value }}
-          </el-option>
+        <el-select v-model="weekday" clearable>
+          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{ item.value }}</el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -66,10 +59,8 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="6">
         指定
-        <el-select clearable v-model="checkboxList" placeholder="可多选" multiple style="width:100%">
-          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="String(item.key)">
-            {{ item.value }}
-          </el-option>
+        <el-select v-model="checkboxList" clearable placeholder="可多选" multiple style="width:100%">
+          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="String(item.key)">{{ item.value }}</el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -79,6 +70,8 @@
 
 <script>
 export default {
+  name: 'CrontabWeek',
+  props: ['check', 'cron'],
   data() {
     return {
       radioValue: 2,
@@ -121,8 +114,37 @@ export default {
       checkNum: this.$options.propsData.check
     }
   },
-  name: 'crontab-week',
-  props: ['check', 'cron'],
+  computed: {
+    // 计算两个周期值
+    cycleTotal: function() {
+      this.cycle01 = this.checkNum(this.cycle01, 1, 7)
+      this.cycle02 = this.checkNum(this.cycle02, 1, 7)
+      return this.cycle01 + '-' + this.cycle02
+    },
+    // 计算平均用到的值
+    averageTotal: function() {
+      this.average01 = this.checkNum(this.average01, 1, 4)
+      this.average02 = this.checkNum(this.average02, 1, 7)
+      return this.average02 + '#' + this.average01
+    },
+    // 最近的工作日（格式）
+    weekdayCheck: function() {
+      this.weekday = this.checkNum(this.weekday, 1, 7)
+      return this.weekday
+    },
+    // 计算勾选的checkbox值合集
+    checkboxString: function() {
+      const str = this.checkboxList.join()
+      return str == '' ? '*' : str
+    }
+  },
+  watch: {
+    'radioValue': 'radioChange',
+    'cycleTotal': 'cycleChange',
+    'averageTotal': 'averageChange',
+    'weekdayCheck': 'weekdayChange',
+    'checkboxString': 'checkboxChange'
+  },
   methods: {
     // 单选按钮值变化时
     radioChange() {
@@ -174,37 +196,6 @@ export default {
       if (this.radioValue == '6') {
         this.$emit('update', 'week', this.checkboxString)
       }
-    }
-  },
-  watch: {
-    'radioValue': 'radioChange',
-    'cycleTotal': 'cycleChange',
-    'averageTotal': 'averageChange',
-    'weekdayCheck': 'weekdayChange',
-    'checkboxString': 'checkboxChange'
-  },
-  computed: {
-    // 计算两个周期值
-    cycleTotal: function() {
-      this.cycle01 = this.checkNum(this.cycle01, 1, 7)
-      this.cycle02 = this.checkNum(this.cycle02, 1, 7)
-      return this.cycle01 + '-' + this.cycle02
-    },
-    // 计算平均用到的值
-    averageTotal: function() {
-      this.average01 = this.checkNum(this.average01, 1, 4)
-      this.average02 = this.checkNum(this.average02, 1, 7)
-      return this.average02 + '#' + this.average01
-    },
-    // 最近的工作日（格式）
-    weekdayCheck: function() {
-      this.weekday = this.checkNum(this.weekday, 1, 7)
-      return this.weekday
-    },
-    // 计算勾选的checkbox值合集
-    checkboxString: function() {
-      let str = this.checkboxList.join()
-      return str == '' ? '*' : str
     }
   }
 }

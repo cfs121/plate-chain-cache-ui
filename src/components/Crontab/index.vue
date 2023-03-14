@@ -1,66 +1,66 @@
 <template>
   <div>
     <el-tabs type="border-card">
-      <el-tab-pane label="秒" v-if="shouldHide('second')">
+      <el-tab-pane v-if="shouldHide('second')" label="秒">
         <CrontabSecond
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
           ref="cronsecond"
+          :check="checkNumber"
+          :cron="crontabValueObj"
+          @update="updateCrontabValue"
         />
       </el-tab-pane>
 
-      <el-tab-pane label="分钟" v-if="shouldHide('min')">
+      <el-tab-pane v-if="shouldHide('min')" label="分钟">
         <CrontabMin
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
           ref="cronmin"
+          :check="checkNumber"
+          :cron="crontabValueObj"
+          @update="updateCrontabValue"
         />
       </el-tab-pane>
 
-      <el-tab-pane label="小时" v-if="shouldHide('hour')">
+      <el-tab-pane v-if="shouldHide('hour')" label="小时">
         <CrontabHour
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
           ref="cronhour"
+          :check="checkNumber"
+          :cron="crontabValueObj"
+          @update="updateCrontabValue"
         />
       </el-tab-pane>
 
-      <el-tab-pane label="日" v-if="shouldHide('day')">
+      <el-tab-pane v-if="shouldHide('day')" label="日">
         <CrontabDay
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
           ref="cronday"
+          :check="checkNumber"
+          :cron="crontabValueObj"
+          @update="updateCrontabValue"
         />
       </el-tab-pane>
 
-      <el-tab-pane label="月" v-if="shouldHide('month')">
+      <el-tab-pane v-if="shouldHide('month')" label="月">
         <CrontabMonth
-          @update="updateCrontabValue"
-          :check="checkNumber"
-          :cron="crontabValueObj"
           ref="cronmonth"
+          :check="checkNumber"
+          :cron="crontabValueObj"
+          @update="updateCrontabValue"
         />
       </el-tab-pane>
 
-      <el-tab-pane label="周" v-if="shouldHide('week')">
+      <el-tab-pane v-if="shouldHide('week')" label="周">
         <CrontabWeek
-          @update="updateCrontabValue"
+          ref="cronweek"
           :check="checkNumber"
           :cron="crontabValueObj"
-          ref="cronweek"
+          @update="updateCrontabValue"
         />
       </el-tab-pane>
 
-      <el-tab-pane label="年" v-if="shouldHide('year')">
+      <el-tab-pane v-if="shouldHide('year')" label="年">
         <CrontabYear
-          @update="updateCrontabValue"
+          ref="cronyear"
           :check="checkNumber"
           :cron="crontabValueObj"
-          ref="cronyear"
+          @update="updateCrontabValue"
         />
       </el-tab-pane>
     </el-tabs>
@@ -70,38 +70,38 @@
         <p class="title">时间表达式</p>
         <table>
           <thead>
-          <th v-for="item of tabTitles" width="40" :key="item">{{ item }}</th>
-          <th>Cron 表达式</th>
+            <th v-for="item of tabTitles" :key="item" width="40">{{ item }}</th>
+            <th>Cron 表达式</th>
           </thead>
           <tbody>
-          <td>
-            <span>{{ crontabValueObj.second }}</span>
-          </td>
-          <td>
-            <span>{{ crontabValueObj.min }}</span>
-          </td>
-          <td>
-            <span>{{ crontabValueObj.hour }}</span>
-          </td>
-          <td>
-            <span>{{ crontabValueObj.day }}</span>
-          </td>
-          <td>
-            <span>{{ crontabValueObj.month }}</span>
-          </td>
-          <td>
-            <span>{{ crontabValueObj.week }}</span>
-          </td>
-          <td>
-            <span>{{ crontabValueObj.year }}</span>
-          </td>
-          <td>
-            <span>{{ crontabValueString }}</span>
-          </td>
+            <td>
+              <span>{{ crontabValueObj.second }}</span>
+            </td>
+            <td>
+              <span>{{ crontabValueObj.min }}</span>
+            </td>
+            <td>
+              <span>{{ crontabValueObj.hour }}</span>
+            </td>
+            <td>
+              <span>{{ crontabValueObj.day }}</span>
+            </td>
+            <td>
+              <span>{{ crontabValueObj.month }}</span>
+            </td>
+            <td>
+              <span>{{ crontabValueObj.week }}</span>
+            </td>
+            <td>
+              <span>{{ crontabValueObj.year }}</span>
+            </td>
+            <td>
+              <span>{{ crontabValueString }}</span>
+            </td>
           </tbody>
         </table>
       </div>
-      <CrontabResult :ex="crontabValueString"></CrontabResult>
+      <CrontabResult :ex="crontabValueString" />
 
       <div class="pop_btn">
         <el-button size="small" type="primary" @click="submitFill">确定</el-button>
@@ -123,6 +123,18 @@ import CrontabYear from './year.vue'
 import CrontabResult from './result.vue'
 
 export default {
+  name: 'Vcrontab',
+  components: {
+    CrontabSecond,
+    CrontabMin,
+    CrontabHour,
+    CrontabDay,
+    CrontabMonth,
+    CrontabWeek,
+    CrontabYear,
+    CrontabResult
+  },
+  props: ['expression', 'hideComponent'],
   data() {
     return {
       tabTitles: ['秒', '分钟', '小时', '日', '月', '周', '年'],
@@ -139,8 +151,34 @@ export default {
       }
     }
   },
-  name: 'vcrontab',
-  props: ['expression', 'hideComponent'],
+  computed: {
+    crontabValueString: function() {
+      const obj = this.crontabValueObj
+      const str =
+        obj.second +
+        ' ' +
+        obj.min +
+        ' ' +
+        obj.hour +
+        ' ' +
+        obj.day +
+        ' ' +
+        obj.month +
+        ' ' +
+        obj.week +
+        (obj.year == '' ? '' : ' ' + obj.year)
+      return str
+    }
+  },
+  watch: {
+    expression: 'resolveExp',
+    hideComponent(value) {
+      // 隐藏部分组件
+    }
+  },
+  mounted: function() {
+    this.resolveExp()
+  },
   methods: {
     shouldHide(key) {
       if (this.hideComponent && this.hideComponent.includes(key)) return false
@@ -149,10 +187,10 @@ export default {
     resolveExp() {
       // 反解析 表达式
       if (this.expression) {
-        let arr = this.expression.split(' ')
+        const arr = this.expression.split(' ')
         if (arr.length >= 6) {
-          //6 位以上是合法表达式
-          let obj = {
+          // 6 位以上是合法表达式
+          const obj = {
             second: arr[0],
             min: arr[1],
             hour: arr[2],
@@ -164,7 +202,7 @@ export default {
           this.crontabValueObj = {
             ...obj
           }
-          for (let i in obj) {
+          for (const i in obj) {
             if (obj[i]) this.changeRadio(i, obj[i])
           }
         }
@@ -188,9 +226,9 @@ export default {
     },
     // 赋值到组件
     changeRadio(name, value) {
-      let arr = ['second', 'min', 'hour', 'month'],
-        refName = 'cron' + name,
-        insValue
+      const arr = ['second', 'min', 'hour', 'month']
+      const refName = 'cron' + name
+      let insValue
 
       if (!this.$refs[refName]) return
 
@@ -198,14 +236,14 @@ export default {
         if (value === '*') {
           insValue = 1
         } else if (value.indexOf('-') > -1) {
-          let indexArr = value.split('-')
+          const indexArr = value.split('-')
           isNaN(indexArr[0])
             ? (this.$refs[refName].cycle01 = 0)
             : (this.$refs[refName].cycle01 = indexArr[0])
           this.$refs[refName].cycle02 = indexArr[1]
           insValue = 2
         } else if (value.indexOf('/') > -1) {
-          let indexArr = value.split('/')
+          const indexArr = value.split('/')
           isNaN(indexArr[0])
             ? (this.$refs[refName].average01 = 0)
             : (this.$refs[refName].average01 = indexArr[0])
@@ -221,21 +259,21 @@ export default {
         } else if (value == '?') {
           insValue = 2
         } else if (value.indexOf('-') > -1) {
-          let indexArr = value.split('-')
+          const indexArr = value.split('-')
           isNaN(indexArr[0])
             ? (this.$refs[refName].cycle01 = 0)
             : (this.$refs[refName].cycle01 = indexArr[0])
           this.$refs[refName].cycle02 = indexArr[1]
           insValue = 3
         } else if (value.indexOf('/') > -1) {
-          let indexArr = value.split('/')
+          const indexArr = value.split('/')
           isNaN(indexArr[0])
             ? (this.$refs[refName].average01 = 0)
             : (this.$refs[refName].average01 = indexArr[0])
           this.$refs[refName].average02 = indexArr[1]
           insValue = 4
         } else if (value.indexOf('W') > -1) {
-          let indexArr = value.split('W')
+          const indexArr = value.split('W')
           isNaN(indexArr[0])
             ? (this.$refs[refName].workday = 0)
             : (this.$refs[refName].workday = indexArr[0])
@@ -252,21 +290,21 @@ export default {
         } else if (value == '?') {
           insValue = 2
         } else if (value.indexOf('-') > -1) {
-          let indexArr = value.split('-')
+          const indexArr = value.split('-')
           isNaN(indexArr[0])
             ? (this.$refs[refName].cycle01 = 0)
             : (this.$refs[refName].cycle01 = indexArr[0])
           this.$refs[refName].cycle02 = indexArr[1]
           insValue = 3
         } else if (value.indexOf('#') > -1) {
-          let indexArr = value.split('#')
+          const indexArr = value.split('#')
           isNaN(indexArr[0])
             ? (this.$refs[refName].average01 = 1)
             : (this.$refs[refName].average01 = indexArr[0])
           this.$refs[refName].average02 = indexArr[1]
           insValue = 4
         } else if (value.indexOf('L') > -1) {
-          let indexArr = value.split('L')
+          const indexArr = value.split('L')
           isNaN(indexArr[0])
             ? (this.$refs[refName].weekday = 1)
             : (this.$refs[refName].weekday = indexArr[0])
@@ -323,115 +361,70 @@ export default {
         week: '?',
         year: ''
       }
-      for (let j in this.crontabValueObj) {
+      for (const j in this.crontabValueObj) {
         this.changeRadio(j, this.crontabValueObj[j])
       }
     }
-  },
-  computed: {
-    crontabValueString: function() {
-      let obj = this.crontabValueObj
-      let str =
-        obj.second +
-        ' ' +
-        obj.min +
-        ' ' +
-        obj.hour +
-        ' ' +
-        obj.day +
-        ' ' +
-        obj.month +
-        ' ' +
-        obj.week +
-        (obj.year == '' ? '' : ' ' + obj.year)
-      return str
-    }
-  },
-  components: {
-    CrontabSecond,
-    CrontabMin,
-    CrontabHour,
-    CrontabDay,
-    CrontabMonth,
-    CrontabWeek,
-    CrontabYear,
-    CrontabResult
-  },
-  watch: {
-    expression: 'resolveExp',
-    hideComponent(value) {
-      // 隐藏部分组件
-    }
-  },
-  mounted: function() {
-    this.resolveExp()
   }
 }
 </script>
 <style scoped>
 .pop_btn {
-  text-align: center;
   margin-top: 20px;
+  text-align: center;
 }
-
 .popup-main {
   position: relative;
   margin: 10px auto;
+  overflow: hidden;
+  font-size: 12px;
   background: #fff;
   border-radius: 5px;
-  font-size: 12px;
-  overflow: hidden;
 }
-
 .popup-title {
+  padding-top: 6px;
   overflow: hidden;
   line-height: 34px;
-  padding-top: 6px;
   background: #f2f2f2;
 }
-
 .popup-result {
-  box-sizing: border-box;
-  line-height: 24px;
-  margin: 25px auto;
-  padding: 15px 10px 10px;
-  border: 1px solid #ccc;
   position: relative;
+  box-sizing: border-box;
+  padding: 15px 10px 10px;
+  margin: 25px auto;
+  line-height: 24px;
+  border: 1px solid #ccc;
 }
-
 .popup-result .title {
   position: absolute;
   top: -28px;
   left: 50%;
   width: 140px;
-  font-size: 14px;
   margin-left: -70px;
-  text-align: center;
+  font-size: 14px;
   line-height: 30px;
+  text-align: center;
   background: #fff;
 }
-
 .popup-result table {
-  text-align: center;
   width: 100%;
   margin: 0 auto;
+  text-align: center;
 }
-
 .popup-result table span {
   display: block;
   width: 100%;
+  height: 30px;
+  overflow: hidden;
   font-family: arial;
   line-height: 30px;
-  height: 30px;
   white-space: nowrap;
-  overflow: hidden;
   border: 1px solid #e8e8e8;
 }
-
 .popup-result-scroll {
-  font-size: 12px;
-  line-height: 24px;
   height: 10em;
   overflow-y: auto;
+  font-size: 12px;
+  line-height: 24px;
 }
 </style>

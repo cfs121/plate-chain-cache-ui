@@ -5,27 +5,25 @@
     @select="handleSelect"
   >
     <template v-for="(item, index) in topMenus">
-      <el-menu-item :style="{'--theme': theme}" :index="item.path" :key="index" v-if="index < visibleNumber"
-      >
-        <svg-icon :icon-class="item.meta.icon"/>
-        {{ item.meta.title }}
-      </el-menu-item
-      >
+      <el-menu-item
+        v-if="index < visibleNumber"
+        :key="index"
+        :style="{'--theme': theme}"
+        :index="item.path"
+      ><svg-icon :icon-class="item.meta.icon" />
+        {{ item.meta.title }}</el-menu-item>
     </template>
 
     <!-- 顶部菜单超出数量折叠 -->
-    <el-submenu :style="{'--theme': theme}" index="more" v-if="topMenus.length > visibleNumber">
+    <el-submenu v-if="topMenus.length > visibleNumber" :style="{'--theme': theme}" index="more">
       <template slot="title">更多菜单</template>
       <template v-for="(item, index) in topMenus">
         <el-menu-item
-          :index="item.path"
-          :key="index"
           v-if="index >= visibleNumber"
-        >
-          <svg-icon :icon-class="item.meta.icon"/>
-          {{ item.meta.title }}
-        </el-menu-item
-        >
+          :key="index"
+          :index="item.path"
+        ><svg-icon :icon-class="item.meta.icon" />
+          {{ item.meta.title }}</el-menu-item>
       </template>
     </el-submenu>
   </el-menu>
@@ -52,7 +50,7 @@ export default {
     },
     // 顶部显示菜单
     topMenus() {
-      let topMenus = []
+      const topMenus = []
       this.routers.map((menu) => {
         if (menu.hidden !== true) {
           // 兼容顶部栏一级菜单内部跳转
@@ -96,9 +94,7 @@ export default {
       if (path !== undefined && path.lastIndexOf('/') > 0 && hideList.indexOf(path) === -1) {
         const tmpPath = path.substring(1, path.length)
         activePath = '/' + tmpPath.substring(0, tmpPath.indexOf('/'))
-        if (!this.$route.meta.link) {
-          this.$store.dispatch('app/toggleSideBarHide', false)
-        }
+        this.$store.dispatch('app/toggleSideBarHide', false)
       } else if (!this.$route.children) {
         activePath = path
         this.$store.dispatch('app/toggleSideBarHide', true)
@@ -144,15 +140,13 @@ export default {
       var routes = []
       if (this.childrenMenus && this.childrenMenus.length > 0) {
         this.childrenMenus.map((item) => {
-          if (key == item.parentPath || (key == 'index' && '' == item.path)) {
+          if (key == item.parentPath || (key == 'index' && item.path == '')) {
             routes.push(item)
           }
         })
       }
       if (routes.length > 0) {
         this.$store.commit('SET_SIDEBAR_ROUTERS', routes)
-      } else {
-        this.$store.dispatch('app/toggleSideBarHide', true)
       }
     },
     ishttp(url) {
@@ -166,24 +160,24 @@ export default {
 .topmenu-container.el-menu--horizontal > .el-menu-item {
   float: left;
   height: 50px !important;
-  line-height: 50px !important;
-  color: #999093 !important;
   padding: 0 5px !important;
   margin: 0 10px !important;
+  line-height: 50px !important;
+  color: #999093 !important;
 }
 
 .topmenu-container.el-menu--horizontal > .el-menu-item.is-active, .el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
-  border-bottom: 2px solid #{'var(--theme)'} !important;
   color: #303133;
+  border-bottom: 2px solid #{'var(--theme)'} !important;
 }
 
 /* submenu item */
 .topmenu-container.el-menu--horizontal > .el-submenu .el-submenu__title {
   float: left;
   height: 50px !important;
-  line-height: 50px !important;
-  color: #999093 !important;
   padding: 0 5px !important;
   margin: 0 10px !important;
+  line-height: 50px !important;
+  color: #999093 !important;
 }
 </style>
