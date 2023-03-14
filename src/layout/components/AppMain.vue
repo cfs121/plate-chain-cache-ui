@@ -1,61 +1,52 @@
 <template>
-  <section class="app-main">
+  <el-scrollbar class="app-main">
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
-        <router-view v-if="!$route.meta.link" :key="key"/>
+        <router-view />
       </keep-alive>
     </transition>
-    <iframe-toggle/>
-  </section>
+  </el-scrollbar>
 </template>
 
 <script>
-import iframeToggle from './IframeToggle/index'
-
 export default {
   name: 'AppMain',
-  components: { iframeToggle },
   computed: {
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
-    },
-    key() {
-      return this.$route.path
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.app-main {
-  /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.fixed-header + .app-main {
-  padding-top: 50px;
-}
-
-.hasTagsView {
   .app-main {
-    /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
+    position: relative;
+    width: 100%;
+    /* 60= navbar  60  */
+    height: calc(100vh - 60px);
+    overflow: hidden;
+    ::v-deep {
+      .el-scrollbar__wrap {
+        overflow-x: hidden;
+      }
+    }
   }
 
   .fixed-header + .app-main {
-    padding-top: 84px;
+    position: relative;
+    top: 60px;
   }
-}
-</style>
 
-<style lang="scss">
-// fix css style bug in open el-dialog
-.el-popup-parent--hidden {
-  .fixed-header {
-    padding-right: 17px;
+  .hasTagsView {
+    .app-main {
+      /* 84 = navbar + tags-view = 50 + 34 */
+      height: calc(100vh - 110px);
+    }
+
+    .fixed-header + .app-main {
+      position: relative;
+      top: 110px;
+    }
   }
-}
 </style>

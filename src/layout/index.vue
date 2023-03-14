@@ -1,15 +1,29 @@
 <template>
-  <div :class="classObj" class="app-wrapper" :style="{'--current-color': theme}">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
-    <sidebar v-if="!sidebar.hide" class="sidebar-container"/>
-    <div :class="{hasTagsView:needTagsView,sidebarHide:sidebar.hide}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar/>
-        <tags-view v-if="needTagsView"/>
+  <div
+    :class="classObj"
+    class="app-wrapper"
+    :style="{ '--current-color': theme }"
+  >
+    <div
+      v-if="device === 'mobile' && sidebar.opened"
+      class="drawer-bg"
+      @click="handleClickOutside"
+    />
+    <sidebar v-if="!sidebar.hide" class="sidebar-container" />
+    <div
+      :class="{
+        hasTagsView: needTagsView && !isIndex,
+        sidebarHide: sidebar.hide,
+      }"
+      class="main-container"
+    >
+      <div :class="{ 'fixed-header': fixedHeader }">
+        <navbar />
+        <tags-view v-if="needTagsView && !isIndex" />
       </div>
-      <app-main/>
+      <app-main />
       <right-panel>
-        <settings/>
+        <settings />
       </right-panel>
     </div>
   </div>
@@ -35,12 +49,12 @@ export default {
   mixins: [ResizeMixin],
   computed: {
     ...mapState({
-      theme: state => state.settings.theme,
-      sideTheme: state => state.settings.sideTheme,
-      sidebar: state => state.app.sidebar,
-      device: state => state.app.device,
-      needTagsView: state => state.settings.tagsView,
-      fixedHeader: state => state.settings.fixedHeader
+      theme: (state) => state.settings.theme,
+      sideTheme: (state) => state.settings.sideTheme,
+      sidebar: (state) => state.app.sidebar,
+      device: (state) => state.app.device,
+      needTagsView: (state) => state.settings.tagsView,
+      fixedHeader: (state) => state.settings.fixedHeader
     }),
     classObj() {
       return {
@@ -54,6 +68,20 @@ export default {
       return variables
     }
   },
+  data() {
+    return {
+      isIndex: false
+    }
+  },
+  watch: {
+    $route: {
+      handler(val, oldval) {
+        this.isIndex = val.name === 'Index'
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   methods: {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
@@ -63,49 +91,49 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/assets/styles/mixin.scss";
-@import "~@/assets/styles/variables.scss";
+  @import '~@/assets/styles/mixin.scss';
+  @import '~@/assets/styles/variables.scss';
 
-.app-wrapper {
-  @include clearfix;
-  position: relative;
-  height: 100%;
-  width: 100%;
+  .app-wrapper {
+    @include clearfix;
+    position: relative;
+    width: 100%;
+    height: 100%;
 
-  &.mobile.openSidebar {
+    &.mobile.openSidebar {
+      position: fixed;
+      top: 0;
+    }
+  }
+
+  .drawer-bg {
+    position: absolute;
+    top: 0;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 0.3;
+  }
+
+  .fixed-header {
     position: fixed;
     top: 0;
+    right: 0;
+    z-index: 9;
+    width: calc(100% - #{$base-sidebar-width});
+    transition: width 0.28s;
   }
-}
 
-.drawer-bg {
-  background: #000;
-  opacity: 0.3;
-  width: 100%;
-  top: 0;
-  height: 100%;
-  position: absolute;
-  z-index: 999;
-}
+  .hideSidebar .fixed-header {
+    width: calc(100% - 54px);
+  }
 
-.fixed-header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 9;
-  width: calc(100% - #{$base-sidebar-width});
-  transition: width 0.28s;
-}
+  .sidebarHide .fixed-header {
+    width: 100%;
+  }
 
-.hideSidebar .fixed-header {
-  width: calc(100% - 54px);
-}
-
-.sidebarHide .fixed-header {
-  width: 100%;
-}
-
-.mobile .fixed-header {
-  width: 100%;
-}
+  .mobile .fixed-header {
+    width: 100%;
+  }
 </style>

@@ -2,11 +2,11 @@
   <transition-group name="fade-transform" mode="out-in">
     <inner-link
       v-for="(item, index) in iframeViews"
-      :key="item.path"
-      :iframeId="'iframe' + index"
       v-show="$route.path === item.path"
+      :key="item.path"
+      :iframe-id="'iframe' + index"
       :src="item.meta.link"
-    ></inner-link>
+    />
   </transition-group>
 </template>
 

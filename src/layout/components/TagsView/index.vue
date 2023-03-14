@@ -1,30 +1,60 @@
 <template>
   <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll">
+    <scroll-pane
+      ref="scrollPane"
+      class="tags-view-wrapper"
+      @scroll="handleScroll"
+    >
       <router-link
         v-for="tag in visitedViews"
         ref="tag"
         :key="tag.path"
-        :class="isActive(tag)?'active':''"
+        :class="isActive(tag) ? 'active' : ''"
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
         tag="span"
         class="tags-view-item"
         :style="activeStyle(tag)"
-        @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
-        @contextmenu.prevent.native="openMenu(tag,$event)"
+        @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag) : ''"
+        @contextmenu.prevent.native="openMenu(tag, $event)"
       >
+        <svg-icon :icon-class="tag.meta.icon" />
         {{ tag.title }}
-        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"/>
+        <span
+          v-if="!isAffix(tag)"
+          class="el-icon-close"
+          @click.prevent.stop="closeSelectedTag(tag)"
+        />
       </router-link>
     </scroll-pane>
-    <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)"><i class="el-icon-refresh-right"></i> 刷新页面</li>
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)"><i class="el-icon-close"></i> 关闭当前
+    <ul
+      v-show="visible"
+      :style="{ left: left + 'px', top: top + 'px' }"
+      class="contextmenu"
+    >
+      <li @click="refreshSelectedTag(selectedTag)">
+        <i class="el-icon-refresh-right" />
+        刷新页面
       </li>
-      <li @click="closeOthersTags"><i class="el-icon-circle-close"></i> 关闭其他</li>
-      <li v-if="!isFirstView()" @click="closeLeftTags"><i class="el-icon-back"></i> 关闭左侧</li>
-      <li v-if="!isLastView()" @click="closeRightTags"><i class="el-icon-right"></i> 关闭右侧</li>
-      <li @click="closeAllTags(selectedTag)"><i class="el-icon-circle-close"></i> 全部关闭</li>
+      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
+        <i class="el-icon-close" />
+        关闭当前
+      </li>
+      <li @click="closeOthersTags">
+        <i class="el-icon-circle-close" />
+        关闭其他
+      </li>
+      <li v-if="!isFirstView()" @click="closeLeftTags">
+        <i class="el-icon-back" />
+        关闭左侧
+      </li>
+      <li v-if="!isLastView()" @click="closeRightTags">
+        <i class="el-icon-right" />
+        关闭右侧
+      </li>
+      <li @click="closeAllTags(selectedTag)">
+        <i class="el-icon-circle-close" />
+        全部关闭
+      </li>
     </ul>
   </div>
 </template>
@@ -32,6 +62,7 @@
 <script>
 import ScrollPane from './ScrollPane'
 import path from 'path'
+import { colorData } from '$ui/utils/color'
 
 export default {
   components: { ScrollPane },
@@ -79,8 +110,9 @@ export default {
     activeStyle(tag) {
       if (!this.isActive(tag)) return {}
       return {
-        'background-color': this.theme,
-        'border-color': this.theme
+        'background-color': `rgba(${colorData(this.theme)._rgb}, 0.1)`,
+        'border-color': this.theme,
+        color: this.theme
       }
     },
     isAffix(tag) {
@@ -88,21 +120,27 @@ export default {
     },
     isFirstView() {
       try {
-        return this.selectedTag.fullPath === '/index' || this.selectedTag.fullPath === this.visitedViews[1].fullPath
+        return (
+          this.selectedTag.fullPath === this.visitedViews[1].fullPath ||
+            this.selectedTag.fullPath === '/index'
+        )
       } catch (err) {
         return false
       }
     },
     isLastView() {
       try {
-        return this.selectedTag.fullPath === this.visitedViews[this.visitedViews.length - 1].fullPath
+        return (
+          this.selectedTag.fullPath ===
+            this.visitedViews[this.visitedViews.length - 1].fullPath
+        )
       } catch (err) {
         return false
       }
     },
     filterAffixTags(routes, basePath = '/') {
       let tags = []
-      routes.forEach(route => {
+      routes.forEach((route) => {
         if (route.meta && route.meta.affix) {
           const tagPath = path.resolve(basePath, route.path)
           tags.push({
@@ -122,7 +160,7 @@ export default {
       return tags
     },
     initTags() {
-      const affixTags = this.affixTags = this.filterAffixTags(this.routes)
+      const affixTags = (this.affixTags = this.filterAffixTags(this.routes))
       for (const tag of affixTags) {
         // Must have tag name
         if (tag.name) {
@@ -134,9 +172,6 @@ export default {
       const { name } = this.$route
       if (name) {
         this.$store.dispatch('tagsView/addView', this.$route)
-        if (this.$route.meta.link) {
-          this.$store.dispatch('tagsView/addIframeView', this.$route)
-        }
       }
       return false
     },
@@ -157,9 +192,6 @@ export default {
     },
     refreshSelectedTag(view) {
       this.$tab.refreshPage(view)
-      if (this.$route.meta.link) {
-        this.$store.dispatch('tagsView/delIframeView', this.$route)
-      }
     },
     closeSelectedTag(view) {
       this.$tab.closePage(view).then(({ visitedViews }) => {
@@ -169,29 +201,28 @@ export default {
       })
     },
     closeRightTags() {
-      this.$tab.closeRightPage(this.selectedTag).then(visitedViews => {
-        if (!visitedViews.find(i => i.fullPath === this.$route.fullPath)) {
+      this.$tab.closeRightPage(this.selectedTag).then((visitedViews) => {
+        if (!visitedViews.find((i) => i.fullPath === this.$route.fullPath)) {
           this.toLastView(visitedViews)
         }
       })
     },
     closeLeftTags() {
-      this.$tab.closeLeftPage(this.selectedTag).then(visitedViews => {
-        if (!visitedViews.find(i => i.fullPath === this.$route.fullPath)) {
+      this.$tab.closeLeftPage(this.selectedTag).then((visitedViews) => {
+        if (!visitedViews.find((i) => i.fullPath === this.$route.fullPath)) {
           this.toLastView(visitedViews)
         }
       })
     },
     closeOthersTags() {
-      this.$router.push(this.selectedTag).catch(() => {
-      })
+      this.$router.push(this.selectedTag).catch(() => {})
       this.$tab.closeOtherPage(this.selectedTag).then(() => {
         this.moveToCurrentTag()
       })
     },
     closeAllTags(view) {
       this.$tab.closeAllPage().then(({ visitedViews }) => {
-        if (this.affixTags.some(tag => tag.path === this.$route.path)) {
+        if (this.affixTags.some((tag) => tag.path === this.$route.path)) {
           return
         }
         this.toLastView(visitedViews, view)
@@ -240,105 +271,90 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tags-view-container {
-  height: 34px;
-  width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
-
-  .tags-view-wrapper {
-    .tags-view-item {
-      display: inline-block;
-      position: relative;
-      cursor: pointer;
-      height: 26px;
-      line-height: 26px;
-      border: 1px solid #d8dce5;
-      color: #495060;
-      background: #fff;
-      padding: 0 8px;
+  .tags-view-container {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 50px;
+    background: #fff;
+    border-bottom: 1px solid #d8dce5;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+    .tags-view-wrapper {
+      .tags-view-item {
+        position: relative;
+        display: inline-block;
+        height: 34px;
+        padding: 0 8px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+        margin-left: 5px;
+        font-size: 13px;
+        line-height: 32px;
+        color: #495060;
+        cursor: pointer;
+        background: #fff;
+        border: 1px solid #d8dce5;
+        border-radius: 3px;
+        &:first-of-type {
+          margin-left: 15px;
+        }
+        &:last-of-type {
+          margin-right: 15px;
+        }
+        &.active {
+          color: #fff;
+          background-color: #42b983;
+          border-color: #42b983;
+        }
+      }
+    }
+    .contextmenu {
+      position: absolute;
+      z-index: 3000;
+      padding: 5px 0;
+      margin: 0;
       font-size: 12px;
-      margin-left: 5px;
-      margin-top: 4px;
-
-      &:first-of-type {
-        margin-left: 15px;
-      }
-
-      &:last-of-type {
-        margin-right: 15px;
-      }
-
-      &.active {
-        background-color: #42b983;
-        color: #fff;
-        border-color: #42b983;
-
-        &::before {
-          content: '';
-          background: #fff;
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          position: relative;
-          margin-right: 2px;
+      font-weight: 400;
+      color: #333;
+      list-style-type: none;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+      li {
+        padding: 7px 16px;
+        margin: 0;
+        cursor: pointer;
+        &:hover {
+          background: #eee;
         }
       }
     }
   }
-
-  .contextmenu {
-    margin: 0;
-    background: #fff;
-    z-index: 3000;
-    position: absolute;
-    list-style-type: none;
-    padding: 5px 0;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 400;
-    color: #333;
-    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
-
-    li {
-      margin: 0;
-      padding: 7px 16px;
-      cursor: pointer;
-
-      &:hover {
-        background: #eee;
-      }
-    }
-  }
-}
 </style>
 
 <style lang="scss">
-//reset element css of el-icon-close
-.tags-view-wrapper {
-  .tags-view-item {
-    .el-icon-close {
-      width: 16px;
-      height: 16px;
-      vertical-align: 2px;
-      border-radius: 50%;
-      text-align: center;
-      transition: all .3s cubic-bezier(.645, .045, .355, 1);
-      transform-origin: 100% 50%;
-
-      &:before {
-        transform: scale(.6);
-        display: inline-block;
-        vertical-align: -3px;
-      }
-
-      &:hover {
-        background-color: #b4bccc;
-        color: #fff;
+  //reset element css of el-icon-close
+  .tags-view-wrapper {
+    .tags-view-item {
+      .el-icon-close {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+        text-align: center;
+        vertical-align: 2px;
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        transform-origin: 100% 50%;
+        &:before {
+          display: inline-block;
+          vertical-align: -2px;
+        }
+        &:hover {
+          color: #fff;
+          background-color: #b4bccc;
+        }
       }
     }
   }
-}
 </style>
