@@ -110,7 +110,7 @@ service.interceptors.response.use(res => {
   let { message } = error
 
   const status = error.response.status
-  if(status === 401) {
+  if(status === 401 || status === 500) {
     message = error.response.data.body;
   }else if (message == 'Network Error') {
     message = '后端接口连接异常'
