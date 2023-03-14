@@ -25,7 +25,7 @@ export default {
   },
 };
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 @import "@/assets/styles/custom.scss";
 #app .theme-picker {
   display: none;

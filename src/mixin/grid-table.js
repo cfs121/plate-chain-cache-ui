@@ -56,20 +56,23 @@ export const gridTable = {
       if (this.gridOptions.proxyConfig.autoLoad !== false) {
         this.gridOptions.proxyConfig.ajax = {
           query: async ({ page, form }) => {
+
             const params = isFunction(this.workFormParams)
               ? this.workFormParams({
-                  ...form,
-                  ...page,
-                })
+                ...form,
+                ...page,
+              })
               : form;
             const res = await this.fetch.getList({
               ...params,
               pageNum: page.currentPage,
               pageSize: page.pageSize,
             });
-            this.exportTotal = res.total;
-            this.gridTableData = res.rows;
-            return res;
+
+            this.exportTotal = res.body.total;
+            this.gridTableData = res.body.content;
+
+            return res.body;
           },
         };
       } else {
@@ -96,9 +99,8 @@ export const gridTable = {
             case "$select":
             case "$input":
               item.itemRender.props = {
-                placeholder: `请${name === "$input" ? "输入" : "选择"}${
-                  item.title
-                }`,
+                placeholder: `请${name === "$input" ? "输入" : "选择"}${item.title
+                  }`,
                 clearable:
                   "clearable" in item.itemRender
                     ? item.itemRender.clearable

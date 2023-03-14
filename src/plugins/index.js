@@ -3,6 +3,7 @@ import auth from './auth'
 import cache from './cache'
 import modal from './modal'
 import download from './download'
+import "@/plugins/vxe-table";
 
 export default {
   install(Vue) {
