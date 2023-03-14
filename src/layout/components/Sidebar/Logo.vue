@@ -41,7 +41,7 @@ export default {
   },
   data() {
     return {
-      title: '若依管理系统',
+      title: '帝浩 - DEEHERO',
       logo: logoImg
     }
   }
