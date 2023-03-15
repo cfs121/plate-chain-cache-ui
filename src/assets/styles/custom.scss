@@ -55,6 +55,7 @@ body {
 }
 
 .ele-form-dialog,
+.el-message-box__wrapper,
 .el-dialog__wrapper {
   backdrop-filter: blur(3px);
 }
@@ -96,6 +97,22 @@ body {
       .ele-gallery,
       .jsoneditor-container {
         margin: 10px 0;
+      }
+    }
+  }
+  .el-form-item__content div {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .vue-treeselect {
+    &__single-value {
+      color: inherit;
+    }
+    &__control {
+      border: 0;
+      &-arrow-container {
+        display: none;
       }
     }
   }

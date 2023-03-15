@@ -15,32 +15,37 @@
     :request-fn="handleSubmit"
     @closed="handleClosed"
     @open="handleOpen"
-  />
+  >
+    <template #deptId="{ formData, formDesc }">
+      <treeselect
+        v-model="formData.deptId"
+        :options="deptOptions"
+        :show-count="true"
+        :disabled="getIsView"
+        placeholder="请选择归属部门"
+      />
+    </template>
+  </ele-form-dialog>
 </template>
 
 <script>
-import { addUser, updateUser } from "@/api/system/user";
+import { addUser, updateUser, deptTreeSelect } from "@/api/system/user";
 import { addEditForm } from "@/mixin/add-edit-form";
+import Treeselect from "@riophae/vue-treeselect";
 
 export default {
   mixins: [addEditForm],
   dicts: ["sys_user_sex", "sys_normal_disable"],
+  components: {
+    Treeselect,
+  },
   data() {
     return {
       title: "用户",
       postOptions: [],
       roleOptions: [],
+      deptOptions: [],
       formDesc: {
-        // <el-col :span="12">
-        //   <el-form-item label="" prop="deptId">
-        //     <treeselect
-        //       v-model="form."
-        //       :options="deptOptions"
-        //       :show-count="true"
-        //       placeholder="请选择归属部门"
-        //     />
-        //   </el-form-item>
-        // </el-col>
         nickName: {
           type: "input",
           label: "用户昵称",
@@ -185,6 +190,9 @@ export default {
     async handleOpen() {
       this.formData = this.options;
       this.initFormDesc();
+
+      const { body } = await deptTreeSelect();
+      this.deptOptions = body;
 
       if (this.getIsAdd) {
         const { body } = await this.getConfigKey("sys.user.initPassword");

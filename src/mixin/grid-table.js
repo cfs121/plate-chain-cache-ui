@@ -65,7 +65,7 @@ export const gridTable = {
               : form;
             const res = await this.fetch.getList({
               ...params,
-              pageNum: page.currentPage,
+              pageNumber: page.currentPage,
               pageSize: page.pageSize,
             });
 
@@ -136,6 +136,7 @@ export const gridTable = {
       const index = this.gridOptions.formConfig.items.findIndex(
         (item) => item.field === name
       );
+
       this.gridOptions.formConfig.items[index].itemRender.options =
         this.dict.type[dictName ? dictName : camel2snake(name)];
     },
@@ -191,9 +192,6 @@ export const gridTable = {
             });
             return;
           }
-          await this.$modal.confirm(
-            `是否确认删除${rows.length > 1 ? "所选" : "改行"}数据？`
-          );
           this.handleDelete($grid.getCheckboxRecords());
           break;
         default:
@@ -268,6 +266,9 @@ export const gridTable = {
       this.handleUpdate(row, 3);
     },
     async handleDelete(row) {
+      await this.$modal.confirm(
+        `是否确认删除${Array.isArray(row) ? "所选" : "改行"}数据？`
+      );
       const ids = Array.isArray(row)
         ? row.map((item) => item[this.fetch.id])
         : row[this.fetch.id];

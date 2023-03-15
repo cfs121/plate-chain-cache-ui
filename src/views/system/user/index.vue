@@ -82,7 +82,7 @@
                 详情
               </el-button>
               <el-dropdown
-                @command="(command) => handleCommand(command, scope.row)"
+                @command="(command) => handleCommand(command, row)"
                 v-hasPermi="['system:user:resetPwd', 'system:user:edit']"
               >
                 <el-button type="text" icon="el-icon-d-arrow-right">
@@ -109,51 +109,15 @@
       </el-col>
     </el-row>
 
-    <el-dialog
-      :title="upload.title"
-      :visible.sync="upload.open"
-      width="400px"
-      append-to-body
-    >
-      <el-upload
-        ref="upload"
-        :limit="1"
-        accept=".xlsx, .xls"
-        :headers="upload.headers"
-        :action="upload.url + '?updateSupport=' + upload.updateSupport"
-        :disabled="upload.isUploading"
-        :on-progress="(upload.isUploading = true)"
-        :on-success="handleFileSuccess"
-        :auto-upload="false"
-        drag
-      >
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip text-center" slot="tip">
-          <div class="el-upload__tip" slot="tip">
-            <el-checkbox v-model="upload.updateSupport" />
-            是否更新已经存在的用户数据
-          </div>
-          <span>仅允许导入xls、xlsx格式文件。</span>
-          <el-link
-            type="primary"
-            :underline="false"
-            style="font-size: 12px; vertical-align: baseline"
-            @click="importTemplate"
-            >下载模板
-          </el-link>
-        </div>
-      </el-upload>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitFileForm">确 定</el-button>
-        <el-button @click="upload.open = false">取 消</el-button>
-      </div>
-    </el-dialog>
-
     <add-edit-form
       :visible.sync="addEditFormDialog.open"
       :options="addEditFormDialog.options"
       :type="addEditFormDialog.operationType"
+      @success="fetchGiridData"
+    />
+
+    <upload-dialog
+      :visible.sync="uploadDialog.open"
       @success="fetchGiridData"
     />
   </div>
@@ -168,69 +132,28 @@ import {
   changeUserStatus,
   deptTreeSelect,
 } from "@/api/system/user";
-import { getToken } from "@/utils/auth";
-import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { gridTable } from "@/mixin/grid-table";
 import AddEditForm from "./components/add-edit-form";
+import UploadDialog from "./components/upload-dialog";
 
 export default {
   name: "User",
-  dicts: ["sys_normal_disable", "sys_user_sex"],
-  components: { Treeselect, AddEditForm },
+  dicts: ["sys_normal_disable"],
+  components: { AddEditForm, UploadDialog },
   mixins: [gridTable],
   data() {
     return {
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 用户表格数据
-      userList: null,
-      // 弹出层标题
-      title: "",
-      // 部门树选项
-      deptOptions: undefined,
-      // 是否显示弹出层
-      open: false,
-      // 部门名称
-      deptName: undefined,
-      // 默认密码
-      initPassword: undefined,
-      // 日期范围
-      dateRange: [],
-      // 岗位选项
-      postOptions: [],
-      // 角色选项
-      roleOptions: [],
-      // 表单参数
-      form: {},
+      deptId: "",
+      deptOptions: [],
+      deptName: null,
       defaultProps: {
         children: "children",
         label: "label",
       },
-      upload: {
+      uploadDialog: {
         open: false,
-        title: "",
-        isUploading: false,
-        updateSupport: 0,
-        headers: { Authorization: "Bearer " + getToken() },
-        url: process.env.VUE_APP_BASE_API + "/system/user/importData",
       },
-      // 查询参数
-      queryParams: {
-        pageNumber: 1,
-        pageSize: 10,
-        userName: undefined,
-        phonenumber: undefined,
-        status: undefined,
-        Q_EQ_deptId: undefined,
-      },
-
       fetch: {
         getRowData: getUser,
         delete: delUser,
@@ -356,7 +279,6 @@ export default {
     };
   },
   watch: {
-    // 根据名称筛选部门树
     deptName(val) {
       this.$refs.tree.filter(val);
     },
@@ -367,22 +289,24 @@ export default {
     this.setFormConfigSelectItemOptions("status", "sys_normal_disable");
   },
   methods: {
+    workFormParams(params) {
+      return {
+        ...params,
+        deptId: this.deptId,
+      };
+    },
     handleClickToolbarButton(e) {
       if (e.code === "imp") {
-        this.upload.title = "用户导入";
-        this.upload.open = true;
+        this.uploadDialog.open = true;
       }
     },
-
-    // 筛选节点
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
-    // 节点单击事件
     handleNodeClick(data) {
-      this.queryParams.deptId = data.id;
-      this.handleQuery();
+      this.deptId = data.id;
+      this.fetchGiridData();
     },
     async handleStatusChange(row) {
       let text = row.status === "0" ? "启用" : "停用";
@@ -424,29 +348,6 @@ export default {
     },
     handleAuthRole(row) {
       this.$router.push(`/system/user-auth/role/${row.id}`);
-    },
-    importTemplate() {
-      this.download(
-        "system/user/importTemplate",
-        {},
-        `user_template_${new Date().getTime()}.xlsx`
-      );
-    },
-    handleFileSuccess(response) {
-      this.upload = {
-        open: false,
-        isUploading: false,
-      };
-      this.$refs.upload.clearFiles();
-      this.$alert(
-        `<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>${response.msg}</div>`,
-        "导入结果",
-        { dangerouslyUseHTMLString: true }
-      );
-      this.getList();
-    },
-    submitFileForm() {
-      this.$refs.upload.submit();
     },
   },
 };

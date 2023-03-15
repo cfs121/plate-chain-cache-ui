@@ -1,4 +1,4 @@
-import { Message, MessageBox, Notification, Loading } from 'element-ui'
+const { Message, MessageBox, Notification, Loading } = require("element-ui");
 
 let loadingInstance
 
