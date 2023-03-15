@@ -15,7 +15,10 @@
         <div class="head-container">
           <el-tree
             :data="deptOptions"
-            :props="defaultProps"
+            :props="{
+              children: 'children',
+              label: 'label',
+            }"
             :expand-on-click-node="false"
             :filter-node-method="filterNode"
             ref="tree"
@@ -148,10 +151,6 @@ export default {
       deptId: "",
       deptOptions: [],
       deptName: null,
-      defaultProps: {
-        children: "children",
-        label: "label",
-      },
       uploadDialog: {
         open: false,
       },
