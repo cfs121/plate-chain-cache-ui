@@ -58,12 +58,8 @@ export function addDateRange(params, dateRange, propName) {
   let search = params
   search.params = typeof (search.params) === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {}
   dateRange = Array.isArray(dateRange) ? dateRange : []
-  if (typeof (propName) === 'undefined') {
-    search.params['beginTime'] = dateRange[0]
-    search.params['endTime'] = dateRange[1]
-  } else {
-    search.params['begin' + propName] = dateRange[0]
-    search.params['end' + propName] = dateRange[1]
+  if(dateRange.length){
+    search.dataRange = dateRange[0].length===19?`${dateRange[0]},${dateRange[1]}`:`${dateRange[0]} 00:00:00,${dateRange[1]} 23:59:59`
   }
   return search
 }

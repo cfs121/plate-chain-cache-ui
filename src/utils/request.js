@@ -21,6 +21,7 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(config => {
+  console.log()
   // 是否需要设置 token
   const isToken = (config.headers || {}).isToken === false
   // 是否需要防止数据重复提交
@@ -107,12 +108,15 @@ service.interceptors.response.use(res => {
 }, error => {
   console.log('err' + error)
   let { message } = error
-  if (message == 'Network Error') {
+
+  const status = error.response.status
+  if(status === 401 || status === 500) {
+    message = error.response.data.body;
+  }else if (message == 'Network Error') {
     message = '后端接口连接异常'
   } else if (message.includes('timeout')) {
     message = '系统接口请求超时'
   } else if (message.includes('Request failed with status code')) {
-
     message = '系统接口' + message.substr(message.length - 3) + '异常'
   }
   Message({ message: message, type: 'error', duration: 5 * 1000 })
