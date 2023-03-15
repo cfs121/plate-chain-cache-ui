@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 export default {
   border: "full",
   showHeaderOverflow: true,

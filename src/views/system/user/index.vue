@@ -36,8 +36,8 @@
         >
           <template #time="{ data }">
             <el-date-picker
-              v-model="data.time"
-              type="daterange"
+              v-model="data.Q_BT_create"
+              type="datetimerange"
               style="width: 100%"
               clearable
               placeholder="请选择保存开始时间"
@@ -45,6 +45,7 @@
               range-separator="-"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              :default-time="['00:00:00', '23:59:59']"
             />
           </template>
           <template #status="{ row }">
@@ -204,21 +205,21 @@ export default {
           titleAlign: "right",
           items: [
             {
-              field: "userName",
+              field: "Q_EQ_userName",
               title: "用户名称",
               itemRender: {
                 name: "$input",
               },
             },
             {
-              field: "phonenumber",
+              field: "Q_EQ_phoneNumber",
               title: "手机号码",
               itemRender: {
                 name: "$input",
               },
             },
             {
-              field: "status",
+              field: "Q_EQ_status",
               title: "状态",
               itemRender: {
                 name: "$select",
@@ -286,13 +287,14 @@ export default {
   async created() {
     const res = await deptTreeSelect();
     this.deptOptions = res.body;
-    this.setFormConfigSelectItemOptions("status", "sys_normal_disable");
+    this.setFormConfigSelectItemOptions("Q_EQ_status", "sys_normal_disable");
   },
   methods: {
     workFormParams(params) {
       return {
         ...params,
-        deptId: this.deptId,
+        Q_EQ_deptId: this.deptId,
+        Q_BT_create: params.Q_BT_create && params.Q_BT_create.join(","),
       };
     },
     handleClickToolbarButton(e) {

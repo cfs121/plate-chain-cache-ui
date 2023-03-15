@@ -34,7 +34,6 @@ const searchButton = {
 export const gridTable = {
   data() {
     return {
-      gridTableData: [],
       exportTotal: 0,
       gridOptions,
       addEditFormDialog: {
@@ -56,22 +55,16 @@ export const gridTable = {
       if (this.gridOptions.proxyConfig.autoLoad !== false) {
         this.gridOptions.proxyConfig.ajax = {
           query: async ({ page, form }) => {
-
-            const params = isFunction(this.workFormParams)
-              ? this.workFormParams({
-                ...form,
-                ...page,
-              })
-              : form;
-            const res = await this.fetch.getList({
-              ...params,
+            const query = {
+              ...form,
               pageNumber: page.currentPage,
               pageSize: page.pageSize,
-            });
-
+            }
+            const params = isFunction(this.workFormParams)
+              ? this.workFormParams(query)
+              : query;
+            const res = await this.fetch.getList(params);
             this.exportTotal = res.body.total;
-            this.gridTableData = res.body.content;
-
             return res.body;
           },
         };
@@ -136,7 +129,9 @@ export const gridTable = {
       const index = this.gridOptions.formConfig.items.findIndex(
         (item) => item.field === name
       );
-
+      if (index === -1) {
+        return
+      }
       this.gridOptions.formConfig.items[index].itemRender.options =
         this.dict.type[dictName ? dictName : camel2snake(name)];
     },

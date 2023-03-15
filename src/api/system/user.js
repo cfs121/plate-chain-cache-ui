@@ -2,20 +2,11 @@ import request from '@/utils/request'
 import { parseStrEmpty } from '@/utils/ruoyi'
 
 // 查询用户列表
-export function listUser(query) {
-  const {userName:Q_EQ_userName,phonenumber:Q_EQ_phoneNumber,status:Q_EQ_status,deptId:Q_EQ_deptId,dataRange:Q_BT_create,...rest}=query
-  debugger;
+export function listUser(params) {
   return request({
     url: '/sys-user/page',
     method: 'get',
-    params: {
-      ...rest,
-      Q_EQ_userName,
-      Q_EQ_phoneNumber,
-      Q_EQ_status,
-      Q_EQ_deptId,
-      Q_BT_create
-    }
+    params
   })
 }
 
