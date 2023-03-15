@@ -84,7 +84,7 @@ export default {
           attrs: {
             maxlength: 50,
           },
-          vif: (data) => data.userId == undefined,
+          vif: (data) => data.id == undefined,
         },
         password: {
           type: "input",
@@ -96,7 +96,7 @@ export default {
             type: "password",
             showPassword: true,
           },
-          vif: (data) => data.userId == undefined,
+          vif: (data) => data.id == undefined,
         },
         sex: {
           layout: 12,
