@@ -31,8 +31,8 @@ function install() {
           } else {
             return new Promise((resolve, reject) => {
               getDicts(dictMeta.type).then(res => {
-                store.dispatch('dict/setDict', { key: dictMeta.type, value: res.data })
-                resolve(res.data)
+                store.dispatch('dict/setDict', { key: dictMeta.type, value: res.body })
+                resolve(res.body)
               }).catch(error => {
                 reject(error)
               })

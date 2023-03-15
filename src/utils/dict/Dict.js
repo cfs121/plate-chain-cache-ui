@@ -21,7 +21,6 @@ export default class Dict {
   }
 
   init(options) {
-    debugger
     if (options instanceof Array) {
       options = { types: options }
     }
@@ -62,22 +61,21 @@ export default class Dict {
  * @param {DictMeta} dictMeta 字典元数据
  * @returns {Promise}
  */
-function loadDict(dict, dictMeta) {
-  return dictMeta.request(dictMeta)
-    .then(response => {
-      const type = dictMeta.type
-      let dicts = dictMeta.responseConverter(response, dictMeta)
-      if (!(dicts instanceof Array)) {
-        console.error('the return of responseConverter must be Array.<DictData>')
-        dicts = []
-      } else if (dicts.filter(d => d instanceof DictData).length !== dicts.length) {
-        console.error('the type of elements in dicts must be DictData')
-        dicts = []
-      }
-      dict.type[type].splice(0, Number.MAX_SAFE_INTEGER, ...dicts)
-      dicts.forEach(d => {
-        Vue.set(dict.label[type], d.value, d.label)
-      })
-      return dicts
-    })
+async function loadDict(dict, dictMeta) {
+  const response = await dictMeta.request(dictMeta)
+  const type = dictMeta.type
+  let dicts = dictMeta.responseConverter(response, dictMeta)
+  if (!(dicts instanceof Array)) {
+    console.error('the return of responseConverter must be Array.<DictData>')
+    dicts = []
+  } else if (dicts.filter(d => d instanceof DictData).length !== dicts.length) {
+    console.error('the type of elements in dicts must be DictData')
+    dicts = []
+  }
+  dict.type[type].splice(0, Number.MAX_SAFE_INTEGER, ...dicts)
+  dicts.forEach(d => {
+    Vue.set(dict.label[type], d.value, d.label)
+  })
+  return dicts
+
 }
