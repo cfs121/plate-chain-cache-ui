@@ -68,7 +68,7 @@ export function resetUserPwd(id, password) {
 // 用户状态修改
 export function changeUserStatus(data) {
   return request({
-    url: '/system/user/changeStatus',
+    url: '/sys-user/status',
     method: 'put',
     data
   })

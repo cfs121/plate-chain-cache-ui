@@ -312,12 +312,11 @@ export default {
     async handleStatusChange(row) {
       let text = row.status === '0' ? '启用' : '停用'
       await this.$modal.confirm(`确认要${text}${row.userName}用户吗？`)
-      const { userId, status } = row
+      const { id, status } = row
       await changeUserStatus({
-        userId,
+        id,
         status
       })
-      row.status = row.status === '0' ? '1' : '0'
       this.$modal.msgSuccess(text + '成功')
     },
     handleCommand(command, row) {
