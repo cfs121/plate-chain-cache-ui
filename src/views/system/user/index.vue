@@ -189,7 +189,7 @@ export default {
             slots: { default: 'status' }
           },
           {
-            field: 'createTime',
+            field: 'createdTime',
             title: '创建时间'
           },
           {
