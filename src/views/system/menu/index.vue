@@ -357,17 +357,18 @@ export default {
         delete node.children
       }
       return {
-        id: node.menuId,
+        id: node.id,
         label: node.menuName,
         children: node.children
       }
     },
     /** 查询菜单下拉树结构 */
     getTreeselect() {
-      listMenu().then(response => {
+      listMenu({}).then(response => {
         this.menuOptions = []
-        const menu = {menuId: 0, menuName: '主类目', children: []}
+        const menu = {id: 0, menuName: '主类目', children: []}
         menu.children = this.handleTree(response.body.content, 'id')
+        debugger
         this.menuOptions.push(menu)
       })
     },
@@ -379,7 +380,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        menuId: undefined,
+        id: undefined,
         parentId: 0,
         menuName: undefined,
         icon: undefined,
@@ -411,8 +412,8 @@ export default {
     handleAdd(row) {
       this.reset()
       this.getTreeselect()
-      if (row != null && row.menuId) {
-        this.form.parentId = row.menuId
+      if (row != null && row.id) {
+        this.form.parentId = row.id
       } else {
         this.form.parentId = 0
       }
@@ -431,7 +432,7 @@ export default {
     handleUpdate(row) {
       this.reset()
       this.getTreeselect()
-      getMenu(row.menuId).then(response => {
+      getMenu(row.id).then(response => {
         this.form = response.data
         this.open = true
         this.title = '修改菜单'
@@ -441,7 +442,7 @@ export default {
     submitForm: function () {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.menuId != undefined) {
+          if (this.form.id != undefined) {
             updateMenu(this.form).then(response => {
               this.$modal.msgSuccess('修改成功')
               this.open = false
@@ -460,7 +461,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       this.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项？').then(function () {
-        return delMenu(row.menuId)
+        return delMenu(row.id)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('删除成功')
