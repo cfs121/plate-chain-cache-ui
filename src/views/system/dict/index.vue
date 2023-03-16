@@ -225,7 +225,7 @@ export default {
       dateRange: [],
       // 查询参数
       queryParams: {
-        pageNum: 1,
+        pageNumber: 1,
         pageSize: 10,
         dictName: undefined,
         dictType: undefined,
@@ -252,7 +252,7 @@ export default {
     getList() {
       this.loading = true
       listType(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.typeList = response.rows
+          this.typeList = response.body.content
           this.total = response.total
           this.loading = false
         }
