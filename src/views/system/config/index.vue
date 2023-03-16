@@ -109,7 +109,7 @@
 
     <el-table v-loading="loading" :data="configList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="参数主键" align="center" prop="configId"/>
+      <el-table-column label="参数主键" align="center" prop="id"/>
       <el-table-column label="参数名称" align="center" prop="configName" :show-overflow-tooltip="true"/>
       <el-table-column label="参数键名" align="center" prop="configKey" :show-overflow-tooltip="true"/>
       <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true"/>
@@ -119,9 +119,9 @@
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"/>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <el-table-column label="创建时间" align="center" prop="createdTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.createdTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -248,7 +248,7 @@ export default {
     getList() {
       this.loading = true
       listConfig(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.configList = response.rows
+          this.configList = response.body.content
           this.total = response.total
           this.loading = false
         }
@@ -262,7 +262,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        configId: undefined,
+        id: undefined,
         configName: undefined,
         configKey: undefined,
         configValue: undefined,
@@ -297,9 +297,10 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      const configId = row.configId || this.ids
+
+      const configId = row.id || this.ids
       getConfig(configId).then(response => {
-        this.form = response.data
+        this.form = response.body
         this.open = true
         this.title = '修改参数'
       })
@@ -308,7 +309,7 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.configId != undefined) {
+          if (this.form.id != undefined) {
             updateConfig(this.form).then(response => {
               this.$modal.msgSuccess('修改成功')
               this.open = false
@@ -326,7 +327,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const configIds = row.configId || this.ids
+      const configIds = row.id || this.ids
       this.$modal.confirm('是否确认删除参数编号为"' + configIds + '"的数据项？').then(function() {
         return delConfig(configIds)
       }).then(() => {
