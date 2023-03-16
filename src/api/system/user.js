@@ -11,7 +11,7 @@ export function listUser(params) {
 }
 
 // 获取用户详情
-export function sysUserInfo(query) {
+export function getUserInfo(query) {
   return request({
     url: '/sys-user/info',
     method: 'get',
@@ -54,15 +54,14 @@ export function delUser(userId) {
 }
 
 // 用户密码重置
-export function resetUserPwd(userId, password) {
-  const data = {
-    userId,
-    password
-  }
+export function resetUserPwd(id, password) {
   return request({
-    url: '/system/user/resetPwd',
+    url: '/sys-user/password',
     method: 'put',
-    data: data
+    data: {
+      id,
+      password
+    }
   })
 }
 

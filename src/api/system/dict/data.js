@@ -20,7 +20,7 @@ export function getData(dictCode) {
 // 根据字典类型查询字典数据信息
 export function getDicts(dictType) {
   return request({
-    url: '/sys-dict-type/page?counted=false&Q_EQ_dictType=' + dictType,
+    url: '/sys-dict-data/page?counted=false&Q_EQ_dictType=' + dictType,
     method: 'get'
   })
 }

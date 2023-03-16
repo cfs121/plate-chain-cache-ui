@@ -39,7 +39,7 @@
         >
           <template #time="{ data }">
             <el-date-picker
-              v-model="data.Q_BT_create"
+              v-model="data.Q_BT_createdTime"
               type="datetimerange"
               style="width: 100%"
               clearable
@@ -97,13 +97,13 @@
                     command="handleResetPwd"
                     icon="el-icon-key"
                     v-hasPermi="['system:user:resetPwd']"
-                    >重置密码
+                  >重置密码
                   </el-dropdown-item>
                   <el-dropdown-item
                     command="handleAuthRole"
                     icon="el-icon-circle-check"
                     v-hasPermi="['system:user:edit']"
-                    >分配角色
+                  >分配角色
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -134,222 +134,222 @@ import {
   delUser,
   resetUserPwd,
   changeUserStatus,
-  deptTreeSelect,
-} from "@/api/system/user";
-import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { gridTable } from "@/mixin/grid-table";
-import AddEditForm from "./components/add-edit-form";
-import UploadDialog from "./components/upload-dialog";
+  deptTreeSelect
+} from '@/api/system/user'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { gridTable } from '@/mixin/grid-table'
+import AddEditForm from './components/add-edit-form'
+import UploadDialog from './components/upload-dialog'
 
 export default {
-  name: "User",
-  dicts: ["sys_normal_disable"],
+  name: 'User',
+  dicts: ['sys_normal_disable'],
   components: { AddEditForm, UploadDialog },
   mixins: [gridTable],
   data() {
     return {
-      deptId: "",
+      deptId: '',
       deptOptions: [],
       deptName: null,
       uploadDialog: {
-        open: false,
+        open: false
       },
       fetch: {
         getRowData: getUser,
         delete: delUser,
         getList: listUser,
-        id: "id",
+        id: 'id'
       },
       gridOptions: {
         columns: [
-          { type: "checkbox", title: "", width: 45 },
+          { type: 'checkbox', title: '', width: 45 },
           {
-            field: "id",
-            title: "用户编号",
+            field: 'id',
+            title: '用户编号'
           },
           {
-            field: "userName",
-            title: "用户名称",
+            field: 'userName',
+            title: '用户名称'
           },
           {
-            field: "nickName",
-            title: "用户昵称",
+            field: 'nickName',
+            title: '用户昵称'
           },
           {
-            field: "deptName",
-            title: "部门",
+            field: 'deptName',
+            title: '部门'
           },
           {
-            field: "phonenumber",
-            title: "手机号码",
+            field: 'phonenumber',
+            title: '手机号码'
           },
           {
-            field: "status",
-            title: "状态",
-            slots: { default: "status" },
+            field: 'status',
+            title: '状态',
+            slots: { default: 'status' }
           },
           {
-            field: "createTime",
-            title: "创建时间",
+            field: 'createTime',
+            title: '创建时间'
           },
           {
-            title: "操作",
+            title: '操作',
             minWidth: 290,
-            slots: { default: "operate" },
-            fixed: "right",
-          },
+            slots: { default: 'operate' },
+            fixed: 'right'
+          }
         ],
         formConfig: {
           titleWidth: 100,
-          titleAlign: "right",
+          titleAlign: 'right',
           items: [
             {
-              field: "Q_EQ_userName",
-              title: "用户名称",
+              field: 'Q_EQ_userName',
+              title: '用户名称',
               itemRender: {
-                name: "$input",
-              },
+                name: '$input'
+              }
             },
             {
-              field: "Q_EQ_phoneNumber",
-              title: "手机号码",
+              field: 'Q_EQ_phoneNumber',
+              title: '手机号码',
               itemRender: {
-                name: "$input",
-              },
+                name: '$input'
+              }
             },
             {
-              field: "Q_EQ_status",
-              title: "状态",
+              field: 'Q_EQ_status',
+              title: '状态',
               itemRender: {
-                name: "$select",
-                options: [],
-              },
+                name: '$select',
+                options: []
+              }
             },
             {
-              field: "from_time",
-              title: "创建时间",
+              field: 'from_time',
+              title: '创建时间',
               folding: true,
-              slots: { default: "time" },
-              resetValue: [],
-            },
-          ],
+              slots: { default: 'time' },
+              resetValue: []
+            }
+          ]
         },
         toolbarConfig: {
           buttons: [
             {
-              code: "add",
-              name: "新增",
-              icon: "vxe-icon-add",
-              status: "primary",
-              permi: ["system:user:add"],
+              code: 'add',
+              name: '新增',
+              icon: 'vxe-icon-add',
+              status: 'primary',
+              permi: ['system:user:add']
             },
             {
-              code: "update",
-              name: "修改",
-              icon: "vxe-icon-edit",
-              status: "success",
-              permi: ["system:user:edit"],
+              code: 'update',
+              name: '修改',
+              icon: 'vxe-icon-edit',
+              status: 'success',
+              permi: ['system:user:edit']
             },
             {
-              code: "del",
-              name: "删除",
-              icon: "vxe-icon-delete",
-              status: "danger",
-              permi: ["system:user:remove"],
+              code: 'del',
+              name: '删除',
+              icon: 'vxe-icon-delete',
+              status: 'danger',
+              permi: ['system:user:remove']
             },
             {
-              code: "imp",
-              name: "导入",
-              icon: "vxe-icon-upload",
-              status: "info",
-              permi: ["system:user:import"],
-            },
+              code: 'imp',
+              name: '导入',
+              icon: 'vxe-icon-upload',
+              status: 'info',
+              permi: ['system:user:import']
+            }
           ],
           tools: [
             {
-              code: "download",
+              code: 'download',
               circle: true,
-              icon: "vxe-icon-download",
-              url: "system/user/export",
-              permi: ["system:user:export"],
-            },
-          ],
-        },
-      },
-    };
+              icon: 'vxe-icon-download',
+              url: 'system/user/export',
+              permi: ['system:user:export']
+            }
+          ]
+        }
+      }
+    }
   },
   watch: {
     deptName(val) {
-      this.$refs.tree.filter(val);
-    },
+      this.$refs.tree.filter(val)
+    }
   },
   async created() {
-    const res = await deptTreeSelect();
-    this.deptOptions = res.body;
-    this.setFormConfigSelectItemOptions("Q_EQ_status", "sys_normal_disable");
+    const res = await deptTreeSelect()
+    this.deptOptions = res.body
+    this.setFormConfigSelectItemOptions('Q_EQ_status', 'sys_normal_disable')
   },
   methods: {
     workFormParams(params) {
       return {
         ...params,
         Q_EQ_deptId: this.deptId,
-        Q_BT_create: params.Q_BT_create && params.Q_BT_create.join(","),
-      };
+        Q_BT_createdTime: params.Q_BT_createdTime && params.Q_BT_createdTime.join(',')
+      }
     },
     handleClickToolbarButton(e) {
-      if (e.code === "imp") {
-        this.uploadDialog.open = true;
+      if (e.code === 'imp') {
+        this.uploadDialog.open = true
       }
     },
     filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     handleNodeClick(data) {
-      this.deptId = data.id;
-      this.fetchGiridData();
+      this.deptId = data.id
+      this.fetchGiridData()
     },
     async handleStatusChange(row) {
-      let text = row.status === "0" ? "启用" : "停用";
-      await this.$modal.confirm(`确认要${text}${row.userName}用户吗？`);
-      const { userId, status } = row;
+      let text = row.status === '0' ? '启用' : '停用'
+      await this.$modal.confirm(`确认要${text}${row.userName}用户吗？`)
+      const { userId, status } = row
       await changeUserStatus({
         userId,
-        status,
-      });
-      row.status = row.status === "0" ? "1" : "0";
-      this.$modal.msgSuccess(text + "成功");
+        status
+      })
+      row.status = row.status === '0' ? '1' : '0'
+      this.$modal.msgSuccess(text + '成功')
     },
     handleCommand(command, row) {
       switch (command) {
-        case "handleResetPwd":
-          this.handleResetPwd(row);
-          break;
-        case "handleAuthRole":
-          this.handleAuthRole(row);
-          break;
+        case 'handleResetPwd':
+          this.handleResetPwd(row)
+          break
+        case 'handleAuthRole':
+          this.handleAuthRole(row)
+          break
         default:
-          break;
+          break
       }
     },
     async handleResetPwd(row) {
-      const value = await this.$prompt(
+      const { value } = await this.$prompt(
         `请输入${row.userName}的新密码`,
-        "提示",
+        '提示',
         {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
           closeOnClickModal: false,
           inputPattern: /^.{5,20}$/,
-          inputErrorMessage: "用户密码长度必须介于 5 和 20 之间",
+          inputErrorMessage: '用户密码长度必须介于 5 和 20 之间'
         }
-      );
-      await resetUserPwd(row.id, value);
-      this.$modal.msgSuccess(`修改成功，新密码是：${value}`);
+      )
+      await resetUserPwd(row.id, value)
+      this.$modal.msgSuccess(`修改成功，新密码是：${value}`)
     },
     handleAuthRole(row) {
-      this.$router.push(`/system/user-auth/role/${row.id}`);
-    },
-  },
-};
+      this.$router.push(`/system/user-auth/role/${row.id}`)
+    }
+  }
+}
 </script>
