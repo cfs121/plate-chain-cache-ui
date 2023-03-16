@@ -6,6 +6,9 @@ export function listMenu(query) {
     url: '/sys-menu/page',
     method: 'get',
     params: {
+      counted: false,
+      pageNumber: 1,
+      pageSize: 1000,
       Q_EQ_menuName: query.menuName,
       Q_EQ_visible: query.visible
     }
@@ -19,7 +22,6 @@ export function getMenu(menuId) {
     method: 'get'
   })
 }
-
 
 // 查询菜单下拉树结构
 export function treeselect() {
