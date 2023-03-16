@@ -275,6 +275,10 @@ export default {
     handleQuery() {
       this.queryParams.pageNum = 1
       this.getList()
+      // this.loading=true
+      // listConfig(this.configName).then(response=>{
+      //     this.configList = this.handleTree(response.body.content, 'configName')
+      //     this.loading = false
     },
     /** 重置按钮操作 */
     resetQuery() {
@@ -290,16 +294,16 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.configId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
+      const id = row.id || this.ids
+      getConfig(id).then(response => {
 
-      const configId = row.id || this.ids
-      getConfig(configId).then(response => {
         this.form = response.body
         this.open = true
         this.title = '修改参数'
@@ -327,9 +331,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const configIds = row.id || this.ids
-      this.$modal.confirm('是否确认删除参数编号为"' + configIds + '"的数据项？').then(function() {
-        return delConfig(configIds)
+      const ids = row.id || this.ids
+      this.$modal.confirm('是否确认删除参数编号为"' + ids + '"的数据项？').then(function() {
+        return delConfig(ids)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('删除成功')

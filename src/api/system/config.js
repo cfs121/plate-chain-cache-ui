@@ -5,14 +5,19 @@ export function listConfig(query) {
   return request({
     url: '/sys-config/page',
     method: 'get',
-    params: query
+    params: {
+      Q_EQ_configName: query.configName,
+      Q_EQ_configKey: query.configKey,
+      Q_EQ_configType: query.configType,
+      Q_BT_createdTime: query.dataRange
+    }
   })
 }
 
 // 查询参数详细
-export function getConfig(configId) {
+export function getConfig(id) {
   return request({
-    url: '/sys-config/' + configId,
+    url: '/sys-config/' + id,
     method: 'get'
   })
 }
@@ -44,9 +49,9 @@ export function updateConfig(data) {
 }
 
 // 删除参数配置
-export function delConfig(configId) {
+export function delConfig(id) {
   return request({
-    url: '/sys-config/' + configId,
+    url: '/sys-config/' + id,
     method: 'delete'
   })
 }
