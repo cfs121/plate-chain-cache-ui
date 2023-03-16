@@ -25,6 +25,7 @@
       </el-form-item>
     </el-form>
 
+    <!--新增一个完整的菜单-->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -50,11 +51,12 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
+    <!--菜单显示表格-->
     <el-table
       v-if="refreshTable"
       v-loading="loading"
       :data="menuList"
-      row-key="menuId"
+      row-key="id"
       :default-expand-all="isExpandAll"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
@@ -284,15 +286,16 @@
 </template>
 
 <script>
-import { listMenu, getMenu, delMenu, addMenu, updateMenu } from '@/api/system/menu'
+import {listMenu, getMenu, delMenu, addMenu, updateMenu} from '@/api/system/menu'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import IconSelect from '@/components/IconSelect'
+import {getByMenuName} from "../../../api/system/menu";
 
 export default {
   name: 'Menu',
   dicts: ['sys_show_hide', 'sys_normal_disable'],
-  components: { Treeselect, IconSelect },
+  components: {Treeselect, IconSelect},
   data() {
     return {
       // 遮罩层
@@ -321,13 +324,13 @@ export default {
       // 表单校验
       rules: {
         menuName: [
-          { required: true, message: '菜单名称不能为空', trigger: 'blur' }
+          {required: true, message: '菜单名称不能为空', trigger: 'blur'}
         ],
         orderNum: [
-          { required: true, message: '菜单顺序不能为空', trigger: 'blur' }
+          {required: true, message: '菜单顺序不能为空', trigger: 'blur'}
         ],
         path: [
-          { required: true, message: '路由地址不能为空', trigger: 'blur' }
+          {required: true, message: '路由地址不能为空', trigger: 'blur'}
         ]
       }
     }
@@ -344,7 +347,7 @@ export default {
     getList() {
       this.loading = true
       listMenu(this.queryParams).then(response => {
-        this.menuList = this.handleTree(response.data, 'menuId')
+        this.menuList = this.handleTree(response.body.content, 'id')
         this.loading = false
       })
     },
@@ -363,8 +366,8 @@ export default {
     getTreeselect() {
       listMenu().then(response => {
         this.menuOptions = []
-        const menu = { menuId: 0, menuName: '主类目', children: [] }
-        menu.children = this.handleTree(response.data, 'menuId')
+        const menu = {menuId: 0, menuName: '主类目', children: []}
+        menu.children = this.handleTree(response.body.content, 'id')
         this.menuOptions.push(menu)
       })
     },
@@ -392,6 +395,12 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.getList()
+      this.loading=true
+      listMenu(this.menuName).then(response=>{
+        this.menuList = this.handleTree(response.body.content, 'menuName')
+        this.loading = false
+      })
+
     },
     /** 重置按钮操作 */
     resetQuery() {
@@ -429,7 +438,7 @@ export default {
       })
     },
     /** 提交按钮 */
-    submitForm: function() {
+    submitForm: function () {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.menuId != undefined) {
@@ -450,7 +459,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      this.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项？').then(function () {
         return delMenu(row.menuId)
       }).then(() => {
         this.getList()

@@ -3,9 +3,12 @@ import request from '@/utils/request'
 // 查询菜单列表
 export function listMenu(query) {
   return request({
-    url: '/system/menu/list',
+    url: '/sys-menu/page',
     method: 'get',
-    params: query
+    params: {
+      Q_EQ_menuName: query.menuName,
+      Q_EQ_visible: query.visible
+    }
   })
 }
 
@@ -16,6 +19,7 @@ export function getMenu(menuId) {
     method: 'get'
   })
 }
+
 
 // 查询菜单下拉树结构
 export function treeselect() {
@@ -36,7 +40,7 @@ export function roleMenuTreeselect(roleId) {
 // 新增菜单
 export function addMenu(data) {
   return request({
-    url: '/system/menu',
+    url: '/sys-menu',
     method: 'post',
     data: data
   })
@@ -45,7 +49,7 @@ export function addMenu(data) {
 // 修改菜单
 export function updateMenu(data) {
   return request({
-    url: '/system/menu',
+    url: '/sys-menu',
     method: 'put',
     data: data
   })
