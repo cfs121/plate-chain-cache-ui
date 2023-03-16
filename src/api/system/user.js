@@ -30,7 +30,7 @@ export function getUser(userId) {
 // 新增用户
 export function addUser(data) {
   return request({
-    url: '/system/user',
+    url: '/sys-user',
     method: 'post',
     data: data
   })
@@ -39,7 +39,7 @@ export function addUser(data) {
 // 修改用户
 export function updateUser(data) {
   return request({
-    url: '/system/user',
+    url: '/sys-user',
     method: 'put',
     data: data
   })
@@ -48,7 +48,7 @@ export function updateUser(data) {
 // 删除用户
 export function delUser(userId) {
   return request({
-    url: '/system/user/' + userId,
+    url: '/sys-user/' + userId,
     method: 'delete'
   })
 }
