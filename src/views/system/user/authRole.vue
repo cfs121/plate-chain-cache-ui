@@ -18,25 +18,25 @@
 
     <h4 class="form-header h4">角色信息</h4>
     <el-table v-loading="loading" :row-key="getRowKey" @row-click="clickRow" ref="table"
-              @selection-change="handleSelectionChange" :data="roles.slice((pageNum-1)*pageSize,pageNum*pageSize)"
+              @selection-change="handleSelectionChange" :data="roles.slice((pageNumber-1)*pageSize,pageNumber*pageSize)"
     >
       <el-table-column label="序号" type="index" align="center">
         <template slot-scope="scope">
-          <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
+          <span>{{ (pageNumber - 1) * pageSize + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
       <el-table-column type="selection" :reserve-selection="true" width="55"></el-table-column>
-      <el-table-column label="角色编号" align="center" prop="roleId"/>
+      <el-table-column label="角色编号" align="center" prop="id"/>
       <el-table-column label="角色名称" align="center" prop="roleName"/>
       <el-table-column label="权限字符" align="center" prop="roleKey"/>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <el-table-column label="创建时间" align="center" prop="createdTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.createdTime) }}</span>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="pageNum" :limit.sync="pageSize"/>
+    <pagination v-show="total>0" :total="total" :page.sync="pageNumber" :limit.sync="pageSize"/>
 
     <el-form label-width="100px">
       <el-form-item style="text-align: center;margin-left:-120px;margin-top:30px;">
@@ -58,7 +58,7 @@ export default {
       loading: true,
       // 分页信息
       total: 0,
-      pageNum: 1,
+      pageNumber: 1,
       pageSize: 10,
       // 选中角色编号
       roleIds: [],
@@ -73,8 +73,8 @@ export default {
     if (userId) {
       this.loading = true
       getAuthRole(userId).then((response) => {
-        this.form = response.user
-        this.roles = response.roles
+        this.form = response.body.user
+        this.roles = response.body.roles
         this.total = this.roles.length
         this.$nextTick(() => {
           this.roles.forEach((row) => {
@@ -102,7 +102,7 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      const userId = this.form.userId
+      const userId = this.form.id
       const roleIds = this.roleIds.join(',')
       updateAuthRole({ userId: userId, roleIds: roleIds }).then((response) => {
         this.$modal.msgSuccess('授权成功')
