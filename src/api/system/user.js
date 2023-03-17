@@ -11,11 +11,13 @@ export function listUser(params) {
 }
 
 // 获取用户详情
-export function getUserInfo(query) {
+export function getUserInfo(userId) {
   return request({
     url: '/sys-user/info',
     method: 'get',
-    params: query
+    params:{
+      userId: userId
+    }
   })
 }
 

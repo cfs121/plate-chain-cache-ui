@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { addUser, updateUser, deptTreeSelect } from '@/api/system/user'
+import { addUser, updateUser, deptTreeSelect, getUserInfo } from '@/api/system/user'
 import { addEditForm } from '@/mixin/add-edit-form'
 import Treeselect from '@riophae/vue-treeselect'
 
@@ -42,8 +42,7 @@ export default {
   data() {
     return {
       title: '用户',
-      postOptions: [],
-      roleOptions: [],
+
       deptOptions: [],
       formDesc: {
         nickName: {
@@ -128,10 +127,11 @@ export default {
           type: 'select',
           label: '岗位',
           required: true,
-          options: () => {
-            return this.postOptions.map((item) => ({
+          options: async() => {
+            const { body: { posts  } } = await getUserInfo()
+            return posts.map((item) => ({
               text: item.postName,
-              value: Number(item.postId),
+              value: Number(item.id),
               disabled: item.status == 1
             }))
           }
@@ -141,10 +141,11 @@ export default {
           type: 'select',
           label: '角色',
           required: true,
-          options: () => {
-            return this.roleOptions.map((item) => ({
+          options: async() => {
+            const { body: { roles } } = await getUserInfo()
+            return roles.map((item) => ({
               text: item.roleName,
-              value: Number(item.roleId)
+              value: Number(item.id)
             }))
           }
         },
@@ -201,6 +202,7 @@ export default {
       }
     },
     async handleSubmit() {
+
       const apiMap = {
         1: addUser,
         2: updateUser

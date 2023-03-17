@@ -134,7 +134,7 @@ import {
   delUser,
   resetUserPwd,
   changeUserStatus,
-  deptTreeSelect
+  deptTreeSelect, getUserInfo
 } from '@/api/system/user'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { gridTable } from '@/mixin/grid-table'
@@ -180,7 +180,7 @@ export default {
             title: '部门'
           },
           {
-            field: 'phonenumber',
+            field: 'phoneNumber',
             title: '手机号码'
           },
           {
