@@ -114,11 +114,11 @@
 
     <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="字典编号" align="center" prop="dictId"/>
+      <el-table-column label="字典编号" align="center" prop="id"/>
       <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true"/>
       <el-table-column label="字典类型" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <router-link :to="'/system/dict-data/index/' + scope.row.dictId" class="link-type">
+          <router-link :to="'/system/dict-data/index/' + scope.row.id" class="link-type">
             <span>{{ scope.row.dictType }}</span>
           </router-link>
         </template>
@@ -129,9 +129,9 @@
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"/>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <el-table-column label="创建时间" align="center" prop="createdTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.createdTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -159,7 +159,7 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.pageNum"
+      :page.sync="queryParams.pageNumber"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
@@ -253,7 +253,7 @@ export default {
       this.loading = true
       listType(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.typeList = response.body.content
-          this.total = response.total
+          this.total = response.body.total
           this.loading = false
         }
       )
@@ -266,7 +266,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        dictId: undefined,
+        id: undefined,
         dictName: undefined,
         dictType: undefined,
         status: '0',
@@ -276,7 +276,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.queryParams.pageNumber = 1
       this.getList()
     },
     /** 重置按钮操作 */
@@ -293,16 +293,16 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.dictId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      const dictId = row.dictId || this.ids
-      getType(dictId).then(response => {
-        this.form = response.data
+      const id = row.id || this.ids
+      getType(id).then(response => {
+        this.form = response.body
         this.open = true
         this.title = '修改字典类型'
       })
@@ -311,7 +311,7 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.dictId != undefined) {
+          if (this.form.id != undefined) {
             updateType(this.form).then(response => {
               this.$modal.msgSuccess('修改成功')
               this.open = false
@@ -329,9 +329,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const dictIds = row.dictId || this.ids
-      this.$modal.confirm('是否确认删除字典编号为"' + dictIds + '"的数据项？').then(function() {
-        return delType(dictIds)
+      const ids = row.id || this.ids
+      this.$modal.confirm('是否确认删除字典编号为"' + ids + '"的数据项？').then(function() {
+        return delType(ids)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('删除成功')
