@@ -160,9 +160,8 @@ export function handleTree(data, id, parentId, children) {
     childrenList: children || 'children'
   }
 
-  var childrenListMap = {}
-  var nodeIds = {}
-  var tree = []
+  const childrenListMap = {};
+  const nodeIds = {};
 
   for (let d of data) {
     let parentId = d[config.parentId]
@@ -172,7 +171,7 @@ export function handleTree(data, id, parentId, children) {
     nodeIds[d[config.id]] = d
     childrenListMap[parentId].push(d)
   }
-
+  const tree = [];
   for (let d of data) {
     let parentId = d[config.parentId]
     if (nodeIds[parentId] == null) {

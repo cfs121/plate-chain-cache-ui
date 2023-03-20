@@ -367,8 +367,7 @@ export default {
       listMenu({}).then(response => {
         this.menuOptions = []
         const menu = {id: 0, menuName: '主类目', children: []}
-        menu.children = this.handleTree(response.body.content, 'id')
-        debugger
+        menu.children = this.handleTree(response.body, 'id')
         this.menuOptions.push(menu)
       })
     },
@@ -410,6 +409,7 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd(row) {
+
       this.reset()
       this.getTreeselect()
       if (row != null && row.id) {
@@ -419,6 +419,7 @@ export default {
       }
       this.open = true
       this.title = '添加菜单'
+
     },
     /** 展开/折叠操作 */
     toggleExpandAll() {
@@ -432,8 +433,9 @@ export default {
     handleUpdate(row) {
       this.reset()
       this.getTreeselect()
-      getMenu(row.id).then(response => {
-        this.form = response.data
+      updateMenu(row).then(response => {
+
+        this.form = response.body
         this.open = true
         this.title = '修改菜单'
       })

@@ -18,7 +18,7 @@ export function listMenu(query) {
 // 查询菜单详细
 export function getMenu(menuId) {
   return request({
-    url: '/system/menu/' + menuId,
+    url: '/sys-menu/' + menuId,
     method: 'get'
   })
 }
@@ -26,7 +26,7 @@ export function getMenu(menuId) {
 // 查询菜单下拉树结构
 export function treeselect() {
   return request({
-    url: '/system/menu/treeselect',
+    url: '/sys-menu/treeselect',
     method: 'get'
   })
 }
@@ -60,7 +60,7 @@ export function updateMenu(data) {
 // 删除菜单
 export function delMenu(menuId) {
   return request({
-    url: '/system/menu/' + menuId,
+    url: '/sys-menu/' + menuId,
     method: 'delete'
   })
 }
