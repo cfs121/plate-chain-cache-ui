@@ -6,6 +6,8 @@ export function listConfig(query) {
     url: '/sys-config/page',
     method: 'get',
     params: {
+      pageNumber: query.pageNumber,
+      pageSize: query.pageSize,
       Q_EQ_configName: query.configName,
       Q_EQ_configKey: query.configKey,
       Q_EQ_configType: query.configType,

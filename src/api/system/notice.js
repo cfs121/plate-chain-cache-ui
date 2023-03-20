@@ -3,16 +3,22 @@ import request from '@/utils/request'
 // 查询公告列表
 export function listNotice(query) {
   return request({
-    url: '/system/notice/list',
+    url: '/sys-notice/page',
     method: 'get',
-    params: query
+    params: {
+      pageNumber: query.pageNumber,
+      pageSize: query.pageSize,
+      Q_EQ_noticeTitle: query.noticeTitle,
+      Q_EQ_createdBy: query.createdBy,
+      Q_EQ_noticeType: query.noticeType
+    }
   })
 }
 
 // 查询公告详细
-export function getNotice(noticeId) {
+export function getNotice(id) {
   return request({
-    url: '/system/notice/' + noticeId,
+    url: '/sys-notice/' + id,
     method: 'get'
   })
 }
@@ -20,7 +26,7 @@ export function getNotice(noticeId) {
 // 新增公告
 export function addNotice(data) {
   return request({
-    url: '/system/notice',
+    url: '/sys-notice',
     method: 'post',
     data: data
   })
@@ -29,16 +35,16 @@ export function addNotice(data) {
 // 修改公告
 export function updateNotice(data) {
   return request({
-    url: '/system/notice',
+    url: '/sys-notice',
     method: 'put',
     data: data
   })
 }
 
 // 删除公告
-export function delNotice(noticeId) {
+export function delNotice(id) {
   return request({
-    url: '/system/notice/' + noticeId,
+    url: '/sys-notice/' + id,
     method: 'delete'
   })
 }

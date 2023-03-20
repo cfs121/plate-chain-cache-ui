@@ -6,6 +6,8 @@ export function listPost(query) {
     url: '/sys-post/page',
     method: 'get',
     params: {
+      pageNumber: query.pageNumber,
+      pageSize: query.pageSize,
       Q_EQ_postCode: query.postCode,
       Q_EQ_postName: query.postName,
       Q_EQ_status: query.status

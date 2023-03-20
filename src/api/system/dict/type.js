@@ -6,6 +6,8 @@ export function listType(query) {
     url: '/sys-dict-type/page',
     method: 'get',
     params: {
+      pageNumber: query.pageNumber,
+      pageSize: query.pageSize,
       Q_EQ_dictName: query.dictName,
       Q_EQ_dictType: query.dictType,
       Q_EQ_status: query.status,
