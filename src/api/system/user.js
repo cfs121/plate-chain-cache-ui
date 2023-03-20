@@ -118,7 +118,7 @@ export function uploadAvatar(data) {
 // 查询授权角色
 export function getAuthRole(userId) {
   return request({
-    url: '/sys-user/auth-role/' + userId,
+    url: '/sys-user-role/' + userId,
     method: 'get'
   })
 }
@@ -126,7 +126,7 @@ export function getAuthRole(userId) {
 // 保存授权角色
 export function updateAuthRole(data) {
   return request({
-    url: '/sys-user/auth-role',
+    url: '/sys-user-role',
     method: 'put',
     params: data
   })

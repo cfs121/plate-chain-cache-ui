@@ -94,11 +94,11 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.roleIds = selection.map((item) => item.roleId)
+      this.roleIds = selection.map((item) => item.id)
     },
     // 保存选中的数据编号
     getRowKey(row) {
-      return row.roleId
+      return row.id
     },
     /** 提交按钮 */
     submitForm() {
