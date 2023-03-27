@@ -5,7 +5,14 @@ export function listRole(query) {
   return request({
     url: '/sys-role/page',
     method: 'get',
-    params: query
+    params: {
+      pageNumber: query.pageNumber,
+      pageSize: query.pageSize,
+      Q_EQ_roleName: query.roleName,
+      Q_EQ_roleKey: query.roleKey,
+      Q_EQ_status: query.status,
+      Q_BT_createdTime: query.dataRange
+    }
   })
 }
 
@@ -38,7 +45,7 @@ export function updateRole(data) {
 // 角色数据权限
 export function dataScope(data) {
   return request({
-    url: '/system/role/dataScope',
+    url: '/sys-role/dataScope',
     method: 'put',
     data: data
   })
@@ -51,7 +58,7 @@ export function changeRoleStatus(id, status) {
     status
   }
   return request({
-    url: '/system/role/changeStatus',
+    url: '/sys-role/changeStatus',
     method: 'put',
     data: data
   })
@@ -68,7 +75,8 @@ export function delRole(id) {
 // 查询角色已授权用户列表
 export function allocatedUserList(query) {
   return request({
-    url: '/system/role/authUser/allocatedList',
+    url: '/sys-role/allocated-user/page',
+    //url: '/sys-role/authUser/allocatedList',
     method: 'get',
     params: query
   })
@@ -77,7 +85,7 @@ export function allocatedUserList(query) {
 // 查询角色未授权用户列表
 export function unallocatedUserList(query) {
   return request({
-    url: '/system/role/authUser/unallocatedList',
+    url: '/sys-role/unallocated-user/page',
     method: 'get',
     params: query
   })
@@ -113,7 +121,7 @@ export function authUserSelectAll(data) {
 // 根据角色ID查询部门树结构
 export function deptTreeSelect(id) {
   return request({
-    url: '/system/role/deptTree/' + id,
+    url: '/sys-role/dept-tree/' + id,
     method: 'get'
   })
 }

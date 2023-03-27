@@ -317,7 +317,7 @@ export default {
       // 查询参数
       queryParams: {
         menuName: undefined,
-        visible: undefined
+        status: undefined
       },
       // 表单参数
       form: {},

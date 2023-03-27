@@ -351,7 +351,7 @@ export default {
       form: {},
       defaultProps: {
         children: 'children',
-        label: 'menuName'
+        label: 'label'
       },
       // 表单校验
       rules: {
@@ -376,7 +376,7 @@ export default {
       this.loading = true
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.roleList = response.body.content
-          this.total = response.total
+          this.total = response.body.total
           this.loading = false
         }
       )
@@ -408,14 +408,14 @@ export default {
     /** 根据角色ID查询菜单树结构 */
     getRoleMenuTreeselect(id) {
       return roleMenuTreeselect(id).then(response => {
-        this.menuOptions = response.body
+        this.menuOptions = response.body.menus
         return response
       })
     },
     /** 根据角色ID查询部门树结构 */
     getDeptTree(id) {
       return deptTreeSelect(id).then(response => {
-        this.deptOptions = response.depts
+        this.deptOptions = response.body.depts
         return response
       })
     },
@@ -540,7 +540,7 @@ export default {
         this.open = true
         this.$nextTick(() => {
           roleMenu.then(res => {
-            let checkedKeys = res.checkedKeys
+            let checkedKeys = res.body.checkedKeys
             checkedKeys.forEach((v) => {
               this.$nextTick(() => {
                 this.$refs.menu.setChecked(v, true, false)
@@ -562,11 +562,11 @@ export default {
       this.reset()
       const deptTreeSelect = this.getDeptTree(row.id)
       getRole(row.id).then(response => {
-        this.form = response.data
+        this.form = response.body
         this.openDataScope = true
         this.$nextTick(() => {
           deptTreeSelect.then(res => {
-            this.$refs.dept.setCheckedKeys(res.checkedKeys)
+            this.$refs.dept.setCheckedKeys(res.body.checkedKeys)
           })
         })
         this.title = '分配数据权限'

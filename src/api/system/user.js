@@ -48,10 +48,11 @@ export function updateUser(data) {
 }
 
 // 删除用户
-export function delUser(userId) {
+export function delUser(ids) {
   return request({
-    url: '/sys-user/' + userId,
-    method: 'delete'
+    url: '/sys-user/',
+    method: 'delete',
+    data: ids
   })
 }
 
