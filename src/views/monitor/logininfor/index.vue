@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="登录地址" prop="ipaddr">
+      <el-form-item label="登录地址" prop="ipAddr">
         <el-input
-          v-model="queryParams.ipaddr"
+          v-model="queryParams.ipAddr"
           placeholder="请输入登录地址"
           clearable
           style="width: 240px;"
@@ -106,11 +106,11 @@
               :default-sort="defaultSort" @sort-change="handleSortChange"
     >
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="访问编号" align="center" prop="infoId"/>
+      <el-table-column label="访问编号" align="center" prop="id"/>
       <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" sortable="custom"
                        :sort-orders="['descending', 'ascending']"
       />
-      <el-table-column label="登录地址" align="center" prop="ipaddr" width="130" :show-overflow-tooltip="true"/>
+      <el-table-column label="登录地址" align="center" prop="ipAddr" width="130" :show-overflow-tooltip="true"/>
       <el-table-column label="登录地点" align="center" prop="loginLocation" :show-overflow-tooltip="true"/>
       <el-table-column label="浏览器" align="center" prop="browser" :show-overflow-tooltip="true"/>
       <el-table-column label="操作系统" align="center" prop="os"/>
@@ -140,10 +140,10 @@
 </template>
 
 <script>
-import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor'
+import { list, delLoginLog, cleanLoginLog, unlockLoginLog } from '@/api/monitor/logininfor'
 
 export default {
-  name: 'Logininfor',
+  name: 'LoginLog',
   dicts: ['sys_common_status'],
   data() {
     return {
@@ -171,7 +171,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        ipaddr: undefined,
+        ipAddr: undefined,
         userName: undefined,
         status: undefined
       }
@@ -185,8 +185,8 @@ export default {
     getList() {
       this.loading = true
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.list = response.rows
-          this.total = response.total
+          this.list = response.body.content
+          this.total = response.body.total
           this.loading = false
         }
       )
@@ -205,7 +205,7 @@ export default {
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.infoId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length != 1
       this.multiple = !selection.length
       this.selectName = selection.map(item => item.userName)
@@ -218,9 +218,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const infoIds = row.infoId || this.ids
-      this.$modal.confirm('是否确认删除访问编号为"' + infoIds + '"的数据项？').then(function() {
-        return delLogininfor(infoIds)
+      const ids = row.id || this.ids
+      this.$modal.confirm('是否确认删除访问编号为"' + ids + '"的数据项？').then(function() {
+        return delLoginLog(ids)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('删除成功')
@@ -230,7 +230,7 @@ export default {
     /** 清空按钮操作 */
     handleClean() {
       this.$modal.confirm('是否确认清空所有登录日志数据项？').then(function() {
-        return cleanLogininfor()
+        return cleanLoginLog()
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('清空成功')
@@ -241,7 +241,7 @@ export default {
     handleUnlock() {
       const username = this.selectName
       this.$modal.confirm('是否确认解锁用户"' + username + '"数据项?').then(function() {
-        return unlockLogininfor(username)
+        return unlockLoginLog(username)
       }).then(() => {
         this.$modal.msgSuccess('用户' + username + '解锁成功')
       }).catch(() => {

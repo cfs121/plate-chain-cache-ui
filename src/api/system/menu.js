@@ -3,14 +3,11 @@ import request from '@/utils/request'
 // 查询菜单列表
 export function listMenu(query) {
   return request({
-    url: '/sys-menu/page',
+    url: '/sys-menu/list',
     method: 'get',
     params: {
-      counted: false,
-      pageNumber: 1,
-      pageSize: 1000,
       Q_EQ_menuName: query.menuName,
-      Q_EQ_visible: query.visible
+      Q_EQ_status: query.status
     }
   })
 }

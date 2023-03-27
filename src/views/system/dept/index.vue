@@ -166,7 +166,7 @@
 </template>
 
 <script>
-import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept'
+import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild} from '@/api/system/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
@@ -236,7 +236,7 @@ export default {
     getList() {
       this.loading = true
       listDept(this.queryParams).then(response => {
-        this.deptList = this.handleTree(response.body.content, 'id')
+        this.deptList = this.handleTree(response.body, 'id')
         this.loading = false
       })
     },
@@ -287,8 +287,8 @@ export default {
       }
       this.open = true
       this.title = '添加部门'
-      listDept().then(response => {
-        this.deptOptions = this.handleTree(response.body.content, 'id')
+      listDept({}).then(response => {
+        this.deptOptions = this.handleTree(response.body, 'id')
       })
     },
     /** 展开/折叠操作 */
@@ -307,16 +307,15 @@ export default {
         this.open = true
         this.title = '修改部门'
 
-        listDept({}).then(response => {
-          this.deptOptions = this.handleTree(response.body.content, 'id')
+
+        listDeptExcludeChild(row.id).then(response => {
+          console.log(response)
+          this.deptOptions = this.handleTree(response.body, 'id')
+          if (this.deptOptions.length == 0) {
+            const noResultsOptions = { id: this.form.parentId, children: [] }
+            this.deptOptions.push(noResultsOptions)
+          }
         })
-        // listDeptExcludeChild(row.id).then(response => {
-        //   this.deptOptions = this.handleTree(response.body.content, 'id')
-        //   if (this.deptOptions.length == 0) {
-        //     const noResultsOptions = { id: this.form.parentId, deptName: this.form.parentName, children: [] }
-        //     this.deptOptions.push(noResultsOptions)
-        //   }
-        // })
       })
     },
     /** 提交按钮 */
@@ -341,7 +340,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      this.$modal.confirm('是否确认删除名称为"' + row.deptName + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除名称为"' + row.deptName + '"的部门及其子部门？').then(function() {
         return delDept(row.id)
       }).then(() => {
         this.getList()
