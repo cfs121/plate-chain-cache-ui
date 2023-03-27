@@ -1,5 +1,6 @@
 import axios from 'axios'
-const { Message, MessageBox, Notification, Loading } = require("element-ui");
+
+const { Message, MessageBox, Notification, Loading } = require('element-ui')
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
@@ -110,9 +111,24 @@ service.interceptors.response.use(res => {
   let { message } = error
 
   const status = error.response.status
-  if(status === 401 || status === 500) {
-    message = error.response.data.body;
-  }else if (message == 'Network Error') {
+  if (status === 401) {
+    if (!isRelogin.show) {
+      isRelogin.show = true
+      MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+        confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        isRelogin.show = false
+        store.dispatch('LogOut').then(() => {
+          location.href = '/index'
+        })
+      }).catch(() => {
+        isRelogin.show = false
+      })
+    }
+    return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+  } else if (status === 500) {
+    message = error.response.data.body
+  } else if (message == 'Network Error') {
     message = '后端接口连接异常'
   } else if (message.includes('timeout')) {
     message = '系统接口请求超时'
@@ -132,7 +148,7 @@ export function download(url, params, filename, config) {
     transformRequest: [(params) => {
       return tansParams(params)
     }], headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, responseType: 'blob', ...config
-  }).then(async (data) => {
+  }).then(async(data) => {
     const isBlob = blobValidate(data)
     if (isBlob) {
       const blob = new Blob([data])
