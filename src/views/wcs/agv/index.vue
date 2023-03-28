@@ -65,10 +65,8 @@ import {
   getAgv,
   delAgv
 } from '@/api/wcs/agv'
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { gridTable } from '@/mixin/grid-table'
 import AddEditForm from './components/add-edit-form'
-import { getUser } from '@/api/system/user'
 
 export default {
   name: 'Agv',
@@ -77,7 +75,6 @@ export default {
   mixins: [gridTable],
   data() {
     return {
-      deptId: '',
       fetch: {
         getRowData: getAgv,
         delete: delAgv,
@@ -208,7 +205,6 @@ export default {
     workFormParams(params) {
       return {
         ...params,
-        Q_EQ_deptId: this.deptId,
         Q_BT_createdTime: params.Q_BT_createdTime && params.Q_BT_createdTime.join(',')
       }
     },
@@ -220,7 +216,6 @@ export default {
       return data.label.indexOf(value) !== -1
     },
     handleNodeClick(data) {
-      this.deptId = data.id
       this.fetchGiridData()
     }
   }
