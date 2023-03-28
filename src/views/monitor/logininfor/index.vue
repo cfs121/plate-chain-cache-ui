@@ -132,7 +132,7 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.pageNum"
+      :page.sync="queryParams.pageNumber"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
@@ -169,7 +169,7 @@ export default {
       defaultSort: { prop: 'loginTime', order: 'descending' },
       // 查询参数
       queryParams: {
-        pageNum: 1,
+        pageNumber: 1,
         pageSize: 10,
         ipAddr: undefined,
         userName: undefined,
@@ -193,14 +193,14 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.queryParams.pageNumber = 1
       this.getList()
     },
     /** 重置按钮操作 */
     resetQuery() {
       this.dateRange = []
       this.resetForm('queryForm')
-      this.queryParams.pageNum = 1
+      this.queryParams.pageNumber = 1
       this.$refs.tables.sort(this.defaultSort.prop, this.defaultSort.order)
     },
     /** 多选框选中数据 */

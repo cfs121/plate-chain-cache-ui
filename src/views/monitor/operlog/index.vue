@@ -109,7 +109,7 @@
               :default-sort="defaultSort" @sort-change="handleSortChange"
     >
       <el-table-column type="selection" width="50" align="center"/>
-      <el-table-column label="日志编号" align="center" prop="operId"/>
+      <el-table-column label="日志编号" align="center" prop="id"/>
       <el-table-column label="系统模块" align="center" prop="title" :show-overflow-tooltip="true"/>
       <el-table-column label="操作类型" align="center" prop="businessType">
         <template slot-scope="scope">
@@ -157,7 +157,7 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.pageNum"
+      :page.sync="queryParams.pageNumber"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
@@ -188,8 +188,8 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="操作状态：">
-              <div v-if="form.status === 0">正常</div>
-              <div v-else-if="form.status === 1">失败</div>
+              <div v-if="form.status === '0'">正常</div>
+              <div v-else-if="form.status === '1'">失败</div>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -240,7 +240,7 @@ export default {
       form: {},
       // 查询参数
       queryParams: {
-        pageNum: 1,
+        pageNumber: 1,
         pageSize: 10,
         title: undefined,
         operName: undefined,
@@ -253,12 +253,12 @@ export default {
     this.getList()
   },
   methods: {
-    /** 查询登录日志 */
+    /** 查询操作日志 */
     getList() {
       this.loading = true
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.list = response.rows
-          this.total = response.total
+          this.list = response.body.content
+          this.total = response.body.total
           this.loading = false
         }
       )
@@ -269,19 +269,19 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.queryParams.pageNumber = 1
       this.getList()
     },
     /** 重置按钮操作 */
     resetQuery() {
       this.dateRange = []
       this.resetForm('queryForm')
-      this.queryParams.pageNum = 1
+      this.queryParams.pageNumber = 1
       this.$refs.tables.sort(this.defaultSort.prop, this.defaultSort.order)
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.operId)
+      this.ids = selection.map(item => item.id)
       this.multiple = !selection.length
     },
     /** 排序触发事件 */
@@ -297,7 +297,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const operIds = row.operId || this.ids
+      const operIds = row.id || this.ids
       this.$modal.confirm('是否确认删除日志编号为"' + operIds + '"的数据项？').then(function() {
         return delOperlog(operIds)
       }).then(() => {
