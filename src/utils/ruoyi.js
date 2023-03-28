@@ -60,6 +60,10 @@ export function addDateRange(params, dateRange, propName) {
   dateRange = Array.isArray(dateRange) ? dateRange : []
   if (dateRange.length) {
     search.dataRange = dateRange[0].length === 19 ? `${dateRange[0]},${dateRange[1]}` : `${dateRange[0]} 00:00:00,${dateRange[1]} 23:59:59`
+  } else {
+    if (search.dataRange) {
+      search.dataRange = undefined
+    }
   }
   return search
 }
@@ -69,7 +73,7 @@ export function selectDictLabel(datas, value) {
   if (value === undefined) {
     return ''
   }
-  var actions = []
+  const actions = []
   Object.keys(datas).some((key) => {
     if (datas[key].value == ('' + value)) {
       actions.push(datas[key].label)
@@ -90,11 +94,11 @@ export function selectDictLabels(datas, value, separator) {
   if (Array.isArray(value)) {
     value = value.join(',')
   }
-  var actions = []
-  var currentSeparator = undefined === separator ? ',' : separator
-  var temp = value.split(currentSeparator)
+  const actions = []
+  const currentSeparator = undefined === separator ? ',' : separator
+  const temp = value.split(currentSeparator)
   Object.keys(value.split(currentSeparator)).some((val) => {
-    var match = false
+    let match = false
     Object.keys(datas).some((key) => {
       if (datas[key].value == ('' + temp[val])) {
         actions.push(datas[key].label + currentSeparator)
@@ -110,9 +114,9 @@ export function selectDictLabels(datas, value, separator) {
 
 // 字符串格式化(%s )
 export function sprintf(str) {
-  var args = arguments, flag = true, i = 1
+  let args = arguments, flag = true, i = 1
   str = str.replace(/%s/g, function() {
-    var arg = args[i++]
+    const arg = args[i++]
     if (typeof arg === 'undefined') {
       flag = false
       return ''
