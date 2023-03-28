@@ -15,23 +15,28 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
         周期从
-        <el-input-number v-model="cycle01" :min="1" :max="30" /> -
-        <el-input-number v-model="cycle02" :min="cycle01 ? cycle01 + 1 : 2" :max="31" /> 日
+        <el-input-number v-model="cycle01" :min="1" :max="30"/>
+        -
+        <el-input-number v-model="cycle02" :min="cycle01 ? cycle01 + 1 : 2" :max="31"/>
+        日
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
         从
-        <el-input-number v-model="average01" :min="1" :max="30" /> 号开始，每
-        <el-input-number v-model="average02" :min="1" :max="31 - average01 || 1" /> 日执行一次
+        <el-input-number v-model="average01" :min="1" :max="30"/>
+        号开始，每
+        <el-input-number v-model="average02" :min="1" :max="31 - average01 || 1"/>
+        日执行一次
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="5">
         每月
-        <el-input-number v-model="workday" :min="1" :max="31" /> 号最近的那个工作日
+        <el-input-number v-model="workday" :min="1" :max="31"/>
+        号最近的那个工作日
       </el-radio>
     </el-form-item>
 

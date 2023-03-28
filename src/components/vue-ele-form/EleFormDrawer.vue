@@ -13,7 +13,7 @@
   >
     <!-- title 插槽 -->
     <template #title>
-      <slot :title="title" name="title" />
+      <slot :title="title" name="title"/>
     </template>
     <ele-form
       ref="ele-form"
@@ -28,7 +28,7 @@
     >
       <!-- 默认插槽 -->
       <template #default>
-        <slot />
+        <slot/>
       </template>
 
       <!-- 作用域插槽 -->
@@ -70,7 +70,8 @@
             :key="index"
             v-bind="btn.attrs"
             @click="btn.click"
-          >{{ btn.text }}</el-button>
+          >{{ btn.text }}
+          </el-button>
         </slot>
       </template>
     </ele-form>

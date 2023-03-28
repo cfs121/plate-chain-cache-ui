@@ -11,6 +11,7 @@
 
 <script>
 import formMixin from '../mixins/formMixin'
+
 export default {
   name: 'EleFormRate',
   mixins: [formMixin],

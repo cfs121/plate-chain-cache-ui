@@ -10,7 +10,7 @@
       v-if="desc.slots && desc.slots.default"
       #default
     >
-      <extend-slot :render="desc.slots.default" />
+      <extend-slot :render="desc.slots.default"/>
     </template>
   </el-button>
 </template>

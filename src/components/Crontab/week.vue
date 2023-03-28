@@ -22,7 +22,8 @@
             :label="item.value"
             :value="item.key"
             :disabled="item.key === 1"
-          >{{ item.value }}</el-option>
+          >{{ item.value }}
+          </el-option>
         </el-select>
         -
         <el-select v-model="cycle02" clearable>
@@ -32,7 +33,8 @@
             :label="item.value"
             :value="item.key"
             :disabled="item.key < cycle01 && item.key !== 1"
-          >{{ item.value }}</el-option>
+          >{{ item.value }}
+          </el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -40,9 +42,13 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
         第
-        <el-input-number v-model="average01" :min="1" :max="4" /> 周的星期
+        <el-input-number v-model="average01" :min="1" :max="4"/>
+        周的星期
         <el-select v-model="average02" clearable>
-          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{ item.value }}</el-option>
+          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{
+              item.value
+            }}
+          </el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -51,7 +57,10 @@
       <el-radio v-model="radioValue" :label="5">
         本月最后一个星期
         <el-select v-model="weekday" clearable>
-          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{ item.value }}</el-option>
+          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{
+              item.value
+            }}
+          </el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -60,7 +69,9 @@
       <el-radio v-model="radioValue" :label="6">
         指定
         <el-select v-model="checkboxList" clearable placeholder="可多选" multiple style="width:100%">
-          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="String(item.key)">{{ item.value }}</el-option>
+          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="String(item.key)">
+            {{ item.value }}
+          </el-option>
         </el-select>
       </el-radio>
     </el-form-item>

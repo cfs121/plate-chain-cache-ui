@@ -9,7 +9,7 @@
   >
     <!-- 组件内部插槽 -->
     <template v-for="(render, key) of slots" #[key]>
-      <extend-slot :key="key" :render="render" />
+      <extend-slot :key="key" :render="render"/>
     </template>
   </el-input>
 </template>

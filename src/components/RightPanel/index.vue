@@ -1,9 +1,9 @@
 <template>
   <div ref="rightPanel" :class="{ show: show }" class="rightPanel-container">
-    <div class="rightPanel-background" />
+    <div class="rightPanel-background"/>
     <div class="rightPanel">
       <div class="rightPanel-items">
-        <slot />
+        <slot/>
       </div>
     </div>
   </div>
@@ -81,69 +81,70 @@ export default {
 </script>
 
 <style>
-  .showRightPanel {
-    position: relative;
-    width: calc(100% - 15px);
-    overflow: hidden;
-  }
+.showRightPanel {
+  position: relative;
+  width: calc(100% - 15px);
+  overflow: hidden;
+}
 </style>
 
 <style lang="scss" scoped>
+.rightPanel-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+}
+
+.rightPanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 40000;
+  width: 100%;
+  max-width: 260px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transform: translate(100%);
+}
+
+.show {
+  transition: all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+
   .rightPanel-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    background: rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+    z-index: 20000;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
   }
 
   .rightPanel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 40000;
-    width: 100%;
-    max-width: 260px;
-    height: 100vh;
-    background: #fff;
-    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
-    transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
-    transform: translate(100%);
+    transform: translate(0);
   }
+}
 
-  .show {
-    transition: all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+.handle-button {
+  position: absolute;
+  left: -48px;
+  z-index: 0;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+  line-height: 48px;
+  color: #fff;
+  text-align: center;
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 6px 0 0 6px !important;
 
-    .rightPanel-background {
-      z-index: 20000;
-      width: 100%;
-      height: 100%;
-      opacity: 1;
-    }
-
-    .rightPanel {
-      transform: translate(0);
-    }
-  }
-
-  .handle-button {
-    position: absolute;
-    left: -48px;
-    z-index: 0;
-    width: 48px;
-    height: 48px;
+  i {
     font-size: 24px;
     line-height: 48px;
-    color: #fff;
-    text-align: center;
-    pointer-events: auto;
-    cursor: pointer;
-    border-radius: 6px 0 0 6px !important;
-    i {
-      font-size: 24px;
-      line-height: 48px;
-    }
   }
+}
 </style>

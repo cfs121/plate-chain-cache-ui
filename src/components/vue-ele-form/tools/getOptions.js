@@ -1,7 +1,6 @@
-
 // 将字符串转为对象
 // '男' => { 'text': '男', 'value': '男' }
-function changeToObject (str) {
+function changeToObject(str) {
   if (typeof str !== 'object') {
     return { text: str, value: str }
   } else {
@@ -12,7 +11,7 @@ function changeToObject (str) {
 // 转对象的key
 // 例如 option: { label: '女', val: 1 }, prop: { text: 'label', value: 'val' }
 // 转换后 -> option: { text: '女', value: 1 }
-function changeProp (option, prop) {
+function changeProp(option, prop) {
   if (prop) {
     return { text: option[prop.text], value: option[prop.value] }
   } else {
@@ -28,8 +27,8 @@ function changeProp (option, prop) {
 // 5.Promise: Promise必须返回数组
 // 6.Function: 函数必须返回数组
 /* eslint-disable */
-export default function getOptions ({ options, data, prop = { text: 'text', value: 'value' } }) {
-  return new Promise(async (resolve, reject) => {
+export default function getOptions({ options, data, prop = { text: 'text', value: 'value' } }) {
+  return new Promise(async(resolve, reject) => {
     // 数组类型
     if (Array.isArray(options)) {
       options = options

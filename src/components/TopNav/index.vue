@@ -10,8 +10,10 @@
         :key="index"
         :style="{'--theme': theme}"
         :index="item.path"
-      ><svg-icon :icon-class="item.meta.icon" />
-        {{ item.meta.title }}</el-menu-item>
+      >
+        <svg-icon :icon-class="item.meta.icon"/>
+        {{ item.meta.title }}
+      </el-menu-item>
     </template>
 
     <!-- 顶部菜单超出数量折叠 -->
@@ -22,8 +24,10 @@
           v-if="index >= visibleNumber"
           :key="index"
           :index="item.path"
-        ><svg-icon :icon-class="item.meta.icon" />
-          {{ item.meta.title }}</el-menu-item>
+        >
+          <svg-icon :icon-class="item.meta.icon"/>
+          {{ item.meta.title }}
+        </el-menu-item>
       </template>
     </el-submenu>
   </el-menu>

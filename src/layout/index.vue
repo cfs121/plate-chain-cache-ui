@@ -9,7 +9,7 @@
       class="drawer-bg"
       @click="handleClickOutside"
     />
-    <sidebar v-if="!sidebar.hide" class="sidebar-container" />
+    <sidebar v-if="!sidebar.hide" class="sidebar-container"/>
     <div
       :class="{
         hasTagsView: needTagsView && !isIndex,
@@ -18,12 +18,12 @@
       class="main-container"
     >
       <div :class="{ 'fixed-header': fixedHeader }">
-        <navbar />
-        <tags-view v-if="needTagsView && !isIndex" />
+        <navbar/>
+        <tags-view v-if="needTagsView && !isIndex"/>
       </div>
-      <app-main />
+      <app-main/>
       <right-panel>
-        <settings />
+        <settings/>
       </right-panel>
     </div>
   </div>
@@ -91,49 +91,49 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/assets/styles/mixin.scss';
-  @import '~@/assets/styles/variables.scss';
+@import '~@/assets/styles/mixin.scss';
+@import '~@/assets/styles/variables.scss';
 
-  .app-wrapper {
-    @include clearfix;
-    position: relative;
-    width: 100%;
-    height: 100%;
+.app-wrapper {
+  @include clearfix;
+  position: relative;
+  width: 100%;
+  height: 100%;
 
-    &.mobile.openSidebar {
-      position: fixed;
-      top: 0;
-    }
-  }
-
-  .drawer-bg {
-    position: absolute;
-    top: 0;
-    z-index: 999;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    opacity: 0.3;
-  }
-
-  .fixed-header {
+  &.mobile.openSidebar {
     position: fixed;
     top: 0;
-    right: 0;
-    z-index: 9;
-    width: calc(100% - #{$base-sidebar-width});
-    transition: width 0.28s;
   }
+}
 
-  .hideSidebar .fixed-header {
-    width: calc(100% - 54px);
-  }
+.drawer-bg {
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0.3;
+}
 
-  .sidebarHide .fixed-header {
-    width: 100%;
-  }
+.fixed-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
+  width: calc(100% - #{$base-sidebar-width});
+  transition: width 0.28s;
+}
 
-  .mobile .fixed-header {
-    width: 100%;
-  }
+.hideSidebar .fixed-header {
+  width: calc(100% - 54px);
+}
+
+.sidebarHide .fixed-header {
+  width: 100%;
+}
+
+.mobile .fixed-header {
+  width: 100%;
+}
 </style>

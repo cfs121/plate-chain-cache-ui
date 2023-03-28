@@ -4,7 +4,7 @@ import DataDict from '@/utils/dict'
 import { getDicts as getDicts } from '@/api/system/dict/data'
 
 function searchDictByKey(dict, key) {
-  if (key == null && key == "") {
+  if (key == null && key == '') {
     return null
   }
   try {
@@ -27,7 +27,9 @@ function install() {
         request(dictMeta) {
           const storeDict = searchDictByKey(store.getters.dict, dictMeta.type)
           if (storeDict) {
-            return new Promise(resolve => { resolve(storeDict) })
+            return new Promise(resolve => {
+              resolve(storeDict)
+            })
           } else {
             return new Promise((resolve, reject) => {
               getDicts(dictMeta.type).then(res => {
@@ -38,12 +40,12 @@ function install() {
               })
             })
           }
-        },
-      },
-    },
+        }
+      }
+    }
   })
 }
 
 export default {
-  install,
+  install
 }

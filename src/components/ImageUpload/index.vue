@@ -17,14 +17,14 @@
       :on-preview="handlePictureCardPreview"
       :class="{hide: this.fileList.length >= this.limit}"
     >
-      <i class="el-icon-plus" />
+      <i class="el-icon-plus"/>
     </el-upload>
 
     <!-- 上传提示 -->
     <div v-if="showTip" slot="tip" class="el-upload__tip">
       请上传
-      <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b> </template>
-      <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b> </template>
+      <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b></template>
+      <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join('/') }}</b></template>
       的文件
     </div>
 
@@ -210,17 +210,18 @@ export default {
 <style scoped lang="scss">
 // .el-upload--picture-card 控制加号部分
 ::v-deep.hide .el-upload--picture-card {
-    display: none;
+  display: none;
 }
+
 // 去掉动画效果
 ::v-deep .el-list-enter-active,
 ::v-deep .el-list-leave-active {
-    transition: all 0s;
+  transition: all 0s;
 }
 
 ::v-deep .el-list-enter, .el-list-leave-active {
-    opacity: 0;
-    transform: translateY(0);
+  opacity: 0;
+  transform: translateY(0);
 }
 </style>
 

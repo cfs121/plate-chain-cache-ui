@@ -286,16 +286,16 @@
 </template>
 
 <script>
-import {listMenu, getMenu, delMenu, addMenu, updateMenu} from '@/api/system/menu'
+import { listMenu, getMenu, delMenu, addMenu, updateMenu } from '@/api/system/menu'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import IconSelect from '@/components/IconSelect'
-import {getByMenuName} from "../../../api/system/menu";
+import { getByMenuName } from '../../../api/system/menu'
 
 export default {
   name: 'Menu',
   dicts: ['sys_show_hide', 'sys_normal_disable'],
-  components: {Treeselect, IconSelect},
+  components: { Treeselect, IconSelect },
   data() {
     return {
       // 遮罩层
@@ -324,13 +324,13 @@ export default {
       // 表单校验
       rules: {
         menuName: [
-          {required: true, message: '菜单名称不能为空', trigger: 'blur'}
+          { required: true, message: '菜单名称不能为空', trigger: 'blur' }
         ],
         orderNum: [
-          {required: true, message: '菜单顺序不能为空', trigger: 'blur'}
+          { required: true, message: '菜单顺序不能为空', trigger: 'blur' }
         ],
         path: [
-          {required: true, message: '路由地址不能为空', trigger: 'blur'}
+          { required: true, message: '路由地址不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -366,7 +366,7 @@ export default {
     getTreeselect() {
       listMenu({}).then(response => {
         this.menuOptions = []
-        const menu = {id: 0, menuName: '主类目', children: []}
+        const menu = { id: 0, menuName: '主类目', children: [] }
         menu.children = this.handleTree(response.body, 'id')
         this.menuOptions.push(menu)
       })
@@ -395,8 +395,8 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.getList()
-      this.loading=true
-      listMenu(this.menuName).then(response=>{
+      this.loading = true
+      listMenu(this.menuName).then(response => {
         this.menuList = this.handleTree(response.body, 'menuName')
         this.loading = false
       })
@@ -441,7 +441,7 @@ export default {
       })
     },
     /** 提交按钮 */
-    submitForm: function () {
+    submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
@@ -462,7 +462,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      this.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项？').then(function () {
+      this.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项？').then(function() {
         return delMenu(row.id)
       }).then(() => {
         this.getList()

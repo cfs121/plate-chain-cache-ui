@@ -31,7 +31,7 @@
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip text-center" slot="tip">
           <div class="el-upload__tip" slot="tip">
-            <el-checkbox v-model="updateSupport" />
+            <el-checkbox v-model="updateSupport"/>
             是否更新已经存在的用户数据
           </div>
           <span>仅允许导入xls、xlsx格式文件。</span>
@@ -40,7 +40,7 @@
             :underline="false"
             style="font-size: 12px; vertical-align: baseline"
             @click="importTemplate"
-            >下载模板
+          >下载模板
           </el-link>
         </div>
       </el-upload>
@@ -49,8 +49,8 @@
 </template>
 
 <script>
-import { addEditForm } from "@/mixin/add-edit-form";
-import { getToken } from "@/utils/auth";
+import { addEditForm } from '@/mixin/add-edit-form'
+import { getToken } from '@/utils/auth'
 
 export default {
   mixins: [addEditForm],
@@ -58,43 +58,43 @@ export default {
     return {
       isUploading: false,
       updateSupport: 0,
-      headers: { Authorization: "Bearer " + getToken() },
-      url: process.env.VUE_APP_BASE_API + "/system/user/importData",
+      headers: { Authorization: 'Bearer ' + getToken() },
+      url: process.env.VUE_APP_BASE_API + '/system/user/importData',
       formDesc: {
         slot: {
-          label: "",
-        },
-      },
-    };
+          label: ''
+        }
+      }
+    }
   },
   methods: {
     async handleOpen() {
-      this.initFormDesc();
+      this.initFormDesc()
     },
     async handleSubmit() {
-      this.$refs.upload.submit();
+      this.$refs.upload.submit()
     },
     handleProgress() {
-      this.isUploading = true;
+      this.isUploading = true
     },
     importTemplate() {
       this.download(
-        "system/user/importTemplate",
+        'system/user/importTemplate',
         {},
         `user_template_${new Date().getTime()}.xlsx`
-      );
+      )
     },
     handleFileSuccess(response) {
-      this.isUploading = false;
-      this.handleClosed();
-      this.$refs.upload.clearFiles();
+      this.isUploading = false
+      this.handleClosed()
+      this.$refs.upload.clearFiles()
       this.$alert(
         `<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>${response.msg}</div>`,
-        "导入结果",
+        '导入结果',
         { dangerouslyUseHTMLString: true }
-      );
-      this.$emit("success");
-    },
-  },
-};
+      )
+      this.$emit('success')
+    }
+  }
+}
 </script>

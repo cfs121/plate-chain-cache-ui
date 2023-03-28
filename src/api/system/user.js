@@ -15,7 +15,7 @@ export function getUserInfo(userId) {
   return request({
     url: '/sys-user/info',
     method: 'get',
-    params:{
+    params: {
       userId: userId
     }
   })

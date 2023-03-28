@@ -1,14 +1,14 @@
 import dayjs from 'dayjs'
 
 export default {
-  data () {
+  data() {
     return {
       type: 'Array',
       newValue: []
     }
   },
   methods: {
-    handleChange (value) {
+    handleChange(value) {
       let newVal = value
       if (newVal && Array.isArray(value) && !(this.attrs.valueFormat || this.attrs['value-format'])) {
         newVal = newVal.map(date => {
@@ -19,7 +19,7 @@ export default {
       this.$emit('input', newVal)
     },
     // 获取值: 数字(秒 -> 毫秒) / 字符串
-    getValue (value) {
+    getValue(value) {
       if (Array.isArray(value) && !(this.attrs.valueFormat || this.attrs['value-format'])) {
         value = value.map(date => {
           return typeof date === 'number' ? date * 1000 : date
@@ -28,7 +28,7 @@ export default {
       return value
     },
     // 自定义值, 在 formMixin 中使用到
-    customInit (value) {
+    customInit(value) {
       return this.getValue(value)
     }
   }

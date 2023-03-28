@@ -10,11 +10,11 @@
   >
     <!-- 组件内部插槽 -->
     <template v-if="scopedSlots.default" #default="data">
-      <extend-slot :data="data" :render="scopedSlots.default" />
+      <extend-slot :data="data" :render="scopedSlots.default"/>
     </template>
     <!-- 非作用域插槽 -->
     <template v-for="(render, key) of slots" #[key]>
-      <extend-slot :key="key" :render="render" />
+      <extend-slot :key="key" :render="render"/>
     </template>
   </el-transfer>
 </template>

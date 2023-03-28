@@ -6,7 +6,7 @@
     :preview-src-list="realSrcList"
   >
     <div slot="error" class="image-slot">
-      <i class="el-icon-picture-outline" />
+      <i class="el-icon-picture-outline"/>
     </div>
   </el-image>
 </template>
@@ -70,13 +70,16 @@ export default {
   background-color: #ebeef5;
   border-radius: 5px;
   box-shadow: 0 0 5px 1px #ccc;
+
   ::v-deep .el-image__inner {
     cursor: pointer;
     transition: all 0.3s;
+
     &:hover {
       transform: scale(1.2);
     }
   }
+
   ::v-deep .image-slot {
     display: flex;
     align-items: center;

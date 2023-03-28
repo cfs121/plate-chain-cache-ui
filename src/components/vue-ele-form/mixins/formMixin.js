@@ -94,8 +94,8 @@ export default {
           // eslint-disable-next-line
           console.error(
             `[vue-ele-form warn]: ${this.desc._label} 的${
-            // eslint-disable-next-line indent
-            isDefault ? '默认' : ''
+              // eslint-disable-next-line indent
+              isDefault ? '默认' : ''
             }值类型错误, 期望 [${this.type}] 类型, 但`,
             val,
             '不是该类型, 请检查'

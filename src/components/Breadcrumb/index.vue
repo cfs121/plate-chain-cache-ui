@@ -42,7 +42,7 @@ export default {
       const first = matched[0]
 
       if (!this.isDashboard(first)) {
-        matched = [{ path: '/index', meta: { title: '首页' }}].concat(
+        matched = [{ path: '/index', meta: { title: '首页' } }].concat(
           matched
         )
       }
@@ -72,15 +72,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .app-breadcrumb.el-breadcrumb {
-    display: inline-block;
-    margin-left: 8px;
-    font-size: 14px;
-    line-height: 63px;
+.app-breadcrumb.el-breadcrumb {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 14px;
+  line-height: 63px;
 
-    .no-redirect {
-      color: #97a8be;
-      cursor: text;
-    }
+  .no-redirect {
+    color: #97a8be;
+    cursor: text;
   }
+}
 </style>

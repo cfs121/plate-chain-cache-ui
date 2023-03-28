@@ -166,7 +166,7 @@
 </template>
 
 <script>
-import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild} from '@/api/system/dept'
+import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
@@ -306,7 +306,6 @@ export default {
         this.form = response.body
         this.open = true
         this.title = '修改部门'
-
 
         listDeptExcludeChild(row.id).then(response => {
           console.log(response)

@@ -17,7 +17,7 @@
         @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent.native="openMenu(tag, $event)"
       >
-        <svg-icon :icon-class="tag.meta.icon" />
+        <svg-icon :icon-class="tag.meta.icon"/>
         {{ tag.title }}
         <span
           v-if="!isAffix(tag)"
@@ -32,27 +32,27 @@
       class="contextmenu"
     >
       <li @click="refreshSelectedTag(selectedTag)">
-        <i class="el-icon-refresh-right" />
+        <i class="el-icon-refresh-right"/>
         刷新页面
       </li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <i class="el-icon-close" />
+        <i class="el-icon-close"/>
         关闭当前
       </li>
       <li @click="closeOthersTags">
-        <i class="el-icon-circle-close" />
+        <i class="el-icon-circle-close"/>
         关闭其他
       </li>
       <li v-if="!isFirstView()" @click="closeLeftTags">
-        <i class="el-icon-back" />
+        <i class="el-icon-back"/>
         关闭左侧
       </li>
       <li v-if="!isLastView()" @click="closeRightTags">
-        <i class="el-icon-right" />
+        <i class="el-icon-right"/>
         关闭右侧
       </li>
       <li @click="closeAllTags(selectedTag)">
-        <i class="el-icon-circle-close" />
+        <i class="el-icon-circle-close"/>
         全部关闭
       </li>
     </ul>
@@ -122,7 +122,7 @@ export default {
       try {
         return (
           this.selectedTag.fullPath === this.visitedViews[1].fullPath ||
-            this.selectedTag.fullPath === '/index'
+          this.selectedTag.fullPath === '/index'
         )
       } catch (err) {
         return false
@@ -132,7 +132,7 @@ export default {
       try {
         return (
           this.selectedTag.fullPath ===
-            this.visitedViews[this.visitedViews.length - 1].fullPath
+          this.visitedViews[this.visitedViews.length - 1].fullPath
         )
       } catch (err) {
         return false
@@ -215,7 +215,8 @@ export default {
       })
     },
     closeOthersTags() {
-      this.$router.push(this.selectedTag).catch(() => {})
+      this.$router.push(this.selectedTag).catch(() => {
+      })
       this.$tab.closeOtherPage(this.selectedTag).then(() => {
         this.moveToCurrentTag()
       })
@@ -271,90 +272,99 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .tags-view-container {
-    display: flex;
-    align-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 50px;
-    background: #fff;
-    border-bottom: 1px solid #d8dce5;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
-    .tags-view-wrapper {
-      .tags-view-item {
-        position: relative;
-        display: inline-block;
-        height: 34px;
-        padding: 0 8px;
-        margin-top: 4px;
-        margin-bottom: 4px;
-        margin-left: 5px;
-        font-size: 13px;
-        line-height: 32px;
-        color: #495060;
-        cursor: pointer;
-        background: #fff;
-        border: 1px solid #d8dce5;
-        border-radius: 3px;
-        &:first-of-type {
-          margin-left: 15px;
-        }
-        &:last-of-type {
-          margin-right: 15px;
-        }
-        &.active {
-          color: #fff;
-          background-color: #42b983;
-          border-color: #42b983;
-        }
-      }
-    }
-    .contextmenu {
-      position: absolute;
-      z-index: 3000;
-      padding: 5px 0;
-      margin: 0;
-      font-size: 12px;
-      font-weight: 400;
-      color: #333;
-      list-style-type: none;
+.tags-view-container {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 50px;
+  background: #fff;
+  border-bottom: 1px solid #d8dce5;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+
+  .tags-view-wrapper {
+    .tags-view-item {
+      position: relative;
+      display: inline-block;
+      height: 34px;
+      padding: 0 8px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+      margin-left: 5px;
+      font-size: 13px;
+      line-height: 32px;
+      color: #495060;
+      cursor: pointer;
       background: #fff;
-      border-radius: 4px;
-      box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
-      li {
-        padding: 7px 16px;
-        margin: 0;
-        cursor: pointer;
-        &:hover {
-          background: #eee;
-        }
+      border: 1px solid #d8dce5;
+      border-radius: 3px;
+
+      &:first-of-type {
+        margin-left: 15px;
+      }
+
+      &:last-of-type {
+        margin-right: 15px;
+      }
+
+      &.active {
+        color: #fff;
+        background-color: #42b983;
+        border-color: #42b983;
       }
     }
   }
+
+  .contextmenu {
+    position: absolute;
+    z-index: 3000;
+    padding: 5px 0;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
+    list-style-type: none;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+
+    li {
+      padding: 7px 16px;
+      margin: 0;
+      cursor: pointer;
+
+      &:hover {
+        background: #eee;
+      }
+    }
+  }
+}
 </style>
 
 <style lang="scss">
-  //reset element css of el-icon-close
-  .tags-view-wrapper {
-    .tags-view-item {
-      .el-icon-close {
-        width: 16px;
-        height: 16px;
-        font-size: 12px;
-        text-align: center;
-        vertical-align: 2px;
-        border-radius: 50%;
-        transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-        transform-origin: 100% 50%;
-        &:before {
-          display: inline-block;
-          vertical-align: -2px;
-        }
-        &:hover {
-          color: #fff;
-          background-color: #b4bccc;
-        }
+//reset element css of el-icon-close
+.tags-view-wrapper {
+  .tags-view-item {
+    .el-icon-close {
+      width: 16px;
+      height: 16px;
+      font-size: 12px;
+      text-align: center;
+      vertical-align: 2px;
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+      transform-origin: 100% 50%;
+
+      &:before {
+        display: inline-block;
+        vertical-align: -2px;
+      }
+
+      &:hover {
+        color: #fff;
+        background-color: #b4bccc;
       }
     }
   }
+}
 </style>

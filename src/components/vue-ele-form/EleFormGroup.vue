@@ -47,7 +47,7 @@
 
           <!-- 按钮插槽 -->
           <template #form-btn="{ btns }">
-            <slot :btns="btns" :name="item.groupId + '-form-btn'" />
+            <slot :btns="btns" :name="item.groupId + '-form-btn'"/>
           </template>
         </ele-form>
       </el-tab-pane>

@@ -12,16 +12,16 @@
       id="breadcrumb-container"
       class="breadcrumb-container"
     />
-    <top-nav v-if="topNav" id="topmenu-container" class="topmenu-container" />
+    <top-nav v-if="topNav" id="topmenu-container" class="topmenu-container"/>
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <search id="header-search" class="right-menu-item" />
+        <search id="header-search" class="right-menu-item"/>
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <screenfull id="screenfull" class="right-menu-item hover-effect"/>
 
         <el-tooltip content="布局大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
+          <size-select id="size-select" class="right-menu-item hover-effect"/>
         </el-tooltip>
       </template>
 
@@ -30,21 +30,21 @@
         trigger="hover"
       >
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar" />
+          <img :src="avatar" class="user-avatar"/>
           <span>
             {{ name }}
-            <i class="el-icon-arrow-down" />
+            <i class="el-icon-arrow-down"/>
           </span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/profile">
             <el-dropdown-item>
-              <i class="el-icon-user" style="font-size: 16px" />
+              <i class="el-icon-user" style="font-size: 16px"/>
               个人中心
             </el-dropdown-item>
           </router-link>
           <el-dropdown-item @click.native="setting = true">
-            <i class="el-icon-lollipop" style="font-size: 16px" />
+            <i class="el-icon-lollipop" style="font-size: 16px"/>
             <span>布局设置</span>
           </el-dropdown-item>
           <el-dropdown-item divided class="item__row" @click.native="logout">
@@ -62,18 +62,18 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import Breadcrumb from "@/components/Breadcrumb";
-import TopNav from "@/components/TopNav";
-import Hamburger from "@/components/Hamburger";
-import Screenfull from "@/components/Screenfull";
-import SizeSelect from "@/components/SizeSelect";
-import Search from "@/components/HeaderSearch";
-import RuoYiGit from "@/components/RuoYi/Git";
-import RuoYiDoc from "@/components/RuoYi/Doc";
-import settings from "@/settings";
-import "$ui/icons/exit";
-import { myDvIcon } from "$ui/dv";
+import { mapGetters } from 'vuex'
+import Breadcrumb from '@/components/Breadcrumb'
+import TopNav from '@/components/TopNav'
+import Hamburger from '@/components/Hamburger'
+import Screenfull from '@/components/Screenfull'
+import SizeSelect from '@/components/SizeSelect'
+import Search from '@/components/HeaderSearch'
+import RuoYiGit from '@/components/RuoYi/Git'
+import RuoYiDoc from '@/components/RuoYi/Doc'
+import settings from '@/settings'
+import '$ui/icons/exit'
+import { myDvIcon } from '$ui/dv'
 
 export default {
   components: {
@@ -85,48 +85,49 @@ export default {
     Search,
     RuoYiGit,
     RuoYiDoc,
-    myDvIcon,
+    myDvIcon
   },
   computed: {
-    ...mapGetters(["sidebar", "avatar", "device", "name"]),
+    ...mapGetters(['sidebar', 'avatar', 'device', 'name']),
     setting: {
       get() {
-        return this.$store.state.settings.showSettings;
+        return this.$store.state.settings.showSettings
       },
       set(val) {
-        this.$store.dispatch("settings/changeSetting", {
-          key: "showSettings",
-          value: val,
-        });
-      },
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'showSettings',
+          value: val
+        })
+      }
     },
     topNav: {
       get() {
-        return this.$store.state.settings.topNav;
-      },
-    },
+        return this.$store.state.settings.topNav
+      }
+    }
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch("app/toggleSideBar");
+      this.$store.dispatch('app/toggleSideBar')
     },
     logout() {
-      this.$confirm("确定注销并退出系统吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('确定注销并退出系统吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          this.$store.dispatch("LogOut").then(() => {
+          this.$store.dispatch('LogOut').then(() => {
             if (!settings.casEnable) {
-              location.href = "/index";
+              location.href = '/index'
             }
-          });
+          })
         })
-        .catch(() => {});
-    },
-  },
-};
+        .catch(() => {
+        })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -135,6 +136,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+
   .icon {
     position: relative !important;
     display: flex !important;
@@ -143,6 +145,7 @@ export default {
     font-size: 24px;
   }
 }
+
 .navbar {
   position: relative;
   height: 60px;
@@ -213,6 +216,7 @@ export default {
         display: flex;
         align-items: center;
         font-size: 14px;
+
         .user-avatar {
           width: 40px;
           height: 40px;
@@ -220,10 +224,11 @@ export default {
           cursor: pointer;
           border-radius: 100px;
         }
+
         .el-icon-arrow-down {
           font-weight: bold;
           transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), border 0s,
-            color 0.1s, font-size 0s;
+          color 0.1s, font-size 0s;
         }
 
         &:hover {
@@ -231,6 +236,7 @@ export default {
             transform: rotate(180deg);
           }
         }
+
         .el-icon-caret-bottom {
           position: absolute;
           top: 25px;

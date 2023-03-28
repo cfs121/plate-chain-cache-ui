@@ -11,10 +11,10 @@
   >
     <!-- 组件内部插槽 -->
     <template v-if="scopedSlots.default" #default="data">
-      <extend-slot :data="data" :render="scopedSlots.default" />
+      <extend-slot :data="data" :render="scopedSlots.default"/>
     </template>
     <template v-if="slots.empty">
-      <extend-slot :render="slots.empty" />
+      <extend-slot :render="slots.empty"/>
     </template>
   </el-cascader>
 </template>

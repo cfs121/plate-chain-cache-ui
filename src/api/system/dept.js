@@ -13,8 +13,6 @@ export function listDept(query) {
   })
 }
 
-
-
 // 查询部门列表（排除节点）
 export function listDeptExcludeChild(id) {
   return request({
@@ -23,7 +21,6 @@ export function listDeptExcludeChild(id) {
   })
 }
 
-
 // 查询部门详细
 export function getDept(id) {
   return request({
@@ -31,8 +28,6 @@ export function getDept(id) {
     method: 'get'
   })
 }
-
-
 
 // 新增部门
 export function addDept(data) {
@@ -58,7 +53,5 @@ export function delDept(id) {
     url: '/sys-dept/' + id,
     method: 'delete'
   })
-
-
 
 }

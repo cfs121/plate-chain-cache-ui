@@ -1,7 +1,7 @@
 <template>
   <el-dropdown trigger="click" @command="handleSetSize">
     <div>
-      <svg-icon class-name="size-icon" icon-class="size" />
+      <svg-icon class-name="size-icon" icon-class="size"/>
     </div>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item
@@ -18,6 +18,7 @@
 
 <script>
 import VXETable from 'vxe-table'
+
 export default {
   data() {
     return {

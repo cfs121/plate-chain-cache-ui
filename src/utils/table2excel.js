@@ -16,7 +16,8 @@
  */
 //table2excel.js
 import jQuery from 'jquery'
-;(function ($, window, document, undefined) {
+
+(function($, window, document, undefined) {
   var pluginName = 'table2excel',
     defaults = {
       exclude: '.noExl',
@@ -25,7 +26,7 @@ import jQuery from 'jquery'
       fileext: '.xls',
       exclude_img: true,
       exclude_links: true,
-      exclude_inputs: true,
+      exclude_inputs: true
     }
 
   // The actual plugin constructor
@@ -43,7 +44,7 @@ import jQuery from 'jquery'
   }
 
   Plugin.prototype = {
-    init: function () {
+    init: function() {
       var e = this
 
       var utf8Heading =
@@ -55,36 +56,36 @@ import jQuery from 'jquery'
           '<head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets>',
         sheet: {
           head: '<x:ExcelWorksheet><x:Name>',
-          tail: '</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>',
+          tail: '</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>'
         },
         mid: '</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>',
         table: {
           head: '<table>',
-          tail: '</table>',
+          tail: '</table>'
         },
-        foot: '</body></html>',
+        foot: '</body></html>'
       }
 
       e.tableRows = []
 
       // get contents of table except for exclude
-      $(e.element).each(function (i, o) {
+      $(e.element).each(function(i, o) {
         var tempRows = ''
         $(o)
           .find('tr')
           .not(e.settings.exclude)
-          .each(function (i, p) {
+          .each(function(i, p) {
             tempRows += '<tr>'
             $(p)
               .find('td,th')
               .not(e.settings.exclude)
-              .each(function (i, q) {
+              .each(function(i, q) {
                 // p did not exist, I corrected
 
                 var rc = {
                   rows: $(this).attr('rowspan'),
                   cols: $(this).attr('colspan'),
-                  flag: $(q).find(e.settings.exclude),
+                  flag: $(q).find(e.settings.exclude)
                 }
 
                 if (rc.flag.length > 0) {
@@ -92,10 +93,10 @@ import jQuery from 'jquery'
                 } else {
                   tempRows += '<td'
                   if (rc.rows > 0) {
-                    tempRows += " rowspan='" + rc.rows + "' "
+                    tempRows += ' rowspan=\'' + rc.rows + '\' '
                   }
                   if (rc.cols > 0) {
-                    tempRows += " colspan='" + rc.cols + "' "
+                    tempRows += ' colspan=\'' + rc.cols + '\' '
                   }
                   tempRows += '/>' + $(q).html() + '</td>'
                 }
@@ -123,15 +124,15 @@ import jQuery from 'jquery'
       e.tableToExcel(e.tableRows, e.settings.name, e.settings.sheetName)
     },
 
-    tableToExcel: function (table, name, sheetName) {
+    tableToExcel: function(table, name, sheetName) {
       var e = this,
         fullTemplate = '',
         i,
         link,
         a
 
-      e.format = function (s, c) {
-        return s.replace(/{(\w+)}/g, function (m, p) {
+      e.format = function(s, c) {
+        return s.replace(/{(\w+)}/g, function(m, p) {
           return c[p]
         })
       }
@@ -141,13 +142,13 @@ import jQuery from 'jquery'
       e.ctx = {
         worksheet: name || 'Worksheet',
         table: table,
-        sheetName: sheetName,
+        sheetName: sheetName
       }
 
       fullTemplate = e.template.head
 
       if ($.isArray(table)) {
-        Object.keys(table).forEach(function (i) {
+        Object.keys(table).forEach(function(i) {
           //fullTemplate += e.template.sheet.head + "{worksheet" + i + "}" + e.template.sheet.tail;
           fullTemplate +=
             e.template.sheet.head + sheetName + i + e.template.sheet.tail
@@ -157,7 +158,7 @@ import jQuery from 'jquery'
       fullTemplate += e.template.mid
 
       if ($.isArray(table)) {
-        Object.keys(table).forEach(function (i) {
+        Object.keys(table).forEach(function(i) {
           fullTemplate +=
             e.template.table.head + '{table' + i + '}' + e.template.table.tail
         })
@@ -195,7 +196,7 @@ import jQuery from 'jquery'
         }
       } else {
         var blob = new Blob([e.format(fullTemplate, e.ctx)], {
-          type: 'application/vnd.ms-excel',
+          type: 'application/vnd.ms-excel'
         })
         window.URL = window.URL || window.webkitURL
         link = window.URL.createObjectURL(blob)
@@ -211,7 +212,7 @@ import jQuery from 'jquery'
       }
 
       return true
-    },
+    }
   }
 
   function getFileName(settings) {
@@ -249,9 +250,9 @@ import jQuery from 'jquery'
     })
   }
 
-  $.fn[pluginName] = function (options) {
+  $.fn[pluginName] = function(options) {
     var e = this
-    e.each(function () {
+    e.each(function() {
       if (!$.data(e, 'plugin_' + pluginName)) {
         $.data(e, 'plugin_' + pluginName, new Plugin(this, options))
       }

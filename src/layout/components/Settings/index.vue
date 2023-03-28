@@ -8,7 +8,9 @@
         <div class="setting-drawer-block-checbox">
           <div class="setting-drawer-block-checbox-item" @click="handleTheme('theme-dark')">
             <img src="@/assets/images/dark.svg" alt="dark">
-            <div v-if="sideTheme === 'theme-dark'" class="setting-drawer-block-checbox-selectIcon" style="display: block;">
+            <div v-if="sideTheme === 'theme-dark'" class="setting-drawer-block-checbox-selectIcon"
+                 style="display: block;"
+            >
               <i aria-label="图标: check" class="anticon anticon-check">
                 <svg
                   viewBox="64 64 896 896"
@@ -29,7 +31,9 @@
           </div>
           <div class="setting-drawer-block-checbox-item" @click="handleTheme('theme-light')">
             <img src="@/assets/images/light.svg" alt="light">
-            <div v-if="sideTheme === 'theme-light'" class="setting-drawer-block-checbox-selectIcon" style="display: block;">
+            <div v-if="sideTheme === 'theme-light'" class="setting-drawer-block-checbox-selectIcon"
+                 style="display: block;"
+            >
               <i aria-label="图标: check" class="anticon anticon-check">
                 <svg
                   viewBox="64 64 896 896"
@@ -52,40 +56,40 @@
 
         <div class="drawer-item">
           <span>主题颜色</span>
-          <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange" />
+          <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange"/>
         </div>
       </div>
 
-      <el-divider />
+      <el-divider/>
 
       <h3 class="drawer-title">系统布局配置</h3>
 
       <div class="drawer-item">
         <span>开启 TopNav</span>
-        <el-switch v-model="topNav" class="drawer-switch" />
+        <el-switch v-model="topNav" class="drawer-switch"/>
       </div>
 
       <div class="drawer-item">
         <span>开启 Tags-Views</span>
-        <el-switch v-model="tagsView" class="drawer-switch" />
+        <el-switch v-model="tagsView" class="drawer-switch"/>
       </div>
 
       <div class="drawer-item">
         <span>固定 Header</span>
-        <el-switch v-model="fixedHeader" class="drawer-switch" />
+        <el-switch v-model="fixedHeader" class="drawer-switch"/>
       </div>
 
       <div class="drawer-item">
         <span>显示 Logo</span>
-        <el-switch v-model="sidebarLogo" class="drawer-switch" />
+        <el-switch v-model="sidebarLogo" class="drawer-switch"/>
       </div>
 
       <div class="drawer-item">
         <span>动态标题</span>
-        <el-switch v-model="dynamicTitle" class="drawer-switch" />
+        <el-switch v-model="dynamicTitle" class="drawer-switch"/>
       </div>
 
-      <el-divider />
+      <el-divider/>
 
       <el-button size="small" type="primary" plain icon="el-icon-document-add" @click="saveSetting">保存配置</el-button>
       <el-button size="small" plain icon="el-icon-refresh" @click="resetSetting">重置配置</el-button>
@@ -206,70 +210,70 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .setting-drawer-content {
-    .setting-drawer-title {
-      margin-bottom: 12px;
-      font-size: 14px;
-      font-weight: bold;
-      line-height: 22px;
-      color: rgba(0, 0, 0, .85);
-    }
+.setting-drawer-content {
+  .setting-drawer-title {
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 22px;
+    color: rgba(0, 0, 0, .85);
+  }
 
-    .setting-drawer-block-checbox {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      margin-top: 10px;
-      margin-bottom: 20px;
+  .setting-drawer-block-checbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+    margin-bottom: 20px;
 
-      .setting-drawer-block-checbox-item {
-        position: relative;
-        margin-right: 16px;
-        cursor: pointer;
-        border-radius: 2px;
+    .setting-drawer-block-checbox-item {
+      position: relative;
+      margin-right: 16px;
+      cursor: pointer;
+      border-radius: 2px;
 
-        img {
-          width: 48px;
-          height: 48px;
-        }
+      img {
+        width: 48px;
+        height: 48px;
+      }
 
-        .setting-drawer-block-checbox-selectIcon {
-          position: absolute;
-          top: 0;
-          right: 0;
-          width: 100%;
-          height: 100%;
-          padding-top: 15px;
-          padding-left: 24px;
-          font-size: 14px;
-          font-weight: 700;
-          color: #1890ff;
-        }
+      .setting-drawer-block-checbox-selectIcon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        padding-top: 15px;
+        padding-left: 24px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #1890ff;
       }
     }
   }
+}
 
-  .drawer-container {
-    padding: 24px;
+.drawer-container {
+  padding: 24px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-wrap: break-word;
+
+  .drawer-title {
+    margin-bottom: 12px;
     font-size: 14px;
-    line-height: 1.5;
-    word-wrap: break-word;
-
-    .drawer-title {
-      margin-bottom: 12px;
-      font-size: 14px;
-      line-height: 22px;
-      color: rgba(0, 0, 0, .85);
-    }
-
-    .drawer-item {
-      padding: 12px 0;
-      font-size: 14px;
-      color: rgba(0, 0, 0, .65);
-    }
-
-    .drawer-switch {
-      float: right
-    }
+    line-height: 22px;
+    color: rgba(0, 0, 0, .85);
   }
+
+  .drawer-item {
+    padding: 12px 0;
+    font-size: 14px;
+    color: rgba(0, 0, 0, .65);
+  }
+
+  .drawer-switch {
+    float: right
+  }
+}
 </style>

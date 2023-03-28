@@ -14,7 +14,7 @@ export default {
     // 所以暂无默认值
     labelPosition: String
   },
-  data () {
+  data() {
     return {
       // 默认标签位置
       defaultLabelPosition: 'right',
@@ -38,10 +38,10 @@ export default {
   },
   computed: {
     // inline模式 or isResponsive 设定为 false时不是响应式
-    computedIsResponsive () {
+    computedIsResponsive() {
       return !(this.inline || !this.isResponsive)
     },
-    computedLabelPosition () {
+    computedLabelPosition() {
       const labelPosition = this.labelPosition
 
       // 未指定labelPosition & 响应式模式 & 到达临界点
@@ -53,7 +53,7 @@ export default {
       }
     },
     // 根据父元素计算出栅格布局
-    colLayout () {
+    colLayout() {
       if (this.parentElWidth > 1920) {
         return 'xl'
       } else if (this.parentElWidth > 1200) {
@@ -66,7 +66,7 @@ export default {
         return 'xs'
       }
     },
-    computedSpan () {
+    computedSpan() {
       // 如果设置了span, 则使用设置的
       if (this.span) {
         return this.span
@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     // 监测 window resize, 获取 父元素宽度
-    handleWindowResize () {
+    handleWindowResize() {
       if (!this.$refs.wrapper) return
       let { clientWidth } = this.$refs.wrapper
       if (clientWidth === 0 && this.$refs.wrapper instanceof Element) {
@@ -93,7 +93,7 @@ export default {
     },
 
     // 处理响应式
-    handleChangeResponsive (val) {
+    handleChangeResponsive(val) {
       // span 响应式处理
       if (!this.span) {
         let span
@@ -119,7 +119,7 @@ export default {
     },
 
     // 开始响应式
-    startResponsive () {
+    startResponsive() {
       // 确保dom渲染完毕
       this.$nextTick(() => {
         // 监听事件
@@ -135,17 +135,17 @@ export default {
     },
 
     // 结束响应式
-    endResponsive () {
+    endResponsive() {
       window.removeEventListener('resize', this.resizeFn, false)
       this.$off('responsive', this.handleChangeResponsive)
     }
   },
-  mounted () {
+  mounted() {
     if (this.computedIsResponsive) {
       this.startResponsive()
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     if (this.computedIsResponsive) {
       this.endResponsive()
     }

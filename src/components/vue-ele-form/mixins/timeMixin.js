@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 export default {
   watch: {
     // 当值发生变化时
-    value (newVal) {
+    value(newVal) {
       if (dayjs(newVal).isValid()) {
         newVal = this.getValue(newVal)
       }
@@ -11,14 +11,14 @@ export default {
       this.newValue = newVal
     }
   },
-  data () {
+  data() {
     return {
       newValue: this.value ? dayjs(this.value).format() : this.value
     }
   },
   methods: {
     // 覆盖 formMixin 中的 handleChange, 将值转为 unix 时间戳
-    handleChange (value) {
+    handleChange(value) {
       let newVal = value
       if (value && !(this.attrs.valueFormat || this.attrs['value-format'])) {
         newVal = dayjs(value).unix()
@@ -28,7 +28,7 @@ export default {
     },
 
     // 获取值: 数字(秒 -> 毫秒) / 字符串
-    getValue (value) {
+    getValue(value) {
       if (value && !(this.attrs.valueFormat || this.attrs['value-format'])) {
         value = typeof value === 'number' ? value * 1000 : value
         return dayjs(value).format()
@@ -38,7 +38,7 @@ export default {
     },
 
     // 自定义值处理
-    customInit (value) {
+    customInit(value) {
       return this.getValue(value)
     }
   }

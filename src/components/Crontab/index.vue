@@ -70,38 +70,38 @@
         <p class="title">时间表达式</p>
         <table>
           <thead>
-            <th v-for="item of tabTitles" :key="item" width="40">{{ item }}</th>
-            <th>Cron 表达式</th>
+          <th v-for="item of tabTitles" :key="item" width="40">{{ item }}</th>
+          <th>Cron 表达式</th>
           </thead>
           <tbody>
-            <td>
-              <span>{{ crontabValueObj.second }}</span>
-            </td>
-            <td>
-              <span>{{ crontabValueObj.min }}</span>
-            </td>
-            <td>
-              <span>{{ crontabValueObj.hour }}</span>
-            </td>
-            <td>
-              <span>{{ crontabValueObj.day }}</span>
-            </td>
-            <td>
-              <span>{{ crontabValueObj.month }}</span>
-            </td>
-            <td>
-              <span>{{ crontabValueObj.week }}</span>
-            </td>
-            <td>
-              <span>{{ crontabValueObj.year }}</span>
-            </td>
-            <td>
-              <span>{{ crontabValueString }}</span>
-            </td>
+          <td>
+            <span>{{ crontabValueObj.second }}</span>
+          </td>
+          <td>
+            <span>{{ crontabValueObj.min }}</span>
+          </td>
+          <td>
+            <span>{{ crontabValueObj.hour }}</span>
+          </td>
+          <td>
+            <span>{{ crontabValueObj.day }}</span>
+          </td>
+          <td>
+            <span>{{ crontabValueObj.month }}</span>
+          </td>
+          <td>
+            <span>{{ crontabValueObj.week }}</span>
+          </td>
+          <td>
+            <span>{{ crontabValueObj.year }}</span>
+          </td>
+          <td>
+            <span>{{ crontabValueString }}</span>
+          </td>
           </tbody>
         </table>
       </div>
-      <CrontabResult :ex="crontabValueString" />
+      <CrontabResult :ex="crontabValueString"/>
 
       <div class="pop_btn">
         <el-button size="small" type="primary" @click="submitFill">确定</el-button>
@@ -373,6 +373,7 @@ export default {
   margin-top: 20px;
   text-align: center;
 }
+
 .popup-main {
   position: relative;
   margin: 10px auto;
@@ -381,12 +382,14 @@ export default {
   background: #fff;
   border-radius: 5px;
 }
+
 .popup-title {
   padding-top: 6px;
   overflow: hidden;
   line-height: 34px;
   background: #f2f2f2;
 }
+
 .popup-result {
   position: relative;
   box-sizing: border-box;
@@ -395,6 +398,7 @@ export default {
   line-height: 24px;
   border: 1px solid #ccc;
 }
+
 .popup-result .title {
   position: absolute;
   top: -28px;
@@ -406,11 +410,13 @@ export default {
   text-align: center;
   background: #fff;
 }
+
 .popup-result table {
   width: 100%;
   margin: 0 auto;
   text-align: center;
 }
+
 .popup-result table span {
   display: block;
   width: 100%;
@@ -421,6 +427,7 @@ export default {
   white-space: nowrap;
   border: 1px solid #e8e8e8;
 }
+
 .popup-result-scroll {
   height: 10em;
   overflow-y: auto;

@@ -10,7 +10,7 @@
   >
     <!-- 默认插槽 -->
     <template #default>
-      <slot />
+      <slot/>
     </template>
     <template #form-content="{ props, formDesc, formData, formErrorObj }">
       <slot
@@ -118,7 +118,8 @@
           :key="index"
           v-bind="btn.attrs"
           @click="btn.click"
-        >{{ btn.text }}</el-button>
+        >{{ btn.text }}
+        </el-button>
       </slot>
     </template>
   </ele-form>
@@ -187,6 +188,7 @@ export default {
   padding: 0 20px;
   border: 1px solid #ebeef5;
 }
+
 .ele-form-section-header {
   box-sizing: border-box;
   padding: 18px 0;

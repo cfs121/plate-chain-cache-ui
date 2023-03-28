@@ -11,7 +11,8 @@
       :key="option.value"
       :label="option.value"
       v-bind="option.attrs"
-    >{{ option.text }}</el-checkbox-button>
+    >{{ option.text }}
+    </el-checkbox-button>
   </el-checkbox-group>
 </template>
 

@@ -8,7 +8,7 @@
   >
     {{ desc.title }}
     <template v-if="slots && slots.default" #default>
-      <extend-slot :render="slots.default" />
+      <extend-slot :render="slots.default"/>
     </template>
   </el-checkbox>
 </template>

@@ -11,12 +11,14 @@
       :key="option.value"
       :label="option.value"
       v-bind="option.attrs"
-    >{{ option.text }}</el-radio-button>
+    >{{ option.text }}
+    </el-radio-button>
   </el-radio-group>
 </template>
 
 <script>
 import formMixin from '../mixins/formMixin'
+
 export default {
   name: 'EleFormRadioButton',
   mixins: [formMixin],

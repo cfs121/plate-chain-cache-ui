@@ -14,7 +14,7 @@
           @submit.native.prevent="handleSubmitForm"
         >
           <!-- 默认插槽作为表单项 -->
-          <slot />
+          <slot/>
           <el-row :gutter="20">
             <slot
               :formData="formData"
@@ -86,7 +86,7 @@
                 </slot>
               </template>
             </slot>
-            <slot name="form-footer" />
+            <slot name="form-footer"/>
             <!-- 操作按钮区 -->
             <el-col v-if="btns.length" class="ele-form-btns">
               <el-form-item :label-width="inline ? '10px' : null">
@@ -97,7 +97,8 @@
                     :key="index"
                     v-bind="btn.attrs"
                     @click="btn.click"
-                    >{{ btn.text }}</el-button
+                  >{{ btn.text }}
+                  </el-button
                   >
                 </slot>
               </el-form-item>
@@ -116,6 +117,7 @@ import { throttle } from 'throttle-debounce'
 import localeMixin from './mixins/locale'
 import { t } from './locale'
 import { loadMockJs } from './tools/mock'
+
 const isNumber = require('is-number')
 const cloneDeep = require('clone')
 
@@ -301,7 +303,8 @@ export default {
             'native-type': 'submit'
           },
           text: this.computedSubmitBtnText,
-          click() {}
+          click() {
+          }
         })
       }
 
@@ -755,8 +758,8 @@ export default {
             // 其他报错
             throw new TypeError(
               'options的类型不正确, options及options请求结果类型可为: 字符串数组, 对象数组, 函数和Promise或者URL地址, 当前值为: ' +
-                options +
-                ', 不属于以上四种类型, 具体请参考: https://www.yuque.com/chaojie-vjiel/vbwzgu/rgenav'
+              options +
+              ', 不属于以上四种类型, 具体请参考: https://www.yuque.com/chaojie-vjiel/vbwzgu/rgenav'
             )
           }
         }
@@ -845,7 +848,8 @@ export default {
         }, [])
         this.showError(messageArr)
         // eslint-disable-next-line
-      } catch {}
+      } catch {
+      }
     },
 
     // 显示错误
@@ -923,7 +927,8 @@ export default {
                   this.innerFormError = msg
                 }
                 // eslint-disable-next-line
-              } catch {}
+              } catch {
+              }
             } else if (error instanceof Object) {
               // 返回的是对象类型, 则直接设置
               this.innerFormError = error
@@ -980,14 +985,17 @@ export default {
 .ele-form--inline .ele-form-btns {
   width: auto;
 }
+
 .ele-form-col--break {
   clear: both;
 }
+
 .ele-form-tip {
   margin-top: 3px;
   line-height: 1.5em;
   color: #909399;
 }
+
 .ele-form-tip code {
   padding: 2px 4px;
   font-size: 90%;

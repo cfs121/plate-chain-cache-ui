@@ -36,6 +36,7 @@
           :empty-render="{ name: 'NotData' }"
           @toolbar-button-click="handleToolbarButtonClick"
           @toolbar-tool-click="handleToolbarToolClick"
+          @form-reset="handleFormReset"
         >
           <template #time="{ data }">
             <el-date-picker

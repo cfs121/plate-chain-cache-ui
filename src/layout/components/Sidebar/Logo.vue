@@ -16,7 +16,7 @@
         class="sidebar-logo-link"
         to="/"
       >
-        <img v-if="logo" :src="logo" class="sidebar-logo" />
+        <img v-if="logo" :src="logo" class="sidebar-logo"/>
         <h1
           v-else
           class="sidebar-title"
@@ -31,7 +31,7 @@
         </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo" />
+        <img v-if="logo" :src="logo" class="sidebar-logo"/>
         <h1
           class="sidebar-title"
           :style="{
@@ -49,31 +49,32 @@
 </template>
 
 <script>
-import variables from "@/assets/styles/variables.scss";
-import logo from "@/assets/logo/logo.png";
+import variables from '@/assets/styles/variables.scss'
+import logo from '@/assets/logo/logo.png'
+
 export default {
-  name: "SidebarLogo",
+  name: 'SidebarLogo',
   props: {
     collapse: {
       type: Boolean,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       title: process.env.VUE_APP_TITLE,
-      logo,
-    };
+      logo
+    }
   },
   computed: {
     variables() {
-      return variables;
+      return variables
     },
     sideTheme() {
-      return this.$store.state.settings.sideTheme;
-    },
-  },
-};
+      return this.$store.state.settings.sideTheme
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

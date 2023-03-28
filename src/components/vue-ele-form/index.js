@@ -125,7 +125,7 @@ const EleFormBuiltInNames = [
 ]
 Vue.prototype.$EleFormBuiltInNames = EleFormBuiltInNames
 
-const install = function (Vue, opts = {}, lang) {
+const install = function(Vue, opts = {}, lang) {
   locale.use(lang)
   Vue.prototype.$EleFormParams = opts
 }

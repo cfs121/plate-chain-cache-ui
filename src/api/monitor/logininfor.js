@@ -21,9 +21,10 @@ export function delLoginLog(ids) {
   return request({
     url: '/monitor_loginlog/',
     method: 'delete',
-    data:ids
+    data: ids
   })
 }
+
 //
 
 // 解锁用户登录状态

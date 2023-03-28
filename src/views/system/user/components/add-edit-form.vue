@@ -128,7 +128,7 @@ export default {
           label: '岗位',
           required: true,
           options: async() => {
-            const { body: { posts  } } = await getUserInfo()
+            const { body: { posts } } = await getUserInfo()
             return posts.map((item) => ({
               text: item.postName,
               value: Number(item.id),
