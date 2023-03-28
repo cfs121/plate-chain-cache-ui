@@ -61,7 +61,7 @@ export function refreshCache() {
 // 获取字典选择框列表
 export function optionselect() {
   return request({
-    url: '/sys-dict-type/optionselect',
+    url: '/sys-dict-type/option-select',
     method: 'get'
   })
 }

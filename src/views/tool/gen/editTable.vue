@@ -170,7 +170,7 @@ export default {
       })
       /** 查询字典下拉列表 */
       getDictOptionselect().then(response => {
-        this.dictOptions = response.data
+        this.dictOptions = response.body
       })
       /** 查询菜单下拉列表 */
       getMenuTreeselect().then(response => {

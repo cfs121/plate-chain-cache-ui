@@ -262,11 +262,11 @@ export const gridTable = {
     },
     async handleDelete(row) {
       await this.$modal.confirm(
-        `是否确认删除${Array.isArray(row) ? '所选' : '改行'}数据？`
+        `是否确认删除${Array.isArray(row) ? '所选' : '该行'}数据？`
       )
       const ids = Array.isArray(row)
         ? row.map((item) => item[this.fetch.id])
-        : row[this.fetch.id]
+        : [row[this.fetch.id]]
       await this.fetch.delete(ids)
       this.$refs.xGrid.remove(row)
       this.$modal.msgSuccess('删除成功')

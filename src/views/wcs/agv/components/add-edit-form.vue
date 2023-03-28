@@ -50,6 +50,21 @@ export default {
           }
 
         },
+        agvType: {
+          type: 'select',
+          label: 'AGV类型',
+          layout: 12,
+          required: true,
+          options: () => {
+            return this.dict.type.agv_type.map((item) => ({
+              text: item.label,
+              value: Number(item.value)
+            }))
+          },
+          attrs: {
+            clearable: true
+          }
+        },
         controlType: {
           type: 'select',
           label: '控制类型',
@@ -83,7 +98,7 @@ export default {
             clearable: true
           }
         },
-        load: {
+        loadCapacity: {
           type: 'input',
           label: '载重(g)',
           required: true,

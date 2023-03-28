@@ -9,9 +9,9 @@ export function listAgv(params) {
   })
 }
 
-export function getAgv(agvId) {
+export function getAgv(id) {
   return request({
-    url: '/agv/' + agvId,
+    url: '/agv/' + id,
     method: 'get'
   })
 }
@@ -29,5 +29,13 @@ export function updateAgv(data) {
     url: '/agv',
     method: 'put',
     data: data
+  })
+}
+
+export function delAgv(ids) {
+  return request({
+    url: '/agv',
+    method: 'delete',
+    data: ids
   })
 }

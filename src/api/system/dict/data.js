@@ -3,50 +3,49 @@ import request from '@/utils/request'
 // 查询字典数据列表
 export function listData(query) {
   return request({
-    url: '/system/dict/data/list',
+    url: '/sys-dict-data/page',
     method: 'get',
-    params: query
+    params: {
+      pageNumber: query.pageNumber,
+      pageSize: query.pageSize,
+      Q_EQ_dictName: query.dictName,
+      Q_EQ_dictType: query.dictType,
+      Q_EQ_status: query.status
+    }
   })
 }
 
 // 查询字典数据详细
 export function getData(dictCode) {
   return request({
-    url: '/system/dict/data/' + dictCode,
-    method: 'get'
+    url: '/sys-dict-data/' + dictCode, method: 'get'
   })
 }
 
 // 根据字典类型查询字典数据信息
 export function getDicts(dictType) {
   return request({
-    url: '/sys-dict-data/list?Q_EQ_dictType=' + dictType,
-    method: 'get'
+    url: '/sys-dict-data/list?Q_EQ_dictType=' + dictType, method: 'get'
   })
 }
 
 // 新增字典数据
 export function addData(data) {
   return request({
-    url: '/system/dict/data',
-    method: 'post',
-    data: data
+    url: '/sys-dict-data', method: 'post', data: data
   })
 }
 
 // 修改字典数据
 export function updateData(data) {
   return request({
-    url: '/system/dict/data',
-    method: 'put',
-    data: data
+    url: '/sys-dict-data', method: 'put', data: data
   })
 }
 
 // 删除字典数据
 export function delData(dictCode) {
   return request({
-    url: '/system/dict/data/' + dictCode,
-    method: 'delete'
+    url: '/sys-dict-data/' + dictCode, method: 'delete'
   })
 }

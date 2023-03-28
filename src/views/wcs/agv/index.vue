@@ -23,6 +23,14 @@
         />
       </template>
 
+      <template #control_type="{ row }">
+        <dict-tag :options="dict.type.control_type" :value="row.controlType"/>
+      </template>
+
+      <template #agv_type="{ row }">
+        <dict-tag :options="dict.type.agv_type" :value="row.agvType"/>
+      </template>
+
       <template #operate="{ row }">
         <el-button
           type="text"
@@ -54,24 +62,25 @@
 <script>
 import {
   listAgv,
-  getUser,
-  delUser
+  getAgv,
+  delAgv
 } from '@/api/wcs/agv'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { gridTable } from '@/mixin/grid-table'
 import AddEditForm from './components/add-edit-form'
+import { getUser } from '@/api/system/user'
 
 export default {
   name: 'Agv',
-  dicts: ['sys_normal_disable'],
+  dicts: ['agv_type', 'control_type'],
   components: { AddEditForm },
   mixins: [gridTable],
   data() {
     return {
       deptId: '',
       fetch: {
-        getRowData: getUser,
-        delete: delUser,
+        getRowData: getAgv,
+        delete: delAgv,
         getList: listAgv,
         id: 'id'
       },
@@ -114,7 +123,7 @@ export default {
             title: '端口号'
           },
           {
-            field: 'load',
+            field: 'loadCapacity',
             title: '载重(g)'
           },
           {
@@ -186,15 +195,7 @@ export default {
               status: 'danger'
             }
           ],
-          tools: [
-            {
-              code: 'download',
-              circle: true,
-              icon: 'vxe-icon-download',
-              url: 'system/user/export',
-              permi: ['system:user:export']
-            }
-          ]
+          tools: []
         }
       }
     }
