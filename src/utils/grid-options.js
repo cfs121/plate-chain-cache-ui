@@ -6,7 +6,6 @@ export default {
   stripe: true,
   syncResize: true,
   autoResize: true,
-  keepSource: true,
   round: true,
   id: 'demo',
   rowId: 'id',
