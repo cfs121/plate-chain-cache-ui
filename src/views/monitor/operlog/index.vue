@@ -266,7 +266,7 @@ export default {
     resetQuery() {
       this.dateRange = []
       this.resetForm('queryForm')
-      this.queryParams.pageNumber = 1
+      this.handleQuery()
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
