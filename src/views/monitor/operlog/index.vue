@@ -114,6 +114,7 @@
           <dict-tag :options="dict.type.sys_oper_type" :value="scope.row.businessType"/>
         </template>
       </el-table-column>
+      <el-table-column label="请求方式" align="center" prop="requestMethod" :show-overflow-tooltip="true"/>
       <el-table-column label="操作人员" align="center" prop="operName" width="110" :show-overflow-tooltip="true" sortable/>
       <el-table-column label="操作地址" align="center" prop="operIp" width="130" :show-overflow-tooltip="true"/>
       <el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true"/>
@@ -180,8 +181,8 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="操作状态：">
-              <div v-if="form.status === '0'">正常</div>
-              <div v-else-if="form.status === '1'">失败</div>
+              <div v-if="form.status === 0">正常</div>
+              <div v-else-if="form.status === 1">失败</div>
             </el-form-item>
           </el-col>
           <el-col :span="8">
