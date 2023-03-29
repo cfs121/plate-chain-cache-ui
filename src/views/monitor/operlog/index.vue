@@ -105,9 +105,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table ref="tables" v-loading="loading" :data="list" @selection-change="handleSelectionChange"
-              :default-sort="defaultSort" @sort-change="handleSortChange"
-    >
+    <el-table ref="tables" v-loading="loading" :data="list" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50" align="center"/>
       <el-table-column label="日志编号" align="center" prop="id"/>
       <el-table-column label="系统模块" align="center" prop="title" :show-overflow-tooltip="true"/>
@@ -116,9 +114,7 @@
           <dict-tag :options="dict.type.sys_oper_type" :value="scope.row.businessType"/>
         </template>
       </el-table-column>
-      <el-table-column label="操作人员" align="center" prop="operName" width="110" :show-overflow-tooltip="true"
-                       sortable="custom" :sort-orders="['descending', 'ascending']"
-      />
+      <el-table-column label="操作人员" align="center" prop="operName" width="110" :show-overflow-tooltip="true" sortable/>
       <el-table-column label="操作地址" align="center" prop="operIp" width="130" :show-overflow-tooltip="true"/>
       <el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true"/>
       <el-table-column label="操作状态" align="center" prop="status">
@@ -126,16 +122,12 @@
           <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="操作日期" align="center" prop="operTime" width="160" sortable="custom"
-                       :sort-orders="['descending', 'ascending']"
-      >
+      <el-table-column label="操作日期" align="center" prop="operTime" width="160" sortable>
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.operTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="消耗时间" align="center" prop="costTime" width="110" :show-overflow-tooltip="true"
-                       sortable="custom" :sort-orders="['descending', 'ascending']"
-      >
+      <el-table-column label="消耗时间" align="center" prop="costTime" width="110" :show-overflow-tooltip="true" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.costTime }}毫秒</span>
         </template>
@@ -234,8 +226,6 @@ export default {
       open: false,
       // 日期范围
       dateRange: [],
-      // 默认排序
-      defaultSort: { prop: 'operTime', order: 'descending' },
       // 表单参数
       form: {},
       // 查询参数
@@ -277,18 +267,11 @@ export default {
       this.dateRange = []
       this.resetForm('queryForm')
       this.queryParams.pageNumber = 1
-      this.$refs.tables.sort(this.defaultSort.prop, this.defaultSort.order)
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
       this.multiple = !selection.length
-    },
-    /** 排序触发事件 */
-    handleSortChange(column, prop, order) {
-      this.queryParams.orderByColumn = column.prop
-      this.queryParams.isAsc = column.order
-      this.getList()
     },
     /** 详细按钮操作 */
     handleView(row) {
