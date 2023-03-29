@@ -149,7 +149,7 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.pageNum"
+      :page.sync="queryParams.pageNumber"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
@@ -218,7 +218,7 @@ export default {
       dateRange: [],
       // 查询参数
       queryParams: {
-        pageNum: 1,
+        pageNumber: 1,
         pageSize: 10,
         configName: undefined,
         configKey: undefined,
@@ -249,7 +249,7 @@ export default {
       this.loading = true
       listConfig(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.configList = response.body.content
-          this.total = response.total
+          this.total = response.body.total
           this.loading = false
         }
       )
@@ -273,7 +273,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.queryParams.pageNumber = 1
       this.getList()
       // this.loading=true
       // listConfig(this.configName).then(response=>{
