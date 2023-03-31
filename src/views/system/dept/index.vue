@@ -128,21 +128,29 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="负责人" prop="leader">
-              <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20"/>
+              <el-select v-model="form.leader" placeholder="部门负责人" clearable  @change="fillByLeaderId(form.leader)">
+                <el-option
+                  v-for="item in leaderOptions"
+                  :key="item.id"
+                  :label="item.nickName"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="联系电话" prop="phone">
-              <el-input v-model="form.phone" placeholder="请输入联系电话" maxlength="11"/>
+              <el-input v-model="form.phone" placeholder="请输入联系电话" maxlength="11" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/>
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="邮箱" prop="email">-->
+<!--              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
           <el-col :span="12">
             <el-form-item label="部门状态" prop="status">
               <el-radio-group v-model="form.status">
@@ -167,6 +175,7 @@
 
 <script>
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept'
+import { listUser } from '@/api/system/user'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
@@ -184,6 +193,8 @@ export default {
       deptList: [],
       // 部门树选项
       deptOptions: [],
+      // 用户选项
+      leaderOptions: [],
       // 弹出层标题
       title: '',
       // 是否显示弹出层
@@ -210,20 +221,6 @@ export default {
         ],
         orderNum: [
           { required: true, message: '显示排序不能为空', trigger: 'blur' }
-        ],
-        email: [
-          {
-            type: 'email',
-            message: '请输入正确的邮箱地址',
-            trigger: ['blur', 'change']
-          }
-        ],
-        phone: [
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: '请输入正确的手机号码',
-            trigger: 'blur'
-          }
         ]
       }
     }
@@ -279,6 +276,18 @@ export default {
       this.resetForm('queryForm')
       this.handleQuery()
     },
+
+    fillByLeaderId(leaderId){
+      for (let i = 0; i < this.leaderOptions.length; i++) {
+        if (this.leaderOptions[i].id == leaderId ){
+          this.form.phone = this.leaderOptions[i].phoneNumber;
+          // this.form.email = this.leaderOptions[i].email;
+          break;
+        }
+
+      }
+
+    },
     /** 新增按钮操作 */
     handleAdd(row) {
       this.reset()
@@ -289,6 +298,10 @@ export default {
       this.title = '添加部门'
       listDept({}).then(response => {
         this.deptOptions = this.handleTree(response.body, 'id')
+      })
+
+      listUser({}).then(response => {
+        this.leaderOptions = response.body.content
       })
     },
     /** 展开/折叠操作 */
@@ -314,6 +327,9 @@ export default {
             const noResultsOptions = { id: this.form.parentId, children: [] }
             this.deptOptions.push(noResultsOptions)
           }
+        })
+        listUser({}).then(response => {
+          this.leaderOptions = response.body.content
         })
       })
     },
