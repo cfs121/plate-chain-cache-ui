@@ -30,13 +30,13 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="tableName" label="表名称" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="tableComment" label="表描述" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
-        <el-table-column prop="updateTime" label="更新时间"></el-table-column>
+        <el-table-column prop="createdTime" label="创建时间"></el-table-column>
+        <el-table-column prop="updatedTime" label="更新时间"></el-table-column>
       </el-table>
       <pagination
         v-show="total>0"
         :total="total"
-        :page.sync="queryParams.pageNum"
+        :page.sync="queryParams.pageNumber"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
@@ -64,7 +64,7 @@ export default {
       dbTableList: [],
       // 查询参数
       queryParams: {
-        pageNum: 1,
+        pageNumber: 1,
         pageSize: 10,
         tableName: undefined,
         tableComment: undefined
@@ -87,15 +87,15 @@ export default {
     // 查询表数据
     getList() {
       listDbTable(this.queryParams).then(res => {
-        if (res.code === 200) {
-          this.dbTableList = res.rows
-          this.total = res.total
+        if (res.status === 200) {
+          this.dbTableList = res.body.content
+          this.total = res.body.total
         }
       })
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.queryParams.pageNumber = 1
       this.getList()
     },
     /** 重置按钮操作 */

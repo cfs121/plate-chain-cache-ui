@@ -88,7 +88,7 @@
       <el-table-column type="selection" align="center" width="55"></el-table-column>
       <el-table-column label="序号" type="index" width="50" align="center">
         <template slot-scope="scope">
-          <span>{{ (queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1 }}</span>
+          <span>{{ (queryParams.pageNumber - 1) * queryParams.pageSize + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -162,7 +162,7 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.pageNum"
+      :page.sync="queryParams.pageNumber"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
@@ -229,7 +229,7 @@ export default {
       dateRange: '',
       // 查询参数
       queryParams: {
-        pageNum: 1,
+        pageNumber: 1,
         pageSize: 10,
         tableName: undefined,
         tableComment: undefined
@@ -250,7 +250,7 @@ export default {
     const time = this.$route.query.t
     if (time != null && time != this.uniqueId) {
       this.uniqueId = time
-      this.queryParams.pageNum = Number(this.$route.query.pageNum)
+      this.queryParams.pageNumber = Number(this.$route.query.pageNumber)
       this.getList()
     }
   },
@@ -259,15 +259,15 @@ export default {
     getList() {
       this.loading = true
       listTable(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.tableList = response.rows
-          this.total = response.total
+          this.tableList = response.body.content
+          this.total = response.body.total
           this.loading = false
         }
       )
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.queryParams.pageNumber = 1
       this.getList()
     },
     /** 生成代码操作 */
@@ -335,7 +335,7 @@ export default {
     handleEditTable(row) {
       const tableId = row.tableId || this.ids[0]
       const tableName = row.tableName || this.tableNames[0]
-      const params = { pageNum: this.queryParams.pageNum }
+      const params = { pageNumber: this.queryParams.pageNumber }
       this.$tab.openPage('修改[' + tableName + ']生成配置', '/tool/gen-edit/index/' + tableId, params)
     },
     /** 删除按钮操作 */
