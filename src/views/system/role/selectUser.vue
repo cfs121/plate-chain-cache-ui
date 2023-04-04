@@ -10,9 +10,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="phonenumber">
+      <el-form-item label="手机号码" prop="phoneNumber">
         <el-input
-          v-model="queryParams.phonenumber"
+          v-model="queryParams.phoneNumber"
           placeholder="请输入手机号码"
           clearable
           @keyup.enter.native="handleQuery"
@@ -31,15 +31,15 @@
         <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true"/>
         <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true"/>
         <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true"/>
-        <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true"/>
+        <el-table-column label="手机" prop="phoneNumber" :show-overflow-tooltip="true"/>
         <el-table-column label="状态" align="center" prop="status">
           <template slot-scope="scope">
             <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+        <el-table-column label="创建时间" align="center" prop="createdTime" width="180">
           <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
+            <span>{{ parseTime(scope.row.createdTime) }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -85,7 +85,7 @@ export default {
         pageSize: 10,
         roleId: undefined,
         userName: undefined,
-        phonenumber: undefined
+        phoneNumber: undefined
       }
     }
   },
@@ -101,13 +101,13 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.userIds = selection.map(item => item.userId)
+      this.userIds = selection.map(item => item.id)
     },
     // 查询表数据
     getList() {
       unallocatedUserList(this.queryParams).then(res => {
-        this.userList = res.rows
-        this.total = res.total
+        this.userList = res.body.content
+        this.total = res.body.total
       })
     },
     /** 搜索按钮操作 */
@@ -129,12 +129,13 @@ export default {
         return
       }
       authUserSelectAll({ roleId: roleId, userIds: userIds }).then(res => {
-        this.$modal.msgSuccess(res.msg)
+        this.$modal.msgSuccess(res.body.content)
         if (res.code === 200) {
           this.visible = false
-          this.$emit('ok')
+          this.$emit('ok'+"授权成功")
         }
       })
+      this.getList();
     }
   }
 }

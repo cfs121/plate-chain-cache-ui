@@ -331,9 +331,16 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const ids = row.id || this.ids
-      this.$modal.confirm('是否确认删除参数编号为"' + ids + '"的数据项？').then(function() {
-        return delConfig(ids)
+        let ids2 = []
+
+      if(row.id == undefined) {
+        ids2= this.ids
+      }
+      else {
+        ids2 = [row.id]
+      }
+      this.$modal.confirm('是否确认删除参数编号为"' + ids2 + '"的数据项？').then(function() {
+        return delConfig(ids2)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('删除成功')

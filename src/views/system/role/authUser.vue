@@ -12,7 +12,7 @@
       </el-form-item>
       <el-form-item label="手机号码" prop="phonenumber">
         <el-input
-          v-model="queryParams.phonenumber"
+          v-model="queryParams.phoneNumber"
           placeholder="请输入手机号码"
           clearable
           style="width: 240px"
@@ -67,15 +67,15 @@
       <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true"/>
       <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true"/>
       <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true"/>
-      <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true"/>
+      <el-table-column label="手机" prop="phoneNumber" :show-overflow-tooltip="true"/>
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <el-table-column label="创建时间" align="center" prop="createdTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.createdTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -131,7 +131,7 @@ export default {
         pageSize: 10,
         roleId: undefined,
         userName: undefined,
-        phonenumber: undefined
+        phoneNumber: undefined
       }
     }
   },
@@ -147,8 +147,8 @@ export default {
     getList() {
       this.loading = true
       allocatedUserList(this.queryParams).then(response => {
-          this.userList = response.rows
-          this.total = response.total
+          this.userList = response.body.content
+          this.total = response.body.total
           this.loading = false
         }
       )
@@ -170,7 +170,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.userIds = selection.map(item => item.userId)
+      this.userIds = selection.map(item => item.id)
       this.multiple = !selection.length
     },
     /** 打开授权用户表弹窗 */
@@ -181,7 +181,7 @@ export default {
     cancelAuthUser(row) {
       const roleId = this.queryParams.roleId
       this.$modal.confirm('确认要取消该用户"' + row.userName + '"角色吗？').then(function() {
-        return authUserCancel({ userId: row.userId, roleId: roleId })
+        return authUserCancel({ userId: row.id, roleId: roleId })
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('取消授权成功')
