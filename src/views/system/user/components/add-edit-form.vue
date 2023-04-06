@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { addUser, updateUser, deptTreeSelect, getUserInfo } from '@/api/system/user'
+import { addUser, updateUser, getUserInfo, normalDeptTreeSelect} from '@/api/system/user'
 import { addEditForm } from '@/mixin/add-edit-form'
 import Treeselect from '@riophae/vue-treeselect'
 
@@ -193,7 +193,8 @@ export default {
       this.formData = this.options
       this.initFormDesc()
 
-      const { body } = await deptTreeSelect()
+
+      const { body } = await normalDeptTreeSelect()
       this.deptOptions = body
 
       if (this.getIsAdd) {

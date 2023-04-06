@@ -140,3 +140,11 @@ export function deptTreeSelect() {
     method: 'get'
   })
 }
+
+// 查询状态正常的部门下拉树结构
+export function normalDeptTreeSelect() {
+  return request({
+    url: '/sys-dept/tree-normal',
+    method: 'get'
+  })
+}
