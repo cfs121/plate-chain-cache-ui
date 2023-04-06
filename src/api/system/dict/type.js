@@ -43,10 +43,11 @@ export function updateType(data) {
 }
 
 // 删除字典类型
-export function delType(dictId) {
+export function delType(dictIds) {
   return request({
-    url: '/sys-dict-type/' + dictId,
-    method: 'delete'
+    url: '/sys-dict-type/',
+    method: 'delete',
+    data:dictIds
   })
 }
 
