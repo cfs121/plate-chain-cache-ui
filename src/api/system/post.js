@@ -8,8 +8,8 @@ export function listPost(query) {
     params: {
       pageNumber: query.pageNumber,
       pageSize: query.pageSize,
-      Q_EQ_postCode: query.postCode,
-      Q_EQ_postName: query.postName,
+      Q_LIKE_postCode: query.postCode,
+      Q_LIKE_postName: query.postName,
       Q_EQ_status: query.status
     }
   })

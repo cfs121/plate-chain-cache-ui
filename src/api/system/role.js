@@ -8,8 +8,8 @@ export function listRole(query) {
     params: {
       pageNumber: query.pageNumber,
       pageSize: query.pageSize,
-      Q_EQ_roleName: query.roleName,
-      Q_EQ_roleKey: query.roleKey,
+      Q_LIKE_roleName: query.roleName,
+      Q_LIKE_roleKey: query.roleKey,
       Q_EQ_status: query.status,
       Q_BT_createdTime: query.dataRange
     }

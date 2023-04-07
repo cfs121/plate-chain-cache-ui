@@ -8,8 +8,8 @@ export function list(query) {
     params: {
       pageNumber: query.pageNumber,
       pageSize: query.pageSize,
-      Q_EQ_operName: query.operName,
-      Q_EQ_title: query.title,
+      Q_LIKE_operName: query.operName,
+      Q_LIKE_title: query.title,
       Q_EQ_businessType: query.businessType,
       Q_EQ_status: query.status,
       Q_BT_operTime: query.dataRange

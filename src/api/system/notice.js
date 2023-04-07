@@ -8,8 +8,8 @@ export function listNotice(query) {
     params: {
       pageNumber: query.pageNumber,
       pageSize: query.pageSize,
-      Q_EQ_noticeTitle: query.noticeTitle,
-      Q_EQ_createdBy: query.createdBy,
+      Q_LIKE_noticeTitle: query.noticeTitle,
+      Q_LIKE_createdBy: query.createdBy,
       Q_EQ_noticeType: query.noticeType
     }
   })

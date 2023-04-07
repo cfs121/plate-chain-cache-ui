@@ -8,8 +8,8 @@ export function list(query) {
     params: {
       pageNumber: query.pageNumber,
       pageSize: query.pageSize,
-      Q_EQ_ipAddr: query.ipAddr,
-      Q_EQ_userName: query.userName,
+      Q_LIKE_ipAddr: query.ipAddr,
+      Q_LIKE_userName: query.userName,
       Q_EQ_status: query.status,
       Q_BT_loginTime: query.dataRange
     }

@@ -8,8 +8,8 @@ export function listConfig(query) {
     params: {
       pageNumber: query.pageNumber,
       pageSize: query.pageSize,
-      Q_EQ_configName: query.configName,
-      Q_EQ_configKey: query.configKey,
+      Q_LIKE_configName: query.configName,
+      Q_LIKE_configKey: query.configKey,
       Q_EQ_configType: query.configType,
       Q_BT_createdTime: query.dataRange
     }

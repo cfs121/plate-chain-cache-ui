@@ -6,7 +6,7 @@ export function listMenu(query) {
     url: '/sys-menu/list',
     method: 'get',
     params: {
-      Q_EQ_menuName: query.menuName,
+      Q_LIKE_menuName: query.menuName,
       Q_EQ_status: query.status
     }
   })
