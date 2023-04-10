@@ -118,12 +118,14 @@
       :visible.sync="addEditFormDialog.open"
       :options="addEditFormDialog.options"
       :type="addEditFormDialog.operationType"
-      @success="fetchGiridData"
+      :post-options="postOptions"
+      :roles-options="rolesOptions"
+      @success="fetchGridData"
     />
 
     <upload-dialog
       :visible.sync="uploadDialog.open"
-      @success="fetchGiridData"
+      @success="fetchGridData"
     />
   </div>
 </template>
@@ -151,10 +153,12 @@ export default {
     return {
       deptId: '',
       deptOptions: [],
+      rolesOptions: [],
       deptName: null,
       uploadDialog: {
         open: false
       },
+      postOptions: [],
       fetch: {
         getRowData: getUser,
         delete: delUser,
@@ -290,6 +294,55 @@ export default {
     this.setFormConfigSelectItemOptions('Q_EQ_status', 'sys_normal_disable')
   },
   methods: {
+    async handleAdd(type = 1) {
+      this.addEditFormDialog.options = {}
+      const { body: { posts, roles } } = await getUserInfo()
+      this.postOptions = posts.map((item) => ({
+        text: item.postName,
+        value: item.id,
+        disabled: item.status === '1'
+      }))
+      this.rolesOptions = roles
+        .map((item) => ({
+          text: item.roleName,
+          value: item.id,
+          disabled: item.status === '1'
+        }))
+      this.addEditFormDialog.operationType = type
+      this.addEditFormDialog.open = true
+      this.addEditFormDialog.view = false
+    },
+    async handleUpdate(row, type = 2) {
+      const { body } = await this.fetch.getRowData(row[this.fetch.id])
+      this.addEditFormDialog.options = body
+
+      if (type === 3) {
+        this.addEditFormDialog.options.viewFormDesc = this.getViewFormDesc()
+
+      }
+
+      const {
+        body: {
+          posts, postIds, roleIds, roles
+        }
+      } = await getUserInfo(body.id)
+      this.addEditFormDialog.options.postIds = postIds
+      this.addEditFormDialog.options.roleIds = roleIds
+      this.postOptions = posts.map((item) => ({
+        text: item.postName,
+        value: item.id,
+        disabled: item.status === '1'
+      }))
+      this.rolesOptions = roles
+        .map((item) => ({
+          text: item.roleName,
+          value: item.id,
+          disabled: item.status === '1'
+        }))
+      this.addEditFormDialog.operationType = type
+      this.addEditFormDialog.open = true
+    },
+
     workFormParams(params) {
       return {
         ...params,
@@ -308,7 +361,7 @@ export default {
     },
     handleNodeClick(data) {
       this.deptId = data.id
-      this.fetchGiridData()
+      this.fetchGridData()
     },
     async handleStatusChange(row) {
       let text = row.status === '0' ? '启用' : '停用'

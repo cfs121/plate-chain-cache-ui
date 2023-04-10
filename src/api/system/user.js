@@ -34,7 +34,7 @@ export function getUser(userId) {
 // 新增用户
 export function addUser(data) {
   return request({
-    url: '/sys-user/insertUserInfo',
+    url: '/sys-user',
     method: 'post',
     data: data
   })
@@ -44,7 +44,7 @@ export function addUser(data) {
 export function updateUser(data) {
   return request({
     url: '/sys-user',
-    method: 'post',
+    method: 'put',
     data: data
   })
 }

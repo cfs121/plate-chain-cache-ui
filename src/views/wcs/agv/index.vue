@@ -53,7 +53,7 @@
       :visible.sync="addEditFormDialog.open"
       :options="addEditFormDialog.options"
       :type="addEditFormDialog.operationType"
-      @success="fetchGiridData"
+      @success="fetchGridData"
     />
 
   </div>
@@ -216,7 +216,7 @@ export default {
       return data.label.indexOf(value) !== -1
     },
     handleNodeClick(data) {
-      this.fetchGiridData()
+      this.fetchGridData()
     }
   }
 }

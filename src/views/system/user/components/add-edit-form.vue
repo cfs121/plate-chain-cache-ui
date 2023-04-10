@@ -1,4 +1,7 @@
 <template>
+  <div>
+    {{postOptions}}
+
   <ele-form-dialog
     v-model="formData"
     :type="type"
@@ -26,18 +29,29 @@
       />
     </template>
   </ele-form-dialog>
+  </div>
 </template>
 
 <script>
-import { addUser, updateUser, getUserInfo, normalDeptTreeSelect} from '@/api/system/user'
+import { addUser, updateUser, getUserInfo, normalDeptTreeSelect } from '@/api/system/user'
 import { addEditForm } from '@/mixin/add-edit-form'
 import Treeselect from '@riophae/vue-treeselect'
 
 export default {
   mixins: [addEditForm],
-  dicts: ['sys_user_sex', 'sys_normal_disable'],
+  dicts: ['sys_normal_disable', 'sys_user_sex'],
   components: {
     Treeselect
+  },
+  props: {
+    postOptions: {
+      type: Array,
+      default: () => []
+    },
+    rolesOptions: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {
@@ -83,7 +97,7 @@ export default {
           attrs: {
             maxlength: 50
           },
-          vif: (data) => data.id == undefined
+          vif: (data) => data.id === undefined
         },
         password: {
           type: 'input',
@@ -95,7 +109,7 @@ export default {
             type: 'password',
             showPassword: true
           },
-          vif: (data) => data.id == undefined
+          vif: (data) => data.id === undefined
         },
         sex: {
           layout: 12,
@@ -105,9 +119,25 @@ export default {
           options: () => {
             return this.dict.type.sys_user_sex.map((item) => ({
               text: item.label,
-              value: Number(item.value)
+              value: item.value
             }))
           }
+        },
+        postIds: {
+          layout: 12,
+          type: 'select',
+          label: '岗位',
+          required: true,
+          attrs: { multiple: true },
+          options: () => this.postOptions
+        },
+        roleIds: {
+          layout: 12,
+          type: 'select',
+          label: '角色',
+          required: true,
+          attrs: { multiple: true },
+          options: () => this.rolesOptions
         },
         status: {
           layout: 12,
@@ -119,33 +149,6 @@ export default {
             return this.dict.type.sys_normal_disable.map((item) => ({
               text: item.label,
               value: Number(item.value)
-            }))
-          }
-        },
-        postIds: {
-          layout: 12,
-          type: 'select',
-          label: '岗位',
-          required: true,
-          options: async() => {
-            const { body: { posts } } = await getUserInfo()
-            return posts.map((item) => ({
-              text: item.postName,
-              value: Number(item.id),
-              disabled: item.status == 1
-            }))
-          }
-        },
-        roleIds: {
-          layout: 12,
-          type: 'select',
-          label: '角色',
-          required: true,
-          options: async() => {
-            const { body: { roles } } = await getUserInfo()
-            return roles.map((item) => ({
-              text: item.roleName,
-              value: Number(item.id)
             }))
           }
         },
@@ -178,7 +181,7 @@ export default {
             trigger: ['blur', 'change']
           }
         ],
-        phonenumber: [
+        phoneNumber: [
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
             message: '请输入正确的手机号码',
@@ -192,7 +195,6 @@ export default {
     async handleOpen() {
       this.formData = this.options
       this.initFormDesc()
-
 
       const { body } = await normalDeptTreeSelect()
       this.deptOptions = body

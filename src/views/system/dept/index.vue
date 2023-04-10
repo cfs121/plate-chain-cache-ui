@@ -321,7 +321,6 @@ export default {
         this.title = '修改部门'
 
         listDeptExcludeChild(row.id).then(response => {
-          console.log(response)
           this.deptOptions = this.handleTree(response.body, 'id')
           if (this.deptOptions.length == 0) {
             const noResultsOptions = { id: this.form.parentId, children: [] }
