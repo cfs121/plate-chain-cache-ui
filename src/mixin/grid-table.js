@@ -123,7 +123,7 @@ export const gridTable = {
       for (const key in data) {
         data[key] = null
       }
-      this.fetchGiridData()
+      this.fetchGridData()
     },
     setFormConfigSelectItemOptions(name, dictName = null) {
       const index = this.gridOptions.formConfig.items.findIndex(
@@ -212,7 +212,7 @@ export const gridTable = {
           this.handleClickToolbarTool({ code, $grid })
       }
     },
-    fetchGiridData() {
+    fetchGridData() {
       this.$refs.xGrid.commitProxy('query')
     },
     handleAdd() {

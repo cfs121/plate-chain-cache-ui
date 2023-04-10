@@ -394,13 +394,11 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.getList()
       this.loading = true
-      listMenu(this.menuName).then(response => {
-        this.menuList = this.handleTree(response.body, 'menuName')
+      listMenu(this.queryParams).then(response => {
+        this.menuList = this.handleTree(response.body, 'id')
         this.loading = false
       })
-
     },
     /** 重置按钮操作 */
     resetQuery() {
