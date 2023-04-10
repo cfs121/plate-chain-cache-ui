@@ -141,6 +141,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { gridTable } from '@/mixin/grid-table'
 import AddEditForm from './components/add-edit-form'
 import UploadDialog from './components/upload-dialog'
+import { changeRoleStatus } from '@/api/system/role'
 
 export default {
   name: 'User',
@@ -312,13 +313,13 @@ export default {
     },
     async handleStatusChange(row) {
       let text = row.status === '0' ? '启用' : '停用'
-      await this.$modal.confirm(`确认要${text}${row.userName}用户吗？`)
       const { id, status } = row
-      await changeUserStatus({
-        id,
-        status
+      this.$modal.confirm(`确认要${text}${row.userName}用户吗？`).then(function() {
+        return changeUserStatus({ id, status})}).then(() => {
+        this.$modal.msgSuccess(text + '成功')
+      }).catch(function() {
+        row.status = row.status === '0' ? '1' : '0'
       })
-      this.$modal.msgSuccess(text + '成功')
     },
     handleCommand(command, row) {
       switch (command) {
