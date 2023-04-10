@@ -52,7 +52,6 @@ export default {
   data() {
     return {
       title: '用户',
-
       deptOptions: [],
       formDesc: {
         nickName: {
@@ -65,7 +64,8 @@ export default {
           type: 'input',
           label: '归属部门',
           layout: 12,
-          required: true
+          required: true,
+          default: null
         },
         phoneNumber: {
           type: 'input',
