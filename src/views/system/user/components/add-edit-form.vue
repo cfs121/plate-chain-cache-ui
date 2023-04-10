@@ -1,7 +1,4 @@
 <template>
-  <div>
-    {{postOptions}}
-
   <ele-form-dialog
     v-model="formData"
     :type="type"
@@ -29,11 +26,10 @@
       />
     </template>
   </ele-form-dialog>
-  </div>
 </template>
 
 <script>
-import { addUser, updateUser, getUserInfo, normalDeptTreeSelect } from '@/api/system/user'
+import { addUser, updateUser, normalDeptTreeSelect } from '@/api/system/user'
 import { addEditForm } from '@/mixin/add-edit-form'
 import Treeselect from '@riophae/vue-treeselect'
 
