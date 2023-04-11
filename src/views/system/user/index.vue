@@ -55,8 +55,8 @@
           <template #status="{ row }">
             <el-switch
               v-model="row.status"
-              active-value="0"
-              inactive-value="1"
+              :active-value="0"
+              :inactive-value="1"
               @change="handleStatusChange(row)"
             ></el-switch>
           </template>
