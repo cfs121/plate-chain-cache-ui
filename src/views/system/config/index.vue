@@ -331,12 +331,11 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-        let ids2 = []
+      let ids2 = []
 
-      if(row.id == undefined) {
-        ids2= this.ids
-      }
-      else {
+      if (row.id == undefined) {
+        ids2 = this.ids
+      } else {
         ids2 = [row.id]
       }
       this.$modal.confirm('是否确认删除参数编号为"' + ids2 + '"的数据项？').then(function() {

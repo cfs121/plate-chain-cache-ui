@@ -1,4 +1,4 @@
-<template >
+<template>
   <div class="grid22">
     <ele-form-dialog
       v-model="formData"
@@ -70,7 +70,7 @@ export default {
           attrs: {
             clearable: true
           }
-        },
+        }
       },
       rules: {}
     }
@@ -93,7 +93,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.grid22{
+.grid22 {
   text-align: center;
 }
 </style>

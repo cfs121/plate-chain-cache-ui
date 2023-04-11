@@ -7,6 +7,7 @@ export function getMap() {
     method: 'get'
   })
 }
+
 // 获取地图
 export function findPath(params, data) {
   return request({

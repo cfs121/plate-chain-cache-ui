@@ -53,9 +53,9 @@ export function updateConfig(data) {
 // 删除参数配置
 export function delConfig(ids) {
   return request({
-    url: '/sys-config/' ,
+    url: '/sys-config/',
     method: 'delete',
-    data:ids
+    data: ids
   })
 }
 

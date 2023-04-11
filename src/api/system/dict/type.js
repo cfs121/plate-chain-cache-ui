@@ -47,7 +47,7 @@ export function delType(dictIds) {
   return request({
     url: '/sys-dict-type/',
     method: 'delete',
-    data:dictIds
+    data: dictIds
   })
 }
 

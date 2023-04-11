@@ -32,7 +32,7 @@
 import { addUser, updateUser, normalDeptTreeSelect } from '@/api/system/user'
 import { addEditForm } from '@/mixin/add-edit-form'
 import Treeselect from '@riophae/vue-treeselect'
-import {deepClone} from '@/utils'
+import { deepClone } from '@/utils'
 
 export default {
   mixins: [addEditForm],
