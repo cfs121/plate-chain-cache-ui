@@ -365,14 +365,14 @@ export default {
       this.fetchGridData()
     },
     async handleStatusChange(row) {
-      let text = row.status === '0' ? '启用' : '停用'
+      let text = row.status === 0 ? '启用' : '停用'
       const { id, status } = row
       this.$modal.confirm(`确认要${text}${row.userName}用户吗？`).then(function() {
         return changeUserStatus({ id, status })
       }).then(() => {
         this.$modal.msgSuccess(text + '成功')
       }).catch(function() {
-        row.status = row.status === '0' ? '1' : '0'
+        row.status = row.status ^ 1
       })
     },
     handleCommand(command, row) {

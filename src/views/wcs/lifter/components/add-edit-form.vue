@@ -22,6 +22,7 @@
 <script>
 import { addLifter, updateLifter } from '@/api/wcs/lifter'
 import { addEditForm } from '@/mixin/add-edit-form'
+import { deepClone } from '@/utils'
 
 export default {
   mixins: [addEditForm],
@@ -122,7 +123,7 @@ export default {
   },
   methods: {
     async handleOpen() {
-      this.formData = this.options
+      this.formData = deepClone(this.options)
       this.initFormDesc()
     },
     async handleSubmit() {

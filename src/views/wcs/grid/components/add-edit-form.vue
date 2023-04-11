@@ -24,6 +24,7 @@
 <script>
 import { add, update } from '@/api/wcs/grid'
 import { addEditForm } from '@/mixin/add-edit-form'
+import { deepClone } from '@/utils'
 
 export default {
   mixins: [addEditForm],
@@ -76,7 +77,7 @@ export default {
   },
   methods: {
     async handleOpen() {
-      this.formData = this.options
+      this.formData = deepClone(this.options)
       this.initFormDesc()
     },
     async handleSubmit() {
