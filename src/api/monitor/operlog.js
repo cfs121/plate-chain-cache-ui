@@ -20,9 +20,9 @@ export function list(query) {
 // 删除操作日志
 export function delOperlog(ids) {
   return request({
-    url: '/monitor_operlog/' ,
+    url: '/monitor_operlog/',
     method: 'delete',
-    data:ids
+    data: ids
   })
 }
 

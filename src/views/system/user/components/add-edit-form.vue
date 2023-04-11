@@ -32,6 +32,7 @@
 import { addUser, updateUser, normalDeptTreeSelect } from '@/api/system/user'
 import { addEditForm } from '@/mixin/add-edit-form'
 import Treeselect from '@riophae/vue-treeselect'
+import { deepClone } from '@/utils'
 
 export default {
   mixins: [addEditForm],
@@ -189,7 +190,7 @@ export default {
   },
   methods: {
     async handleOpen() {
-      this.formData = this.options
+      this.formData = deepClone(this.options)
       this.initFormDesc()
 
       const { body } = await normalDeptTreeSelect()
@@ -201,7 +202,6 @@ export default {
       }
     },
     async handleSubmit() {
-
       const apiMap = {
         1: addUser,
         2: updateUser

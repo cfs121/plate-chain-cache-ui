@@ -47,12 +47,11 @@ export function updateDept(data) {
   })
 }
 
-
-  // 删除部门
-  export function delDept(id) {
-    return request({
-      url: '/sys-dept/delete/' + id,
-      method: 'delete'
-    })
+// 删除部门
+export function delDept(id) {
+  return request({
+    url: '/sys-dept/delete/' + id,
+    method: 'delete'
+  })
 
 }

@@ -132,10 +132,10 @@ export default {
         this.$modal.msgSuccess(res.body.content)
         if (res.code === 200) {
           this.visible = false
-          this.$emit('ok'+"授权成功")
+          this.$emit('ok' + '授权成功')
         }
       })
-      this.getList();
+      this.getList()
     }
   }
 }

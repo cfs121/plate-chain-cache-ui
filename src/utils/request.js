@@ -28,7 +28,9 @@ service.interceptors.request.use(config => {
   // 是否需要防止数据重复提交
   const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
   if (getToken() && !isToken) {
-    config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    // 让每个请求携带自定义token 请根据实际情况自行修改
+    config.headers['Authorization'] = 'Bearer ' + getToken()
+
   }
   // get请求映射params参数
   if (config.method === 'get' && config.params) {
@@ -112,20 +114,24 @@ service.interceptors.response.use(res => {
 
   const status = error.response.status
   if (status === 401) {
-    if (!isRelogin.show) {
-      isRelogin.show = true
-      MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
-        confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning'
-      }).then(() => {
-        isRelogin.show = false
-        store.dispatch('LogOut').then(() => {
-          location.href = '/index'
+    if (error.response.data.body === 'Full authentication is required to access this resource') {
+      if (!isRelogin.show) {
+        isRelogin.show = true
+        MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+          confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning'
+        }).then(() => {
+          isRelogin.show = false
+          store.dispatch('LogOut').then(() => {
+            location.href = '/index'
+          })
+        }).catch(() => {
+          isRelogin.show = false
         })
-      }).catch(() => {
-        isRelogin.show = false
-      })
+      }
+      return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+    } else {
+      message = error.response.data.body
     }
-    return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
   } else if (status === 500) {
     message = error.response.data.body
   } else if (message == 'Network Error') {

@@ -55,8 +55,8 @@
           <template #status="{ row }">
             <el-switch
               v-model="row.status"
-              active-value="0"
-              inactive-value="1"
+              :active-value="0"
+              :inactive-value="1"
               @change="handleStatusChange(row)"
             ></el-switch>
           </template>
@@ -365,13 +365,14 @@ export default {
       this.fetchGridData()
     },
     async handleStatusChange(row) {
-      let text = row.status === '0' ? '启用' : '停用'
+      let text = row.status === 0 ? '启用' : '停用'
       const { id, status } = row
       this.$modal.confirm(`确认要${text}${row.userName}用户吗？`).then(function() {
-        return changeUserStatus({ id, status})}).then(() => {
+        return changeUserStatus({ id, status })
+      }).then(() => {
         this.$modal.msgSuccess(text + '成功')
       }).catch(function() {
-        row.status = row.status === '0' ? '1' : '0'
+        row.status = row.status ^ 1
       })
     },
     handleCommand(command, row) {
@@ -387,7 +388,7 @@ export default {
       }
     },
     async handleResetPwd(row) {
-      const { value } = await this.$prompt(
+      await this.$prompt(
         `请输入${row.userName}的新密码`,
         '提示',
         {
@@ -397,9 +398,12 @@ export default {
           inputPattern: /^.{5,20}$/,
           inputErrorMessage: '用户密码长度必须介于 5 和 20 之间'
         }
-      )
-      await resetUserPwd(row.id, value)
-      this.$modal.msgSuccess(`修改成功，新密码是：${value}`)
+      ).then(({ value }) => {
+        resetUserPwd(row.id, value)
+        this.$modal.msgSuccess(`修改成功，新密码是：${value}`)
+      }).catch(() => {
+        this.$modal.msgWarning('已取消修改')
+      })
     },
     handleAuthRole(row) {
       this.$router.push(`/system/user-auth/role/${row.id}`)

@@ -78,7 +78,7 @@ export default {
         this.total = this.roles.length
         this.$nextTick(() => {
           this.roles.forEach((row) => {
-            if (row.flag) {
+            if (row.checked) {
               this.$refs.table.toggleRowSelection(row)
             }
           })

@@ -115,7 +115,9 @@
         </template>
       </el-table-column>
       <el-table-column label="请求方式" align="center" prop="requestMethod" :show-overflow-tooltip="true"/>
-      <el-table-column label="操作人员" align="center" prop="operName" width="110" :show-overflow-tooltip="true" sortable/>
+      <el-table-column label="操作人员" align="center" prop="operName" width="110" :show-overflow-tooltip="true"
+                       sortable
+      />
       <el-table-column label="操作地址" align="center" prop="operIp" width="130" :show-overflow-tooltip="true"/>
       <el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true"/>
       <el-table-column label="操作状态" align="center" prop="status">
@@ -128,7 +130,9 @@
           <span>{{ parseTime(scope.row.operTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="消耗时间" align="center" prop="costTime" width="110" :show-overflow-tooltip="true" sortable>
+      <el-table-column label="消耗时间" align="center" prop="costTime" width="110" :show-overflow-tooltip="true"
+                       sortable
+      >
         <template slot-scope="scope">
           <span>{{ scope.row.costTime }}毫秒</span>
         </template>
