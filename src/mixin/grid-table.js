@@ -15,7 +15,7 @@ const searchButton = {
       {
         props: {
           type: 'submit',
-          content: 'app.body.label.search',
+          content: '搜索',
           status: 'primary',
           icon: 'vxe-icon-search'
         }
@@ -23,7 +23,7 @@ const searchButton = {
       {
         props: {
           type: 'reset',
-          content: 'app.body.label.reset',
+          content: '重置',
           icon: 'vxe-icon-refresh'
         }
       }
