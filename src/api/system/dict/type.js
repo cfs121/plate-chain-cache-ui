@@ -54,8 +54,8 @@ export function delType(dictIds) {
 // 刷新字典缓存
 export function refreshCache() {
   return request({
-    url: '/sys-dict-type/refreshCache',
-    method: 'delete'
+    url: '/sys-dict-type/refresh-cache',
+    method: 'put'
   })
 }
 
