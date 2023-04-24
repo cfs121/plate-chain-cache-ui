@@ -241,7 +241,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数据权限" v-show="form.dataScope == 2">
+        <el-form-item label="数据权限" v-show="form.dataScope === 2">
           <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
           <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选
           </el-checkbox>
@@ -442,25 +442,25 @@ export default {
     },
     // 表单重置
     reset() {
-      if (this.$refs.menu != undefined) {
+      if (this.$refs.menu !== undefined) {
         this.$refs.menu.setCheckedKeys([])
       }
-      this.menuExpand = false,
-        this.menuNodeAll = false,
-        this.deptExpand = true,
-        this.deptNodeAll = false,
-        this.form = {
-          id: undefined,
-          roleName: undefined,
-          roleKey: undefined,
-          roleSort: 0,
-          status: '0',
-          menuIds: [],
-          deptIds: [],
-          menuCheckStrictly: true,
-          deptCheckStrictly: true,
-          remark: undefined
-        }
+      this.menuExpand = false
+      this.menuNodeAll = false
+      this.deptExpand = true
+      this.deptNodeAll = false
+      this.form = {
+        id: undefined,
+        roleName: undefined,
+        roleKey: undefined,
+        roleSort: 0,
+        status: '0',
+        menuIds: [],
+        deptIds: [],
+        menuCheckStrictly: true,
+        deptCheckStrictly: true,
+        remark: undefined
+      }
       this.resetForm('form')
     },
     /** 搜索按钮操作 */
@@ -477,7 +477,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length != 1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     // 更多操作触发
@@ -495,12 +495,12 @@ export default {
     },
     // 树权限（展开/折叠）
     handleCheckedTreeExpand(value, type) {
-      if (type == 'menu') {
+      if (type === 'menu') {
         let treeList = this.menuOptions
         for (let i = 0; i < treeList.length; i++) {
           this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value
         }
-      } else if (type == 'dept') {
+      } else if (type === 'dept') {
         let treeList = this.deptOptions
         for (let i = 0; i < treeList.length; i++) {
           this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value
@@ -509,18 +509,18 @@ export default {
     },
     // 树权限（全选/全不选）
     handleCheckedTreeNodeAll(value, type) {
-      if (type == 'menu') {
+      if (type === 'menu') {
         this.$refs.menu.setCheckedNodes(value ? this.menuOptions : [])
-      } else if (type == 'dept') {
+      } else if (type === 'dept') {
         this.$refs.dept.setCheckedNodes(value ? this.deptOptions : [])
       }
     },
     // 树权限（父子联动）
     handleCheckedTreeConnect(value, type) {
-      if (type == 'menu') {
-        this.form.menuCheckStrictly = value ? true : false
-      } else if (type == 'dept') {
-        this.form.deptCheckStrictly = value ? true : false
+      if (type === 'menu') {
+        this.form.menuCheckStrictly = !!value
+      } else if (type === 'dept') {
+        this.form.deptCheckStrictly = !!value
       }
     },
     /** 新增按钮操作 */
@@ -581,7 +581,7 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.id != undefined) {
+          if (this.form.id !== undefined) {
             this.form.menuIds = this.getMenuAllCheckedKeys()
             updateRole(this.form).then(response => {
               this.$modal.msgSuccess('修改成功')
@@ -601,7 +601,7 @@ export default {
     },
     /** 提交按钮（数据权限） */
     submitDataScope: function() {
-      if (this.form.id != undefined) {
+      if (this.form.id !== undefined) {
         this.form.deptIds = this.getDeptAllCheckedKeys()
         dataScope(this.form).then(response => {
           this.$modal.msgSuccess('修改成功')
@@ -614,7 +614,7 @@ export default {
     handleDelete(row) {
       let ids2 = []
 
-      if (row.id == undefined) {
+      if (row.id === undefined) {
         ids2 = this.ids
       } else {
         ids2 = [row.id]
