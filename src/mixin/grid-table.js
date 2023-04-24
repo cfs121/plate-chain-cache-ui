@@ -54,7 +54,7 @@ export const gridTable = {
       this.checkToolbarConfigPermi()
       if (this.gridOptions.proxyConfig.autoLoad !== false) {
         this.gridOptions.proxyConfig.ajax = {
-          query: async({ page, form }) => {
+          query: async ({ page, form }) => {
             const query = {
               ...form,
               pageNumber: page.currentPage,

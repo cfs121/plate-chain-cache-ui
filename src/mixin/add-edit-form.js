@@ -1,17 +1,16 @@
 import { cloneDeep } from 'lodash'
 import valid from '@/utils/valid'
-
 export const addEditForm = {
   props: {
     visible: {
       type: Boolean,
-      default: false
+      default: false,
     },
     type: {
       type: Number,
-      default: 1
+      default: 1,
     },
-    options: { type: Object, default: () => ({}) }
+    options: { type: Object, default: () => ({}) },
   },
   computed: {
     getTitle() {
@@ -28,12 +27,12 @@ export const addEditForm = {
     },
     getIsAdd() {
       return this.type === 1
-    }
+    },
   },
   watch: {
     visible(val) {
       this.dialogFormVisible = val
-    }
+    },
   },
   data() {
     return {
@@ -44,8 +43,8 @@ export const addEditForm = {
       titleMap: {
         1: '添加',
         2: '修改',
-        3: '查看'
-      }
+        3: '查看',
+      },
     }
   },
   methods: {
@@ -85,9 +84,9 @@ export const addEditForm = {
           attrs: {
             ...rest.attrs,
             clearable: false,
-            disabled: true
+            disabled: true,
           },
-          layout: labelWidth === '0' || layoutMax ? 24 : 12
+          layout: labelWidth === '0' || layoutMax ? 24 : 12,
         }
       }
       const noOrder = []
@@ -108,7 +107,10 @@ export const addEditForm = {
           const item = this.formDesc[key]
           item.attrs = {
             ...(item.attrs || {}),
-            clearable: 'clearable' in item ? item.clearable : true
+            clearable:
+              'clearable' in (item?.attrs || {})
+                ? item?.attrs?.clearable
+                : true,
           }
           this.$set(this.formDesc[key], 'attrs', item.attrs)
         }
@@ -141,9 +143,10 @@ export const addEditForm = {
         })
       }
 
+      this.formData = { ...(this.formResetData || {}), ...this.formData }
       Object.entries(this.formDesc).map((item) => {
         if ('default' in item[1] && !(item[0] in this.formData)) {
-          this.formData[item[0]] = item[1].default
+          this.$set(this.formData, item[0], item[1].default)
         }
       })
 
@@ -152,8 +155,6 @@ export const addEditForm = {
           this.$set(this.formData, item, '')
         }
       })
-
-      console.log(this.formData)
-    }
-  }
+    },
+  },
 }
