@@ -139,12 +139,12 @@ export default {
     },
     // 上传图片
     uploadImg() {
-      this.$refs.cropper.getCropBlob(data => {
+      this.$refs.cropper.getCropBlob(async(file) => {
         let formData = new FormData()
-        formData.append('avatarfile', data)
+        formData.append('avatarFile', file)
         uploadAvatar(formData).then(response => {
           this.open = false
-          this.options.img = process.env.VUE_APP_BASE_API + response.imgUrl
+          this.options.img = process.env.VUE_APP_BASE_API + '/user/profile/avatar?path=' + response.body
           store.commit('SET_AVATAR', this.options.img)
           this.$modal.msgSuccess('修改成功')
           this.visible = false

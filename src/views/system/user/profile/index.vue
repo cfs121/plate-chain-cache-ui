@@ -19,7 +19,7 @@
               <li class="list-group-item">
                 <svg-icon icon-class="phone"/>
                 手机号码
-                <div class="pull-right">{{ user.phonenumber }}</div>
+                <div class="pull-right">{{ user.phoneNumber }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="email"/>
@@ -29,17 +29,17 @@
               <li class="list-group-item">
                 <svg-icon icon-class="tree"/>
                 所属部门
-                <div class="pull-right" v-if="user.dept">{{ user.dept.deptName }} / {{ postGroup }}</div>
+                <div class="pull-right">{{ user.postGroup }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="peoples"/>
                 所属角色
-                <div class="pull-right">{{ roleGroup }}</div>
+                <div class="pull-right">{{ user.roleGroup }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="date"/>
                 创建日期
-                <div class="pull-right">{{ user.createTime }}</div>
+                <div class="pull-right">{{ user.createdTime }}</div>
               </li>
             </ul>
           </div>
@@ -76,8 +76,6 @@ export default {
   data() {
     return {
       user: {},
-      roleGroup: {},
-      postGroup: {},
       activeTab: 'userinfo'
     }
   },
@@ -87,9 +85,7 @@ export default {
   methods: {
     getUser() {
       getUserProfile().then(response => {
-        this.user = response.data
-        this.roleGroup = response.roleGroup
-        this.postGroup = response.postGroup
+        this.user = response.body
       })
     }
   }
