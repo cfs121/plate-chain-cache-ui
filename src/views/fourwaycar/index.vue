@@ -1,54 +1,52 @@
 <template>
   <div class="fourwaycar">
     <el-container>
-      <el-header>四向车路径规划</el-header>
+      <el-header>GA动态演示</el-header>
       <el-container>
-        <el-aside width="200px">
+        <el-aside width="180px">
           <div style="margin: 15px 0">
-            <input type="text" v-model="inputObstacleX">
-            <input type="text" v-model="inputObstacleY">
-            <el-button type="danger" round @click="obstacle">障碍物</el-button>
-          </div>
-          <!--          <div style="margin: 15px 0">-->
-          <!--            <el-button type="primary" round @click="reobstacle">移除障碍物</el-button>-->
-          <!--          </div>-->
-          <div style="margin: 15px 0">
-            <input type="text" v-model="inputStartX">
-            <input type="text" v-model="inputStartY">
-            <el-button type="primary" round @click="start">起点</el-button>
-          </div>
-          <div style="margin: 15px 0">
-            <input type="text" v-model="inputUplodeX">
-            <input type="text" v-model="inputUplodeY">
-            <el-button type="info" plain @click="uplode">上货</el-button>
+            <el-select
+              v-model="value" style="width: 130px"
+              placeholder="请选择算法参数"
+              @change="changeGAParameter">
+              <el-option
+                v-for="item in gaSelect"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </div>
           <div style="margin: 15px 0">
-            <input type="text" v-model="inputDownlodeX">
-            <input type="text" v-model="inputDownlodeY">
-            <el-button type="info" plain @click="downlode">下货</el-button>
+            <el-select
+              v-model="value2" style="width: 130px"
+              placeholder="请选择缓存库"
+              @change="choseLibraries">
+              <el-option
+                v-for="item in librariesSelect"
+                :key="item.value2"
+                :label="item.label"
+                :value="item.value2"
+              />
+            </el-select>
           </div>
           <div style="margin: 15px 0">
-            <el-button type="primary" round @click="Laden">{{ status }}</el-button>
+            <el-tag>种群数量：{{groupSize}}</el-tag>
+            <el-tag>迭代次数：{{generation}}</el-tag>
+            <el-tag type="success">交叉概率：{{crossRate}}</el-tag>
+            <el-tag type="warning">变异概率：{{mutationRate}}</el-tag>
+          </div>
+          <div>
+            <el-input v-model="time" placeholder="请输入延时时间"></el-input>
           </div>
           <div style="margin: 15px 0">
-            <input type="text" v-model="inputGoalX">
-            <input type="text" v-model="inputGoalY">
-            <el-button type="primary" round @click="goal">终点</el-button>
-          </div>
-          <div style="margin: 15px 0">
-            <el-button type="success" plain @click="findp">查找路径</el-button>
+            <el-button type="primary" @click="start">开始</el-button>
           </div>
         </el-aside>
         <el-main>
-          <div v-if="showPage">
-            <div v-for="(row, rowIndex) in map" :key="rowIndex" class="row">
-              <div v-for="(col, colIndex) in row" :key="colIndex" class="col">
-                <button :ref="`buttonRefs${rowIndex}${colIndex}`" class="button" :style="getColor(col)"
-                        @click="handleButtonClick(rowIndex, colIndex)"
-                ></button>
-
-              </div>
-            </div>
+          <div id="fristScatter">
+          </div>
+          <div id="fristLine">
           </div>
 
         </el-main>
@@ -60,136 +58,266 @@
 
 <script>
 import {
-  getMap,
-  findPath
-} from '@/api/wcs/fourwaycarapi'
+  page,gaDisplay,
+} from '@/api/wcs/ga'
+import {
+  pageLibraries,
+} from '@/api/wcs/libraries'
 import Data from '../system/dict/data'
+import * as echarts from 'echarts';
+import Stomp from "stompjs";
 
 export default {
   name: 'fourwaycar',
   components: { Data },
   data() {
     return {
-      status: '未装货',
-      laden: false,
-      map: [],
-      inputObstacleX: [],
-      inputObstacleY: [],
-      inputStartX: [],
-      inputStartY: [],
-      inputUplodeX: [],
-      inputUplodeY: [],
-      inputDownlodeX: [],
-      inputDownlodeY: [],
-      inputGoalX: [],
-      inputGoalY: [],
+      currentGeneration: 15,
+      client:null,
+      time: '',
+      groupSize: '',
+      generation: '',
+      crossRate: '',
+      mutationRate: '',
+      value: '',
+      ga:[],
+      gaSelect:[],
+      libraries:[],
+      librariesSelect:[],
+      value2:'',
       showPage: true,
-      // 查询路线请求参数
-      queryParam: {
-        startX: '',
-        startY: '',
-        goalX: '',
-        goalY: '',
-        laden: false
-      }
+      myChart2: null,
+      myChart: null,
+      option : {
+        //鼠标悬停时显示数值
+        tooltip: {
+          trigger: 'axis',
+          formatter: function (params) {
+            params = params[0];
+            return params.value[0] + ',' + params.value[1];
+          },
+          axisPointer: {
+            animation: false
+          }
+        },
+        title: {
+          text: 'GA迭代图',
+          left: 'center',
+        },
+        xAxis: {
+          type: 'category',
+          //坐标轴标题
+          name: '迭代次数',
+          //坐标轴最大值随着currentGeneration值而改变
+          max: function (value) {
+            return value.currentGeneration;
+          },
+
+        },
+        yAxis: {
+          //坐标轴标题
+          name: '适应度',
+          //坐标轴刻度从数据的最小值-100开始
+          min: function (value) {
+            if(value.min - 100>0){
+              return value.min - 100;
+            }else{
+              return 0;
+            }
+          },
+        },
+        series: [
+          {
+            data: [],
+            type: 'line'
+          }
+        ]
+      },
+      option2 : {
+        //鼠标悬停时显示数值
+        tooltip: {
+          trigger: 'axis',
+          formatter: function (params) {
+            params = params[0];
+            return params.value[0] + ',' + params.value[1];
+          },
+          axisPointer: {
+            animation: false
+          }
+        },
+        //标题
+        title: {
+          text: '种群分布图',
+          left: 'center',
+        },
+        xAxis: {
+          //坐标轴标题
+          name: '总运行时间',
+          //坐标轴颜色是绿色
+          axisLine: {lineStyle: {color: 'green'}},
+          //坐标轴刻度从200-1000
+          min: 100,
+          max: 1000,
+          // min: function (value) {
+          //   if(value.min - 100>0){
+          //     return value.min - 100;
+          //   }else{
+          //     return 0;
+          //   }
+          // },
+        },
+        yAxis: {
+          name: '各出库口等待时间之和',
+          //坐标轴颜色是蓝色
+          axisLine: {lineStyle: {color: 'blue'}},
+          //坐标轴刻度从200-1000
+          min: 100,
+          max: 1000,
+          // //坐标轴刻度从数据的最小值-100开始
+          // min: function (value) {
+          //   if(value.min - 100>0){
+          //     return value.min - 100;
+          //   }else{
+          //     return 0;
+          //   }
+          // },
+        },//y轴
+        series: [
+          {
+            symbolSize: 5,//点的大小
+            //显示数值中x值中最小的点
+            markPoint: {
+              data: [
+                //y轴最小值，最大值，平均值,同时显示该点的x值，颜色是蓝色
+                {type: 'min', name: '最小值', valueIndex: 1, itemStyle: {color: 'blue'}},
+                //x轴最小值，最大值，平均值，颜色是绿色
+                {type: 'min', name: '最小值', valueIndex: 0, itemStyle: {color: 'green'}},
+              ]
+            },
+            //数据
+            data: [
+              [6.0, 8.04],
+              [8.07, 6.95]
+            ],
+            type: 'scatter'
+          }
+        ]
+      },
     }
+
+  },
+  mounted(){
+    let chartDom = document.getElementById('fristLine');
+    this.myChart = echarts.init(chartDom);
+    this.option && this.myChart.setOption(this.option);
+    let chartDom2 = document.getElementById('fristScatter');
+    this.myChart2 = echarts.init(chartDom2);
+    this.option2 && this.myChart2.setOption(this.option2);
 
   },
   created() {
-
     this.initial()
-
+    this.connect();
+    console.log(this.option2.series[0].data)
   },
   methods: {
-    findp() {
-      this.queryParam.startX = this.inputStartX
-      this.queryParam.startY = this.inputStartY
-      this.queryParam.goalX = this.inputGoalX
-      this.queryParam.goalY = this.inputGoalY
-      this.queryParam.laden = this.laden
+    //webSocket连接成功后回调函数
+    onConnected(frame) {
+      console.log("Connected: " + frame);
+      //绑定交换机exchange_pushmsg是交换机的名字rk_pushmsg是绑定的路由key
+      var exchange = "/exchange/exchange_pushmsg/rk_pushmsg";
+      //创建随机队列用上面的路由key绑定交换机,放入收到消息后的回调函数和失败的回调函数
+      this.client.subscribe(exchange, this.responseCallback, this.onFailed);
+      console.log(frame)
+    },
+    onFailed(frame) {
+      console.log("Failed: " + frame);
+    },
+    responseCallback(frame) {
+      //获得JSON.parse(frame.body)除最后一个的所有值
+      this.option2.series[0].data = JSON.parse(frame.body).slice(0,JSON.parse(frame.body).length-1)
+      //this.option2.series[0].data = JSON.parse(frame.body)
+      //将JSON.parse(frame.body)的最后一个数据取出
+      if( this.currentGeneration== JSON.parse(frame.body)[JSON.parse(frame.body).length-1][0]){
+        //将opention2的标题改为当前迭代次数
+        this.option2.title.text = '第'+this.currentGeneration+'代种群轮盘赌后分布图'
+        //myChart2根据新的数据重新渲染
+        this.option2 && this.myChart2.setOption(this.option2);
+      }else {
+        this.currentGeneration = JSON.parse(frame.body)[JSON.parse(frame.body).length-1][0]
+        //将当前迭代次数和一个数据作为option的一个新增的数据
+        this.option.series[0].data.push([this.currentGeneration,JSON.parse(frame.body)[JSON.parse(frame.body).length-1][1]])
+        //将opention2的标题改为当前迭代次数
+        this.option2.title.text = '第'+this.currentGeneration+'代种群分布图'
+        //myChart2根据新的数据重新渲染
+        this.option2 && this.myChart2.setOption(this.option2);
+        //myChart根据新的数据重新渲染
+        this.option && this.myChart.setOption(this.option);
+      }
 
-      findPath(this.queryParam, this.map).then(response => {
-        let data = response.body.reverse()
-        for (let i = 0; i < data.length; i++) {
-          let buttonRef = this.$refs[`buttonRefs${data[i][0]}${data[i][1]}`]
-          buttonRef[0].innerText = i
-        }
-
+      //接收到服务器推送消息，向服务器定义的接收消息routekey路由rk_recivemsg发送确认消息
+      this.client.send("/exchange/exchange_pushmsg/rk_recivemsg", {"content-type":"text/plain"}, "ok");
+    },
+    connect() {
+      //这里填你rabbitMQ的连接ip地址直接替换localhost:15674就好其它的不用改
+      this.client= Stomp.client("ws://localhost:15674/ws")
+      //填写你rabbitMQ登录的用户名和密码
+      var headers = {
+        "login": "guest",
+        "passcode": "guest",
+        //虚拟主机，默认“/”
+        "host": "/"
+      };
+      //创建连接,放入连接成功和失败回调函数
+      this.client.connect(headers, this.onConnected, this.onFailed);
+    },
+    start(){
+      gaDisplay(this.value,this.value2,this.time).then(res => {
+        //根据res弹窗提示成功
+        this.$message({
+          message: '发送请求成功',
+          type: 'success'
+        });
       })
     },
-
-    Laden() {
-      if (this.status == '未装货') {
-        this.status = '装货'
-        this.laden = true
-        let buttonRef = this.$refs[`buttonRefs${this.inputStartX}${this.inputStartY}`]
-        buttonRef[0].style.backgroundColor = '#33FF33'
-      } else {
-        this.status = '未装货'
-        this.laden = false
-        let buttonRef = this.$refs[`buttonRefs${this.inputStartX}${this.inputStartY}`]
-        buttonRef[0].style.backgroundColor = '#FFFFBB'
-      }
-    },
-    obstacle() {
-      this.setPoint(this.inputObstacleX, this.inputObstacleY, 5)
-    },
-    start() {
-      let buttonRef = this.$refs[`buttonRefs${this.inputStartX}${this.inputStartY}`]
-      buttonRef[0].style.backgroundColor = '#FFFFBB'
-    },
-    uplode() {
-      if (this.inputUplodeY > 12) {
-        this.setPoint(this.inputUplodeX, this.inputUplodeY, 4)
-      } else {
-        this.setPoint(this.inputUplodeX, this.inputUplodeY, 3)
-      }
-    },
-    downlode() {
-      if (this.inputUplodeY > 12) {
-        this.setPoint(this.inputDownlodeX, this.inputDownlodeY, 2)
-      } else {
-        this.setPoint(this.inputDownlodeX, this.inputDownlodeY, 1)
-      }
-    },
-    goal() {
-      let buttonRef = this.$refs[`buttonRefs${this.inputGoalX}${this.inputGoalY}`]
-      buttonRef[0].style.backgroundColor = '#FF8888'
-    },
-    setPoint(x, y, number) {
-      this.map[x][y] = number
-      this.showPage = false
-      this.$nextTick(() => {
-        this.showPage = true
+    initial(){
+      page().then(res => {
+        this.ga = res.body.content
+        //遍历ga数组，将其转换为select数组
+        for (let i = 0; i < this.ga.length; i++) {
+          this.gaSelect.push({
+            value: this.ga[i].id,
+            label: this.ga[i].id+'号GA参数'
+          })
+        }
+        this.value = this.gaSelect[0].value
+        this.groupSize = this.ga[this.value-1].groupSize
+        this.generation = this.ga[this.value-1].generation
+        this.crossRate = this.ga[this.value-1].crossRate
+        this.mutationRate = this.ga[this.value-1].mutationRate
+      })
+      pageLibraries().then(res => {
+        this.libraries = res.body.content
+        console.log(this.libraries)
+        //遍历libraries数组，将其转换为select数组
+        for (let i = 0; i < this.libraries.length; i++) {
+          this.librariesSelect.push({
+            value2: this.libraries[i].id,
+            label: this.libraries[i].id+'号缓存库'
+          })
+        }
+        this.value2 = this.librariesSelect[0].value2
       })
     },
-    getColor(col) {
-      if (col == 3 || col == 4) {
-        return {
-          background: '#00FFFF'
-        }
-      }
-      if (col == 1 || col == 2) {
-        return {
-          background: 'white'
-        }
-      }
-      if (col == 5) {
-        return {
-          background: 'black'
-        }
-      }
-    },
-    initial() {
-      getMap().then(res => {
-        this.map = res.body
-      })
-    },
-
-    handleButtonClick(rowIndex, colIndex) {
-      alert(rowIndex + ' ss' + colIndex)
+    changeGAParameter(){
+      this.groupSize = this.ga[this.value-1].groupSize
+      this.generation = this.ga[this.value-1].generation
+      this.crossRate = this.ga[this.value-1].crossRate
+      this.mutationRate = this.ga[this.value-1].mutationRate
     }
-  }
+    ,
+    choseLibraries(){}
+  },
 }
 </script>
 
@@ -224,6 +352,7 @@ input[type="text"] {
   }
 
   .el-main {
+
     background-color: #E9EEF3;
     //text-align: center;
     height: auto;
@@ -233,13 +362,6 @@ input[type="text"] {
       //justify-content: center;
 
     }
-
-    //.col {
-    //  width: 25px;
-    //  height: 25px;
-    //  margin: 2px;
-    //  background-color: #ccc;
-    //}
     .button {
       width: 25px;
       height: 25px;
@@ -248,4 +370,13 @@ input[type="text"] {
     }
   }
 }
+#fristScatter{
+  height: 50vh;
+  width: 70%;
+}
+#fristLine{
+  height: 50vh;
+  width: 70%;
+}
+
 </style>

@@ -8,6 +8,14 @@ export function page(params) {
         params: params
     })
 }
+// 查询Libraries列表
+export function pageLibraries(params) {
+  return request({
+    url: '/libraries/page',
+    method: 'get',
+    params: params
+  })
+}
 
 // 查询Libraries详细
 export function get(id) {

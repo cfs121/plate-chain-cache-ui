@@ -8,7 +8,18 @@ export function page(params) {
         params: params
     })
 }
-
+// 查询Ga详细
+export function gaDisplay(gaId,librariesId,time) {
+  return request({
+    url: '/ga/display' ,
+    method: 'get',
+    params: {
+      gaId: gaId,
+      librariesId: librariesId,
+      time: time
+    }
+  })
+}
 // 查询Ga详细
 export function get(id) {
     return request({
