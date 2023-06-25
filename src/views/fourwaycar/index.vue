@@ -31,6 +31,19 @@
             </el-select>
           </div>
           <div style="margin: 15px 0">
+            <el-select
+              v-model="value3" style="width: 130px"
+              placeholder="请选择遗传算法"
+              @change="choseLibraries">
+              <el-option
+                v-for="item in gasSelect"
+                :key="item.value3"
+                :label="item.label"
+                :value="item.value3"
+              />
+            </el-select>
+          </div>
+          <div style="margin: 15px 0">
             <el-tag>种群数量：{{groupSize}}</el-tag>
             <el-tag>迭代次数：{{generation}}</el-tag>
             <el-tag type="success">交叉概率：{{crossRate}}</el-tag>
@@ -44,11 +57,17 @@
           </div>
         </el-aside>
         <el-main>
-          <div id="fristScatter">
+          <div id="fristScatter"></div>
+          <div class="gaparas">
+            <div id="fristLine"></div>
+            <div class="paras">
+              <div style="margin: 25px 0"><el-tag>运行次数：{{runtimes}}</el-tag></div>
+              <div style="margin: 10px 0"><el-tag type="success">最优适应度：{{bestFitness}}</el-tag></div>
+              <div style="margin: 10px 0"><el-tag>平均适应度：{{averageFitness}}</el-tag></div>
+              <div style="margin: 10px 0"><el-tag type="warning">最差适应度：{{worstFitness}}</el-tag></div>
+              <div style="margin: 10px 0"><el-tag>适应度方差：{{fitnessVariance}}</el-tag></div>
+            </div>
           </div>
-          <div id="fristLine">
-          </div>
-
         </el-main>
       </el-container>
     </el-container>
@@ -72,6 +91,20 @@ export default {
   components: { Data },
   data() {
     return {
+      gasSelect:[
+        {value3: '0', label: '标准遗传算法'},
+        {value3: '1', label: '改进-去重复的个体'},
+        {value3: '2', label: '改进-精英策略'},
+        {value3: '3', label: '基于排名选择'},
+      ],
+      value3:'',
+      runtimes:0,
+      bestFitness:1000,
+      averageFitness:0,
+      worstFitness:0,
+      fitnessVariance:0,//适应度方差
+      GAcount1:-1,
+      GAcount2:0,
       currentGeneration: 15,
       client:null,
       time: '',
@@ -89,16 +122,9 @@ export default {
       myChart2: null,
       myChart: null,
       option : {
-        //鼠标悬停时显示数值
+        //鼠标悬停时显示该折线的数值
         tooltip: {
           trigger: 'axis',
-          formatter: function (params) {
-            params = params[0];
-            return params.value[0] + ',' + params.value[1];
-          },
-          axisPointer: {
-            animation: false
-          }
         },
         title: {
           text: 'GA迭代图',
@@ -127,10 +153,10 @@ export default {
           },
         },
         series: [
-          {
-            data: [],
-            type: 'line'
-          }
+          {data: [], type: 'line'},{data: [], type: 'line'},{data: [], type: 'line'},
+          {data: [], type: 'line'},{data: [], type: 'line'},{data: [], type: 'line'},
+          {data: [], type: 'line'},{data: [], type: 'line'},{data: [], type: 'line'},
+          {data: [], type: 'line'},
         ]
       },
       option2 : {
@@ -153,6 +179,14 @@ export default {
         xAxis: {
           //坐标轴标题
           name: '总运行时间',
+          //坐标轴标题位置
+          nameLocation: 'middle',
+          //坐标轴标题与轴线距离
+          nameGap: 25,
+          //坐标轴标题与y轴距离
+          nameTextStyle: {
+            padding: [0, 0, 25, 0]//右，下，左，上
+          },
           //坐标轴颜色是绿色
           axisLine: {lineStyle: {color: 'green'}},
           //坐标轴刻度从200-1000
@@ -239,18 +273,47 @@ export default {
       //this.option2.series[0].data = JSON.parse(frame.body)
       //将JSON.parse(frame.body)的最后一个数据取出
       if( this.currentGeneration== JSON.parse(frame.body)[JSON.parse(frame.body).length-1][0]){
-        //将opention2的标题改为当前迭代次数
-        this.option2.title.text = '第'+this.currentGeneration+'代种群轮盘赌后分布图'
-        //myChart2根据新的数据重新渲染
-        this.option2 && this.myChart2.setOption(this.option2);
+        // //将opention2的标题改为当前迭代次数
+        // this.option2.title.text = '第'+this.currentGeneration+'代种群轮盘赌后分布图'
+        // //myChart2根据新的数据重新渲染
+        // this.option2 && this.myChart2.setOption(this.option2);
       }else {
         this.currentGeneration = JSON.parse(frame.body)[JSON.parse(frame.body).length-1][0]
-        //将当前迭代次数和一个数据作为option的一个新增的数据
-        this.option.series[0].data.push([this.currentGeneration,JSON.parse(frame.body)[JSON.parse(frame.body).length-1][1]])
-        //将opention2的标题改为当前迭代次数
-        this.option2.title.text = '第'+this.currentGeneration+'代种群分布图'
-        //myChart2根据新的数据重新渲染
-        this.option2 && this.myChart2.setOption(this.option2);
+        if(this.GAcount2==this.GAcount1){
+          //根据name的值将获得的数据放入series数组中
+          this.option.series[this.GAcount1].data.push(JSON.parse(frame.body)[JSON.parse(frame.body).length-1][1])
+        }else {
+          this.GAcount2++
+          this.option.series[this.GAcount1].data.push(JSON.parse(frame.body)[JSON.parse(frame.body).length-1][1])
+        }
+        if(this.currentGeneration==this.generation-1){
+          //将最优适应度的值给bestFitness
+          let fitness = JSON.parse(frame.body)[JSON.parse(frame.body).length-1][1]
+          if(fitness<this.bestFitness){
+            this.bestFitness = fitness
+          }
+          this.runtimes++
+          this.averageFitness = 0
+          //遍历series数组，将每个series的data数组的最后一个值取出，用来计算平均值
+          for(let i=0;i<this.runtimes;i++){
+            this.averageFitness += this.option.series[i].data[this.option.series[i].data.length-1]
+          }
+          this.averageFitness = this.averageFitness/this.runtimes
+          //最差适应度的值
+          if(fitness>this.worstFitness){
+            this.worstFitness = fitness
+          }
+          this.fitnessVariance = 0
+          //遍历series数组，将每个series的data数组的最后一个值取出，用来计算方差
+          for(let i=0;i<this.runtimes;i++){
+            this.fitnessVariance += Math.pow(this.option.series[i].data[this.option.series[i].data.length-1]-this.averageFitness,2)//方差
+          }
+          this.fitnessVariance = this.fitnessVariance/this.runtimes
+        }
+        // //将opention2的标题改为当前迭代次数
+        // this.option2.title.text = '第'+this.currentGeneration+'代种群分布图'
+        // //myChart2根据新的数据重新渲染
+        // this.option2 && this.myChart2.setOption(this.option2);
         //myChart根据新的数据重新渲染
         this.option && this.myChart.setOption(this.option);
       }
@@ -272,7 +335,8 @@ export default {
       this.client.connect(headers, this.onConnected, this.onFailed);
     },
     start(){
-      gaDisplay(this.value,this.value2,this.time).then(res => {
+      this.GAcount1++
+      gaDisplay(this.value,this.value2,this.time,this.value3).then(res => {
         //根据res弹窗提示成功
         this.$message({
           message: '发送请求成功',
@@ -352,31 +416,35 @@ input[type="text"] {
   }
 
   .el-main {
-
+    display: flex;
     background-color: #E9EEF3;
-    //text-align: center;
     height: auto;
-
-    .row {
+    //垂直布局
+    //flex-direction: column;
+    .gaparas{
+      //flex: 1;
       display: flex;
-      //justify-content: center;
+      .paras{
+        //垂直布局
+        flex-direction: column;
+        //垂直居中显示
+        justify-content: center;
+        //与上方元素的距离
+        margin-top: 150px;
+      }
 
-    }
-    .button {
-      width: 25px;
-      height: 25px;
-      margin: 2px;
-      background-color: #ccc;
     }
   }
 }
 #fristScatter{
-  height: 50vh;
-  width: 70%;
+  //flex: 1;
+  width: 500px;
+  height: 700px;
 }
 #fristLine{
-  height: 50vh;
-  width: 70%;
+  //flex: 1;
+  width: 900px;
+  height: 700px;
 }
 
 </style>

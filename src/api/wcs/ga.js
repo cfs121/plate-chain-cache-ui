@@ -9,14 +9,15 @@ export function page(params) {
     })
 }
 // 查询Ga详细
-export function gaDisplay(gaId,librariesId,time) {
+export function gaDisplay(gaId,librariesId,time,gas) {
   return request({
     url: '/ga/display' ,
     method: 'get',
     params: {
       gaId: gaId,
       librariesId: librariesId,
-      time: time
+      time: time,
+      gas: gas
     }
   })
 }
