@@ -49,19 +49,19 @@
             <el-tag type="success">交叉概率：{{crossRate}}</el-tag>
             <el-tag type="warning">变异概率：{{mutationRate}}</el-tag>
           </div>
-          <div>
-            <el-input v-model="time" placeholder="请输入延时时间"></el-input>
-          </div>
-          <div style="margin: 15px 0">
-            <el-button type="primary" @click="start">动态演示</el-button>
-          </div>
+<!--          <div>-->
+<!--            <el-input v-model="time" placeholder="请输入延时时间"></el-input>-->
+<!--          </div>-->
+<!--          <div style="margin: 15px 0">-->
+<!--            <el-button type="primary" @click="start">动态演示</el-button>-->
+<!--          </div>-->
           <div style="margin: 15px 0">
             <el-button type="primary" @click="start2">结果</el-button>
           </div>
         </el-aside>
         <el-main>
           <div class="one">
-            <div id="fristScatter"></div>
+<!--            <div id="fristScatter"></div>-->
             <div class="gaparas">
               <div id="fristLine"></div>
               <div class="paras">
@@ -102,9 +102,9 @@ export default {
       gasSelect:[
         {value3: '0', label: '标准遗传算法'},
         {value3: '1', label: '改进-去重复的个体'},
-        {value3: '2', label: '改进-精英策略'},
+        {value3: '2', label: '轮盘赌'},
         {value3: '3', label: '基于排名选择'},
-        {value3: '4', label: '锦标赛选择'},
+        {value3: '4', label: '锦标赛'},
       ],
       value3:'',
       runtimes:0,
@@ -155,8 +155,9 @@ export default {
           name: '适应度',
           //坐标轴刻度从数据的最小值-100开始
           min: function (value) {
-            if(value.min - 100>0){
-              return value.min - 100;
+            if(value.min - 30>0){
+              //取整
+              return Math.floor(value.min - 30);
             }else{
               return 0;
             }
@@ -260,8 +261,8 @@ export default {
         },
         dataset: {
           source: [
-            ['product', '轮盘赌+精英策略', '基于排名选择', '基于锦标赛选择','种马进化'],
-            ['最优适应度', 43.3, 85.8, 93.7,70],
+            ['product', '轮盘赌+精英策略', '基于排名选择', '基于锦标赛选择'],
+            ['最优适应度', 43.3, 85.8, 93.7],
             ['平均适应度', 83.1, 73.4, 55.1],
             ['最差适应度', 86.4, 65.2, 82.5],
             ['适应度方差', 72.4, 53.9, 39.1]
@@ -281,9 +282,6 @@ export default {
           },{
             label: { show: true, position: 'top' },
             type: 'bar'
-          },{
-            label: { show: true, position: 'top' },
-            type: 'bar'
           }]
       },
 
@@ -294,9 +292,9 @@ export default {
     let chartDom = document.getElementById('fristLine');
     this.myChart = echarts.init(chartDom);
     this.option && this.myChart.setOption(this.option);
-    let chartDom2 = document.getElementById('fristScatter');
-    this.myChart2 = echarts.init(chartDom2);
-    this.option2 && this.myChart2.setOption(this.option2);
+    // let chartDom2 = document.getElementById('fristScatter');
+    // this.myChart2 = echarts.init(chartDom2);
+    // this.option2 && this.myChart2.setOption(this.option2);
     let chartDom3 = document.getElementById('fristBar');
     this.myChart3 = echarts.init(chartDom3);
     this.option3 && this.myChart3.setOption(this.option3);
@@ -304,7 +302,6 @@ export default {
   created() {
     this.initial()
     this.connect();
-    console.log(this.option2.series[0].data)
   },
   methods: {
     //webSocket连接成功后回调函数
@@ -321,14 +318,14 @@ export default {
     },
     responseCallback(frame) {
       //获得JSON.parse(frame.body)除最后一个的所有值
-      this.option2.series[0].data = JSON.parse(frame.body).slice(0,JSON.parse(frame.body).length-1)
+      //this.option2.series[0].data = JSON.parse(frame.body).slice(0,JSON.parse(frame.body).length-1)
       //this.option2.series[0].data = JSON.parse(frame.body)
       //将JSON.parse(frame.body)的最后一个数据取出
       if( this.currentGeneration== JSON.parse(frame.body)[JSON.parse(frame.body).length-1][0]){
-        //将opention2的标题改为当前迭代次数
-        this.option2.title.text = '第'+this.currentGeneration+'代种群轮盘赌后分布图'
-        //myChart2根据新的数据重新渲染
-        this.option2 && this.myChart2.setOption(this.option2);
+        // //将opention2的标题改为当前迭代次数
+        // this.option2.title.text = '第'+this.currentGeneration+'代种群轮盘赌后分布图'
+        // //myChart2根据新的数据重新渲染
+        // this.option2 && this.myChart2.setOption(this.option2);
       }else {
         this.currentGeneration = JSON.parse(frame.body)[JSON.parse(frame.body).length-1][0]
         if(this.GAcount2==this.GAcount1){
@@ -365,10 +362,10 @@ export default {
           this.fitnessVariance = this.fitnessVariance/this.runtimes
           this.fitnessVariance = this.fitnessVariance.toFixed(2)
         }
-        //将opention2的标题改为当前迭代次数
-        this.option2.title.text = '第'+this.currentGeneration+'代种群分布图'
-        //myChart2根据新的数据重新渲染
-        this.option2 && this.myChart2.setOption(this.option2);
+        // //将opention2的标题改为当前迭代次数
+        // this.option2.title.text = '第'+this.currentGeneration+'代种群分布图'
+        // //myChart2根据新的数据重新渲染
+        // this.option2 && this.myChart2.setOption(this.option2);
         //myChart根据新的数据重新渲染
         this.option && this.myChart.setOption(this.option);
       }
@@ -390,6 +387,23 @@ export default {
       this.client.connect(headers, this.onConnected, this.onFailed);
     },
     start2(){
+      if(this.GAcount1==9){
+        this.GAcount1 = -1
+        this.GAcount2 = 0
+        this.runtimes=0
+        this.option3.dataset.source[1][this.count3] = this.bestFitness
+        this.option3.dataset.source[2][this.count3] = this.averageFitness
+        this.option3.dataset.source[3][this.count3] = this.worstFitness
+        this.option3.dataset.source[4][this.count3] = this.fitnessVariance
+        this.option3 && this.myChart3.setOption(this.option3);
+        this.count3++
+        this.bestFitness=10000
+        this.worstFitness=0
+        //遍历option的series数组，清空data数组
+        for(let i=0;i<10;i++){
+          this.option.series[i].data = []
+        }
+      }
       this.GAcount1++
       gaDisplay2(this.value,this.value2,this.value3).then(res => {
         this.option.series[this.GAcount1].data=res.body
@@ -424,24 +438,7 @@ export default {
           message: '发送请求成功',
           type: 'success'
         });
-        if(this.GAcount1==9){
-          alert(1)
-          this.GAcount1 = -1
-          this.GAcount2 = 0
-          this.runtimes=0
-          this.option3.dataset.source[1][this.count3] = this.bestFitness
-          this.option3.dataset.source[2][this.count3] = this.averageFitness
-          this.option3.dataset.source[3][this.count3] = this.worstFitness
-          this.option3.dataset.source[4][this.count3] = this.fitnessVariance
-          this.option3 && this.myChart3.setOption(this.option3);
-          this.count3++
-          this.bestFitness=10000
-          this.worstFitness=0
-          //遍历option的series数组，清空data数组
-          for(let i=0;i<10;i++){
-            this.option.series[i].data = []
-          }
-        }
+
       })
 
     },
@@ -504,7 +501,6 @@ export default {
       })
     },
     changeGAParameter(){
-      alert(this.value)
       this.groupSize = this.ga[this.value-1].groupSize
       this.generation = this.ga[this.value-1].generation
       this.crossRate = this.ga[this.value-1].crossRate
@@ -580,8 +576,8 @@ input[type="text"] {
 }
 #fristLine{
   //flex: 1;
-  width: 500px;
-  height: 700px;
+  width: 800px;
+  height: 500px;
 }
 #fristBar{
   //flex: 1;
