@@ -1,8 +1,8 @@
 {
   "name": "ruoyi",
   "version": "3.8.5",
-  "description": "DEEHERO",
-  "author": "deehero",
+  "description": "缓存库管理系统",
+  "author": "缓存库管理系统",
   "license": "MIT",
   "scripts": {
     "dev": "vue-cli-service serve",

@@ -31,7 +31,7 @@
         </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo"/>
+        <img v-if="logo"  :src="logo"  class="sidebar-logo" />
         <h1
           class="sidebar-title"
           :style="{
@@ -40,9 +40,7 @@
                 ? variables.logoTitleColor
                 : variables.logoLightTitleColor,
           }"
-        >
-          {{ title }}
-        </h1>
+        >{{ title }}</h1>
       </router-link>
     </transition>
   </div>
@@ -50,7 +48,7 @@
 
 <script>
 import variables from '@/assets/styles/variables.scss'
-import logo from '@/assets/logo/logo.png'
+import logo from '@/assets/logo/cache.png'
 
 export default {
   name: 'SidebarLogo',

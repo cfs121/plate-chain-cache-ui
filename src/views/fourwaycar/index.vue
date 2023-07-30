@@ -575,12 +575,12 @@ input[type="text"] {
 }
 #fristScatter{
   //flex: 1;
-  width: 500px;
+  width: 600px;
   height: 700px;
 }
 #fristLine{
   //flex: 1;
-  width: 500px;
+  width: 600px;
   height: 700px;
 }
 #fristBar{
