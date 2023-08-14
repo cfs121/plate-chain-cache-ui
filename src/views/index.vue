@@ -1,9 +1,13 @@
 <template>
   <div class="home">
     <div class="main">
-      <div class="RGVorbit"></div>
-      <div id="display">
+      <div class="inOrOut">
+        <div v-for="index in 4" :key="index" class="out" ></div>
+      </div>
+      <div class="RGVorbit">
 
+      </div>
+      <div id="display">
         <div v-for="index in 14" :key="index" class="rect"></div>
 <!--        <div v-for="(size, index) in sizes" :key="index" class="inner-rect"-->
 <!--             :style="{ width: size.width + 'px',-->
@@ -11,6 +15,8 @@
 <!--             top: size.top + 'px',-->
 <!--             left: size.left + 'px' }"></div>-->
       </div>
+      <div class="RGVorbit"></div>
+      <div class="inOrOut"></div>
       <div class="control">
         <div class="chose" style="margin-left: 20px">
           <el-select
@@ -36,8 +42,12 @@ import {
   plateChainList,pageLibraries
 } from '@/api/wcs/show'
 import * as echarts from "echarts";
-
 export default {
+  computed: {
+    backgroundImage() {
+      return backgroundImage
+    }
+  },
   data() {
     return {
       platechainNum: 0,
@@ -88,18 +98,21 @@ export default {
       }
       function resizeRects(){//设置一个resizeRects函数,用来改变rect的宽高
         let myDiv = document.getElementById("display");
+        // 将容器设置为 flex 布局
+        myDiv.style.display = "flex";
+        // 将子元素排列在同一行
+        myDiv.style.flexWrap = "nowrap";
+        //拿到整个浏览器的宽度和高度
+        let rectHeight1 = document.documentElement.clientHeight;
         let rect = myDiv.getBoundingClientRect();
         let width = rect.width;
-        let rectHeight = 400;
+        let rectHeight = rectHeight1-70;
+        console.log("width:"+width + "rectHeight:"+rectHeight1)
         let rects = document.querySelectorAll(".rect");//获取所有的rect
         //rects横向排列
         rects.forEach((rect) => {
-          // 将容器设置为 flex 布局
-          myDiv.style.display = "flex";
-          // 将子元素排列在同一行
-          myDiv.style.flexWrap = "nowrap";
           rect.style.width = (width-10*rects.length-50)/rects.length + "px";
-          rect.style.height = rectHeight + "px";
+          rect.style.height = rectHeight*0.5 + "px";
           //背景图片，同比例缩放
           rect.style.backgroundSize = "100% 100%";
           rect.style.backgroundImage = "url(" + require("@/assets/images/plateChain.png") + ")";
@@ -114,7 +127,22 @@ export default {
             rect.style.marginLeft = "25px";
           }
         });
-
+        //修改RGV的高度
+        let RGVorbit = document.querySelectorAll(".RGVorbit");
+        RGVorbit.forEach((RGVorbit) => {
+          RGVorbit.style.height = rectHeight*0.075 + "px";
+        });
+        //修改inOrOut的高度
+        let inOrOut = document.querySelectorAll(".inOrOut");
+        inOrOut.forEach((inOrOut) => {
+          inOrOut.style.height = rectHeight*0.08 + "px";
+        });
+        //修改out的高度
+        let out = document.querySelectorAll(".out");
+        out.forEach((out) => {
+          out.style.height = rectHeight*0.08 + "px";
+          out.style.width=rects.item(1).style.width
+        });
       }
     },
     choseLibraries(){
@@ -126,35 +154,53 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.RGVorbit{
-  width:100%;
-  height: 60px;
-  //背景图片同一目录下
-  background-color: #666666;
-}
-.display{
-  //display: flex;// 将容器设置为 flex 布局
-  //flex-wrap: wrap; /* 如果想要自动换行 */
-  //justify-content: space-between; /* 如果想要两端对齐 */
-  //align-items: center; /* 如果想要垂直居中 */
-  //垂直布局
-  flex-direction: column;
+.main {
+  .inOrOut {
+    width:100%;
+    height: 60px;
+    //水平均匀分布
+    display: flex;
+    .out{
+      width:20%;
+      height: 60px;
+      background:url("../assets/images/out.png");
+      background-size: 100% 100%;
 
-  .rect {
-    width: 60px;
-    height: 200px;
-    background-color: #ccc;
-    //margin-bottom: 10px;
-    margin-right: 10px;
-    &:last-child {// 最后一个元素
-      margin-right: 0;
+      //background-color: #00afff;
     }
-    //第一个元素
-    &:first-child {
-      margin-left: 10px;
+  }
+  .RGVorbit{
+    width:100%;
+    height: 60px;
+    //背景图片同一目录下
+    background-color: #666666;
+  }
+  .display{
+    //display: flex;// 将容器设置为 flex 布局
+    //flex-wrap: wrap; /* 如果想要自动换行 */
+    //justify-content: space-between; /* 如果想要两端对齐 */
+    //align-items: center; /* 如果想要垂直居中 */
+    //垂直布局
+    flex-direction: column;
+
+    .rect {
+      width: 60px;
+      height: 200px;
+      background-color: #ccc;
+      //margin-bottom: 10px;
+      margin-right: 10px;
+      &:last-child {// 最后一个元素
+        margin-right: 0;
+      }
+      //第一个元素
+      &:first-child {
+        margin-left: 10px;
+      }
     }
   }
 }
+
+
 
 
 .inner-rect {
