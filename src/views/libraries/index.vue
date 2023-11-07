@@ -22,7 +22,7 @@
           :default-time="['00:00:00', '23:59:59']"
         />
       </template>
-	  
+
       <!-- 字典绑定 -->
       <!--<template #dict_type="{ row }">
         <dict-tag :options="dict.type.dict_type" :value="row.dict_type"/>
@@ -105,8 +105,12 @@ export default {
             title: '出库口数量'
           },
           {
-            field: 'rgv',
-            title: 'rgv数量'
+            field: 'inRgv',
+            title: '入库rgv数量'
+          },
+          {
+            field: 'outRgv',
+            title: '出库rgv数量'
           },
           {
             field: 'createdBy',

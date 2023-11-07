@@ -31,7 +31,7 @@ export default {
   components: {},
   data() {
     return {
-      title: 'Libraries',     
+      title: 'Libraries',
       formDesc: {
         plateChain: {
           type: 'number',
@@ -63,9 +63,19 @@ export default {
             clearable: true
           }
         },
-        rgv: {
+        inRgv: {
           type: 'number',
-          label: 'rgv数量',
+          label: '入库rgv数量',
+          required: true,
+          layout: 12,
+          attrs: {
+            min: 0,
+            clearable: true
+          }
+        },
+        outRgv: {
+          type: 'number',
+          label: '出库rgv数量',
           required: true,
           layout: 12,
           attrs: {

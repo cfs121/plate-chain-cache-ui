@@ -31,7 +31,7 @@ export default {
   components: {},
   data() {
     return {
-      title: 'Rgv',     
+      title: 'Rgv',
       formDesc: {
         librariesId: {
           type: 'number',
@@ -65,6 +65,16 @@ export default {
         port: {
           type: 'number',
           label: '端口号',
+          required: true,
+          layout: 12,
+          attrs: {
+            min: 0,
+            clearable: true
+          }
+        },
+        speed: {
+          type: 'number',
+          label: '速度',
           required: true,
           layout: 12,
           attrs: {

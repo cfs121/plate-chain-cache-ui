@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 登录方法
-export function login(username, password, code, deviceId) {
+export function login1(username, password, code, deviceId) {
   return request({
     url: '/login/username',
     headers: {
@@ -17,7 +17,23 @@ export function login(username, password, code, deviceId) {
     }
   })
 }
-
+export function login(username, password, code, deviceId) {
+  return request({
+    url: '/oauth2/token',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      isToken: false
+    },
+    method: 'post',
+    params: {
+      grant_type: 'password',
+      username: username,
+      password: password,
+      code: code,
+      deviceId: deviceId
+    }
+  })
+}
 // 注册方法
 export function register(data) {
   return request({

@@ -148,7 +148,6 @@ export default {
           max: function (value) {
             return value.currentGeneration;
           },
-
         },
         yAxis: {
           //坐标轴标题

@@ -22,7 +22,7 @@
           :default-time="['00:00:00', '23:59:59']"
         />
       </template>
-	  
+
       <!-- 字典绑定 -->
       <!--<template #dict_type="{ row }">
         <dict-tag :options="dict.type.dict_type" :value="row.dict_type"/>
@@ -107,6 +107,10 @@ export default {
           {
             field: 'port',
             title: '端口号'
+          },
+          {
+            field: 'speed',
+            title: '速度'
           },
           {
             field: 'createdBy',

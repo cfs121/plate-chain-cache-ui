@@ -8,7 +8,13 @@ export function page(params) {
         params: params
     })
 }
-
+export function outletPage(params) {
+  return request({
+    url: '/outlet/page',
+    method: 'get',
+    params: params
+  })
+}
 // 查询Outlet详细
 export function get(id) {
     return request({

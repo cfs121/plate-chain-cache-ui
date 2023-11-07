@@ -8,7 +8,13 @@ export function page(params) {
         params: params
     })
 }
-
+export function inletPage(params) {
+  return request({
+    url: '/inlet/page',
+    method: 'get',
+    params: params
+  })
+}
 // 查询Inlet详细
 export function get(id) {
     return request({
