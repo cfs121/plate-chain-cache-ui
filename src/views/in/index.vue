@@ -1,12 +1,12 @@
 <template>
   <div class="home">
     <div class="main">
-      <div class="inOrOut">
-        <div v-for="index in outlet" :key="index" class="out" ></div>
-      </div>
-      <div class="RGVorbit">
-        <div v-for="index in outRgv" :key="index" class="outRGV" ></div>
-      </div>
+<!--      <div class="inOrOut">-->
+<!--        <div v-for="index in outlet" :key="index" class="out" ></div>-->
+<!--      </div>-->
+<!--      <div class="RGVorbit">-->
+<!--        <div v-for="index in outRgv" :key="index" class="outRGV" ></div>-->
+<!--      </div>-->
       <div id="display">
         <div v-for="index in plateChain" :key="index" class="rect"></div>
 <!--        <div v-for="(size, index) in sizes" :key="index" class="inner-rect"-->
@@ -15,12 +15,12 @@
 <!--             top: size.top + 'px',-->
 <!--             left: size.left + 'px' }"></div>-->
       </div>
-      <div class="RGVorbit">
-        <div v-for="index in inRgv" :key="index" class="inRGV" ></div>
-      </div>
-      <div class="inOrOut">
-        <div v-for="index in inlet" :key="index" class="in" ></div>
-      </div>
+<!--      <div class="RGVorbit">-->
+<!--        <div v-for="index in inRgv" :key="index" class="inRGV" ></div>-->
+<!--      </div>-->
+<!--      <div class="inOrOut">-->
+<!--        <div v-for="index in inlet" :key="index" class="in" ></div>-->
+<!--      </div>-->
       <div class="control">
         <div class="chose" style="margin-left: 20px">
           <el-select
@@ -48,11 +48,11 @@
 </template>
 
 <script>
-import {qrcode111,plateChainByLibrariesId,pageLibraries,pageRgv,storageByLibrariesId,goodsAll} from '@/api/wcs/show'
-import{outletPage}from '@/api/wcs/outlet'
-import{inletPage}from '@/api/wcs/inlet'
+import {qrcode111,plateChainByLibrariesId,pageLibraries,pageRgv,storageByLibrariesId,goodsAll} from '../../api/wcs/show'
+import{outletPage}from '../../api/wcs/outlet'
+import{inletPage}from '../../api/wcs/inlet'
 import * as echarts from "echarts";
-import {qrcode} from "../api/wcs/show";
+import {qrcode} from "../../api/wcs/show";
 export default {
   computed: {
     backgroundImage() {
@@ -529,14 +529,14 @@ export default {
     .out{
       width:20%;
       height: 60px;
-      background:url("../assets/images/out.png");
+      background:url("../../assets/images/out.png");
       background-size: 100% 100%;
       //background-color: #00afff;
     }
     .in{
       width:20%;
       height: 60px;
-      background:url("../assets/images/out.png");
+      background:url("../../assets/images/out.png");
       background-size: 100% 100%;
       //background-color: #00afff;
     }
@@ -546,18 +546,18 @@ export default {
     height: 60px;
     //水平均匀分布
     display: flex;
-    //背景图片同一目录下
+    //背景图片在上一层
     background-color: #666666;
     .outRGV{
       width:20%;
       height: 60px;
-      background:url("../assets/images/RGV.png");
+      background:url("../../assets/images/RGV.png");
       background-size: 100% 100%;
     }
     .inRGV{
       width:20%;
       height: 60px;
-      background:url("../assets/images/RGV.png");
+      background:url("../../assets/images/RGV.png");
       background-size: 100% 100%;
     }
 
