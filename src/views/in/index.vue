@@ -1,28 +1,11 @@
 <template>
   <div class="home">
-    <div class="main">
-<!--      <div class="inOrOut">-->
-<!--        <div v-for="index in outlet" :key="index" class="out" ></div>-->
-<!--      </div>-->
-<!--      <div class="RGVorbit">-->
-<!--        <div v-for="index in outRgv" :key="index" class="outRGV" ></div>-->
-<!--      </div>-->
-      <div id="display">
-        <div v-for="index in plateChain" :key="index" class="rect"></div>
-<!--        <div v-for="(size, index) in sizes" :key="index" class="inner-rect"-->
-<!--             :style="{ width: size.width + 'px',-->
-<!--             height: size.height + 'px',-->
-<!--             top: size.top + 'px',-->
-<!--             left: size.left + 'px' }"></div>-->
-      </div>
-<!--      <div class="RGVorbit">-->
-<!--        <div v-for="index in inRgv" :key="index" class="inRGV" ></div>-->
-<!--      </div>-->
-<!--      <div class="inOrOut">-->
-<!--        <div v-for="index in inlet" :key="index" class="in" ></div>-->
-<!--      </div>-->
-      <div class="control">
-        <div class="chose" style="margin-left: 20px">
+    <div style="text-align: center;height: 40px">
+      <h1>入库管理界面</h1>
+    </div>
+    <div class="main0">
+      <div class="aside">
+        <div class="chose" style="margin-top: 15px">
           <el-select
             v-model="value1" style="width: 130px"
             placeholder="请选择缓存库"
@@ -35,14 +18,39 @@
             />
           </el-select>
         </div>
-        //显示该缓存库的二维码
-        <div class="qrcode" style="margin-left: 20px">
-          <el-button type="primary" @click="showQrcode">显示二维码</el-button>
-          <img :src="verifyCode" style="float:right;">
+        <div style="margin-top: 30px;margin-left:15px;width: 180px;">
+          <el-input
+            placeholder="请输入货物名称或ID"
+            v-model="input"
+            clearable>
+          </el-input>
+        </div>
+        <div style="margin-top: 10px;">
+          <el-button  type="primary" round @click="findGood">查 找</el-button>
+        </div>
 
+      </div>
+      <div class="main">
+        <div id="display" style="margin-top: 10px">
+          <div v-for="index in plateChain" :key="index" class="rect"></div>
+          <!--        <div v-for="(size, index) in sizes" :key="index" class="inner-rect"-->
+          <!--             :style="{ width: size.width + 'px',-->
+          <!--             height: size.height + 'px',-->
+          <!--             top: size.top + 'px',-->
+          <!--             left: size.left + 'px' }"></div>-->
+        </div>
+        <div class="control">
+          //显示该缓存库的二维码
+          <div class="qrcode" style="margin-left: 20px">
+            <el-button type="primary" @click="showQrcode">显示二维码</el-button>
+            <img :src="verifyCode" style="float:right;">
+
+          </div>
         </div>
       </div>
     </div>
+
+
   </div>
 
 </template>
@@ -61,6 +69,7 @@ export default {
   },
   data() {
     return {
+      input:'',
       value1: '',
       libraries:[],
       librariesSelect:[],
@@ -88,6 +97,9 @@ export default {
     this.initial();
   },
   methods: {
+    findGood(){
+      alert(1)
+    },
     showQrcode(){
       qrcode111(this.qr).then(res=> {
         const src = window.URL.createObjectURL(res)//这里也是关键,调用window的这个方法URL方法
@@ -194,6 +206,7 @@ export default {
         let rectHeight1 = document.documentElement.clientHeight;
         let rect = myDiv.getBoundingClientRect();
         let width = rect.width;
+        console.log(width)
         let rectHeight = rectHeight1-70;
         let rects = document.querySelectorAll(".rect");//获取所有的rect
         let num=0
@@ -202,6 +215,7 @@ export default {
           //rect的内容清空
           rect.innerHTML = "";
           rect.style.width = (width-10*rects.length-50)/rects.length + "px";
+          console.log((width-10*rects.length-50)/rects.length)
           rect.style.height = rectHeight*0.5 + "px";
           //背景图片，同比例缩放
           rect.style.backgroundSize = "100% 100%";
@@ -520,79 +534,55 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.main {
-  .inOrOut {
-    width:100%;
-    height: 60px;
-    //水平均匀分布
-    display: flex;
-    .out{
-      width:20%;
-      height: 60px;
-      background:url("../../assets/images/out.png");
-      background-size: 100% 100%;
-      //background-color: #00afff;
-    }
-    .in{
-      width:20%;
-      height: 60px;
-      background:url("../../assets/images/out.png");
-      background-size: 100% 100%;
-      //background-color: #00afff;
-    }
-  }
-  .RGVorbit{
-    width:100%;
-    height: 60px;
-    //水平均匀分布
-    display: flex;
-    //背景图片在上一层
-    background-color: #666666;
-    .outRGV{
-      width:20%;
-      height: 60px;
-      background:url("../../assets/images/RGV.png");
-      background-size: 100% 100%;
-    }
-    .inRGV{
-      width:20%;
-      height: 60px;
-      background:url("../../assets/images/RGV.png");
-      background-size: 100% 100%;
-    }
 
+.main0{
+    //横向排列
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: calc(100vh - 175px);
+  .aside {
+    background-color: #d3dce6;
+    color: #333;
+    text-align: center;
+    width: 260px;
+    height: calc(100vh - 175px);
+    /* line-height: 20px; */
   }
-  .display{
-    //display: flex;// 将容器设置为 flex 布局
-    //flex-wrap: wrap; /* 如果想要自动换行 */
-    //justify-content: space-between; /* 如果想要两端对齐 */
-    //align-items: center; /* 如果想要垂直居中 */
-    //垂直布局
-    flex-direction: column;//将子元素排列在垂直方向
+  .main {
+    //纵向排列
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    }
+    .display{
+      //display: flex;// 将容器设置为 flex 布局
+      //flex-wrap: wrap; /* 如果想要自动换行 */
+      //justify-content: space-between; /* 如果想要两端对齐 */
+      //align-items: center; /* 如果想要垂直居中 */
+      //垂直布局
+      flex-direction: column;//将子元素排列在垂直方向
 
-    .rect {
-      width: 60px;
-      height: 200px;
-      background-color: #ccc;
-      //margin-bottom: 10px;
-      margin-right: 10px;
-      &:last-child {// 最后一个元素
-        margin-right: 0;
-      }
-      //第一个元素
-      &:first-child {
-        margin-left: 10px;
+      .rect {
+        width: 60px;
+        height: 200px;
+        background-color: #ccc;
+        //margin-bottom: 10px;
+        margin-right: 10px;
+        &:last-child {// 最后一个元素
+          margin-right: 0;
+        }
+        //第一个元素
+        &:first-child {
+          margin-left: 10px;
+        }
       }
     }
   }
-}
 
 
 
 
-.inner-rect {
-  position: absolute;
-  background-color: #f00;
-}
 </style>
 

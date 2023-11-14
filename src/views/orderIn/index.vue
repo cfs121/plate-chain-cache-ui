@@ -22,7 +22,7 @@
           :default-time="['00:00:00', '23:59:59']"
         />
       </template>
-
+	  
       <!-- 字典绑定 -->
       <!--<template #dict_type="{ row }">
         <dict-tag :options="dict.type.dict_type" :value="row.dict_type"/>
@@ -61,12 +61,12 @@ import {
   page,
   get,
   del
-} from '@/api/wcs/goods'
+} from '@/api/wcs/orderIn'
 import { gridTable } from '@/mixin/grid-table'
 import AddEditForm from './components/add-edit-form'
 
 export default {
-  name: 'Goods',
+  name: 'OrderIn',
   // 添加字典绑定
   // dicts: ['dict_type'],
   components: { AddEditForm },
@@ -90,23 +90,23 @@ export default {
           },*/
           {
             field: 'id',
+            title: '订单ID'
+          },
+          {
+            field: 'goodsId',
             title: '货物ID'
           },
           {
-            field: 'name',
-            title: '货物名'
+            field: 'inletId',
+            title: '入库口ID'
           },
           {
-            field: 'type',
-            title: '货物类型'
+            field: 'outletId',
+            title: '出库口ID'
           },
           {
-            field: 'length',
-            title: '货物长度'
-          },
-          {
-            field: 'width',
-            title: '货物宽度'
+            field: 'number',
+            title: '货物数量'
           },
           {
             field: 'createdBy',

@@ -31,9 +31,18 @@ export default {
   components: {},
   data() {
     return {
-      title: 'Goods',     
+      title: 'Goods',
       formDesc: {
         name: {
+          type: 'input',
+          label: '货物名',
+          required: true,
+          layout: 12,
+          attrs: {
+            clearable: true
+          }
+        },
+        type: {
           type: 'input',
           label: '货物名',
           required: true,
