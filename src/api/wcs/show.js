@@ -1,4 +1,36 @@
 import request from '@/utils/request'
+//根据缓存库id查询入库口
+export function inletByLibrariesId(librariesId) {
+  return request({
+    url: '/inlet/byLibrariesId',
+    method: 'get',
+    params: {librariesId}
+  })
+}
+//根据缓存库id查询出库口
+export function outletByLibrariesId(librariesId) {
+  return request({
+    url: '/outlet/byLibrariesId',
+    method: 'get',
+    params: {librariesId}
+  })
+}
+//根据入库口查询入库任务
+export function orderByInletId(inletId) {
+  return request({
+    url: '/orderIn/inletId',
+    method: 'get',
+    params: {inletId}
+  })
+}
+//根据出库口查询入库任务
+export function orderByOutletId(outletId) {
+  return request({
+    url: '/orderOut/outletId',
+    method: 'get',
+    params: {outletId}
+  })
+}
 // 查询Goods列表
 export function goodsAll() {
   return request({

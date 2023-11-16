@@ -28,7 +28,44 @@
         <div style="margin-top: 10px;">
           <el-button  type="primary" round @click="findGood">查 找</el-button>
         </div>
-
+        <div style="margin-top: 10px;">
+          <el-divider content-position="left">货物信息(扫码or输入)</el-divider></div>
+        <div style="margin-top: 10px;">
+          <el-autocomplete
+            v-model="state"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="货物名称"
+            @select="handleSelect" style="width: 180px"
+          ></el-autocomplete>
+        </div>
+        <div style="margin-top: 10px;">
+          <el-input placeholder="货物型号" v-model="good.type" style="width: 180px" clearable></el-input>
+        </div>
+        <div style="margin-top: 10px;">
+          <el-input placeholder="货物编号" v-model="good.id" style="width: 180px" clearable></el-input>
+        </div>
+        <div style="margin-top: 10px;">
+          <el-input placeholder="货物长" v-model="good.length" style="width: 90px" clearable></el-input>
+          <el-input placeholder="货物宽" v-model="good.width" style="width: 90px" clearable></el-input>
+        </div>
+        <div style="margin-top: 10px;">
+          <el-input placeholder="货物数量" v-model="good.number" style="width: 180px" clearable></el-input>
+        </div>
+        <div style="margin-top: 10px;">
+          <el-select
+            v-model="good.location" style="width: 180px"
+            placeholder="请选择货物位置"
+            @change="choseLocation">
+            <el-option
+              v-for="item in plateChain1"
+              :key="item"
+              :label="'缓存区'+item"
+              :value="item"
+            />
+          </el-select></div>
+        <div style="margin-top: 10px;">
+          <el-button  type="success" round @click="findGood">入 库</el-button>
+        </div>
       </div>
       <div class="main">
         <div id="display" style="margin-top: 10px">
@@ -40,11 +77,47 @@
           <!--             left: size.left + 'px' }"></div>-->
         </div>
         <div class="control">
-          //显示该缓存库的二维码
-          <div class="qrcode" style="margin-left: 20px">
-            <el-button type="primary" @click="showQrcode">显示二维码</el-button>
-            <img :src="verifyCode" style="float:right;">
-
+          //表格显示入库任务序列
+          <div>
+            <el-table
+              :data="tableData"
+              style="width: 100%">
+              <el-table-column
+                prop="id"
+                label="任务编号"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="type"
+                label="任务类型"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="status"
+                label="任务状态"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="location"
+                label="目标位置"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="goodsId"
+                label="货物编号"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="amount"
+                label="货物数量"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="time"
+                label="任务时间"
+                width="180">
+              </el-table-column>
+            </el-table>
           </div>
         </div>
       </div>
@@ -56,7 +129,14 @@
 </template>
 
 <script>
-import {qrcode111,plateChainByLibrariesId,pageLibraries,pageRgv,storageByLibrariesId,goodsAll} from '../../api/wcs/show'
+import {
+  orderByInletId,qrcode111,
+  plateChainByLibrariesId,
+  pageLibraries,
+  pageRgv,
+  storageByLibrariesId,
+  goodsAll,outletByLibrariesId, inletByLibrariesId
+} from '../../api/wcs/show'
 import{outletPage}from '../../api/wcs/outlet'
 import{inletPage}from '../../api/wcs/inlet'
 import * as echarts from "echarts";
@@ -69,16 +149,49 @@ export default {
   },
   data() {
     return {
+      tableData: [{
+        id: '1',
+        type: '入库',
+        status: '已完成',
+        location: '1',
+        goodsId: '1',
+        amount: '1',
+        time: '2020-12-12 12:12:12'
+      }, {
+        id: '2',
+        type: '入库',
+        status: '已完成',
+        location: '1',
+        goodsId: '1',
+        amount: '1',
+        time: '2020-12-12 12:12:12'
+      }],
+      restaurants: [],
+      state: '',
+      timeout:  null,
+      good:{
+        name:'',
+        type:'',
+        id:'',
+        length:'',
+        width:'',
+        number:'',
+        location:''
+      },
+      orderIn:[],
       input:'',
       value1: '',
       libraries:[],
       librariesSelect:[],
       plateChain:0,
+      plateChain1:[],
       inlet:0,
       outlet:0,
       outRgv:0,
       inRgv:0,
       outletLocation:[],
+      storageGoods:[],
+      goodss:[],
       sizes: [
         { width: 200, height: 300, top: 100, left: 100 },
         { width: 300, height: 500, top: 500, left: 500 },
@@ -97,8 +210,118 @@ export default {
     this.initial();
   },
   methods: {
+    querySearchAsync(queryString, cb) {
+      var restaurants = this.restaurants;
+      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        cb(results);
+      }, 3000 * Math.random());
+    },
+    createStateFilter(queryString) {
+      return (state) => {
+        return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handleSelect(item) {
+      this.good.name=item.value
+      this.good.id=item.id
+      this.good.type=item.type
+      this.good.length=item.length
+      this.good.width=item.width
+    },
+
+    choseLocation(){
+
+    },
     findGood(){
-      alert(1)
+      if(this.input==''){
+        this.$message({
+          message: '请输入货物名称或ID',
+          type: 'warning'
+        });
+        return
+      }
+      //根据输入的货物名称或ID查找板链上的货物，并将货物所在的方框外边显红
+      //判断input是数字还是字符串
+      let reg = /^[0-9]+.?[0-9]*$/;
+      let y=false
+      if(reg.test(this.input)){
+        //遍历storageGoods数组
+        for (let i = 0; i < this.storageGoods.length; i++) {
+          if(this.storageGoods[i].length==0){
+            continue
+          }
+          //遍历storageGoods[i]数组
+          for (let j = 0; j < this.storageGoods[i].length; j++) {
+            if(this.storageGoods[i][j].goodsId==this.input){
+              //其中i表示第几个rect,j表示第几个canvas
+              let rects = document.querySelectorAll(".rect");
+              let rect=rects.item(i)
+              let canvas=rect.getElementsByTagName("canvas")
+              let canvas1=canvas.item(j)
+              //将该canvas1进行闪烁，闪烁时间为5s
+              let timer = null;
+              timer = setInterval(function () {
+                if (canvas1.style.opacity == "0.5") {
+                  canvas1.style.opacity = "1";
+                } else {
+                  canvas1.style.opacity = "0.5";
+                }
+              }, 500);
+              setTimeout(function () {
+                clearInterval(timer);
+                canvas1.style.opacity = "0.5";
+              }, 4000);
+              y=true
+            }
+          }
+        }
+      }else {
+        //遍历goodss数组
+        for (let i = 0; i < this.goodss.length; i++) {
+           if(this.goodss[i].name==this.input){
+              let id=this.goodss[i].id
+              //遍历storageGoods数组
+              for (let j = 0; j < this.storageGoods.length; j++) {
+                if(this.storageGoods[j].length==0){
+                  continue
+                }
+                //遍历storageGoods[j]数组
+                for (let k = 0; k < this.storageGoods[j].length; k++) {
+                  if(this.storageGoods[j][k].goodsId==id){
+                    //其中j表示第几个rect,k表示第几个canvas
+                    let rects = document.querySelectorAll(".rect");
+                    let rect=rects.item(j)
+                    let canvas=rect.getElementsByTagName("canvas")
+                    let canvas1=canvas.item(k)
+                    //将该canvas1进行闪烁，闪烁时间为5s
+                    let timer = null;
+                    timer = setInterval(function () {
+                      if (canvas1.style.opacity == "0.5") {
+                        canvas1.style.opacity = "1";
+                      } else {
+                        canvas1.style.opacity = "0.5";
+                      }
+                    }, 500);
+                    setTimeout(function () {
+                      clearInterval(timer);
+                      canvas1.style.opacity = "0.5";
+                    }, 4000);
+                    y=true
+                  }
+                }
+              }
+           }
+        }
+      }
+      if(y==false){
+        this.$message({
+          message: '该货物不存在',
+          type: 'warning'
+        });
+      }
     },
     showQrcode(){
       qrcode111(this.qr).then(res=> {
@@ -108,6 +331,7 @@ export default {
       })
     },
     initial() {
+
       pageLibraries().then(res => {
         this.libraries = res.body
         //遍历libraries数组，将其转换为select数组
@@ -140,12 +364,31 @@ export default {
       let goods=[]
       await goodsAll().then(res=>{
           goods.push(res.body)
+        this.goodss=goods[0]
+        for (let i = 0; i < this.goodss.length; i++) {
+          this.restaurants.push({
+            value: this.goodss[i].name,
+            id: this.goodss[i].id,
+            type:this.goodss[i].type,
+            length:this.goodss[i].length,
+            width:this.goodss[i].width
+          });
+        }
       })
       await plateChainByLibrariesId(this.value1).then(res=>{
+        let temp=[]
         //遍历plateChain数组,拿到plateChain的id为value1的plateChain
         for (let i = 0; i < res.body.length; i++) {
-            plateChain.push(res.body[i])
+            if(res.body[i].type==1){
+              this.plateChain--
+            }else {
+              plateChain.push(res.body[i])
+              temp.push(res.body[i].id)
+            }
+
+
         }
+        this.plateChain1=temp
       })
       //遍历plateChain数组,拿到plateChain的id作为storage的id
       await storageByLibrariesId(this.value1).then(res=>{
@@ -161,25 +404,22 @@ export default {
               }
               storage.push(storage1)
             }
+            this.storageGoods=storage
       })
       await pageRgv(this.value1).then(res=>{
         //遍历rgv数组,拿到rgv的id为value1的rgv
             rgv.push(res.body)
       })
-      await outletPage().then(res=>{
-        //遍历outlet数组,拿到outlet的id为value1的outlet
-        for (let i = 0; i < res.body.content.length; i++) {
-          if(res.body.content[i].librariesId==this.value1){
-            outletLocation.push(res.body.content[i].location)
-          }
+      await outletByLibrariesId(this.value1).then(res=>{
+        //遍历outlet数组
+        for (let i = 0; i < res.body.length; i++) {
+            outletLocation.push(res.body[i].location)
         }
       })
-      await inletPage().then(res=>{
-        //遍历inlet数组,拿到inlet的id为value1的inlet
-        for (let i = 0; i < res.body.content.length; i++) {
-          if(res.body.content[i].librariesId==this.value1){
-            inletLocation.push(res.body.content[i].location)
-          }
+      await inletByLibrariesId(this.value1).then(res=>{
+        //遍历outlet数组
+        for (let i = 0; i < res.body.length; i++) {
+          inletLocation.push(res.body[i].location)
         }
       })
       let left = []
@@ -293,9 +533,9 @@ export default {
                       div.style.borderRadius = "5px";
                       div.style.left = event.clientX + "px";
                       div.style.top = event.clientY + "px";
-                      div.innerHTML = "商品名称:" + goods1.name + "<br/>" +
-                        "商品编号:" + goods1.id + "<br/>" + "商品尺寸:" + goods1.width +
-                        "*" + goods1.length+ "<br/>"+ "数量:"+ number +
+                      div.innerHTML = "货物名称:" + goods1.name + "<br/>" +"货物型号:" + goods1.type + "<br/>"+
+                        "货物编号:" + goods1.id + "<br/>" + "货物尺寸:" + goods1.length +
+                        "*" + goods1.width+ "<br/>"+ "数量:"+ number +
                         "<br/>"+"位置:"+location ;
                       document.body.appendChild(div);
                       //界面上只能有一个信息框，鼠标移动到其他canvas上，先将之前的信息框删除
@@ -306,9 +546,9 @@ export default {
                     }
                     //点击canvas,显示goods的具体信息
                     canvas.onclick = function () {
-                      alert("商品名称:" + goods1.name + "\n" +
-                        "商品编号:" + goods1.id + "\n" + "商品尺寸:" + goods1.width +
-                        "*" + goods1.length+ "\n"+ "数量:"+ number +
+                      alert("货物名称:" + goods1.name + "\n" +"货物型号:" + goods1.name + "\n"+
+                        "货物编号:" + goods1.id + "\n" + "货物尺寸:" + goods1.length +
+                        "*" + goods1.width+ "\n"+ "数量:"+ number +
                         "\n"+"位置:"+location )
                     }
                   }
@@ -540,13 +780,13 @@ export default {
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: calc(100vh - 175px);
+    height: calc(100vh - 84px);
   .aside {
     background-color: #d3dce6;
     color: #333;
     text-align: center;
     width: 260px;
-    height: calc(100vh - 175px);
+    height: calc(100vh - 84px);
     /* line-height: 20px; */
   }
   .main {

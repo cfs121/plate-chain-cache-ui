@@ -22,11 +22,15 @@
           :default-time="['00:00:00', '23:59:59']"
         />
       </template>
-	  
+
       <!-- 字典绑定 -->
       <!--<template #dict_type="{ row }">
         <dict-tag :options="dict.type.dict_type" :value="row.dict_type"/>
       </template>-->
+      <!-- 字典绑定 -->
+      <template #order_status="{ row }">
+        <dict-tag :options="dict.type.order_status" :value="row.status"/>
+      </template>
 
       <template #operate="{ row }">
         <el-button
@@ -69,6 +73,7 @@ export default {
   name: 'OrderIn',
   // 添加字典绑定
   // dicts: ['dict_type'],
+  dicts: [ 'order_status'],
   components: { AddEditForm },
   mixins: [gridTable],
   data() {
@@ -86,11 +91,11 @@ export default {
           /**{
             field: 'dictType',
             title: '字典类型',
-            slots: { default: 'dictType' }
+            slots: { default: 'dictType' }// 字典绑定
           },*/
           {
             field: 'id',
-            title: '订单ID'
+            title: '入库任务ID'
           },
           {
             field: 'goodsId',
@@ -107,6 +112,12 @@ export default {
           {
             field: 'number',
             title: '货物数量'
+          },
+          {
+            //映射字典'任务状态 1:待执行 2:执行中 3:已完成'
+            field: 'status',
+            title: '任务状态',
+            slots: { default: 'order_status' }
           },
           {
             field: 'createdBy',
@@ -181,6 +192,7 @@ export default {
   async created() {
     // 下拉框值绑定
     // this.setFormConfigSelectItemOptions('Q_EQ_status')
+
   },
   methods: {
     workFormParams(params) {
