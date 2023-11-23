@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { add, update } from '@/api/wcs/plateChain'
+import { add, update } from '@/api/wcs/orderIn'
 import { addEditForm } from '@/mixin/add-edit-form'
 import { deepClone } from '@/utils'
 
@@ -31,11 +31,31 @@ export default {
   components: {},
   data() {
     return {
-      title: 'PlateChain',
+      title: 'OrderIn',
       formDesc: {
-        librariesId: {
+        goodsId: {
           type: 'number',
-          label: '缓存库ID',
+          label: '货物ID',
+          required: true,
+          layout: 12,
+          attrs: {
+            min: 0,
+            clearable: true
+          }
+        },
+        plateChainId: {
+          type: 'number',
+          label: '板链ID',
+          required: true,
+          layout: 12,
+          attrs: {
+            min: 0,
+            clearable: true
+          }
+        },
+        inletId: {
+          type: 'number',
+          label: '入库口ID',
           required: true,
           layout: 12,
           attrs: {
@@ -53,9 +73,9 @@ export default {
             clearable: true
           }
         },
-        type: {
+        number: {
           type: 'number',
-          label: '板链类型：0：货架  1：快速通道',
+          label: '货物数量',
           required: true,
           layout: 12,
           attrs: {
@@ -63,39 +83,9 @@ export default {
             clearable: true
           }
         },
-        location: {
+        status: {
           type: 'number',
-          label: '板链位置',
-          required: true,
-          layout: 12,
-          attrs: {
-            min: 0,
-            clearable: true
-          }
-        },
-        length: {
-          type: 'number',
-          label: '板链长度',
-          required: true,
-          layout: 12,
-          attrs: {
-            min: 0,
-            clearable: true
-          }
-        },
-        width: {
-          type: 'number',
-          label: '板链宽度',
-          required: true,
-          layout: 12,
-          attrs: {
-            min: 0,
-            clearable: true
-          }
-        },
-        speed: {
-          type: 'number',
-          label: '出入库速度，秒/托',
+          label: '任务状态 1:待执行 2:执行中 3:已完成',
           required: true,
           layout: 12,
           attrs: {

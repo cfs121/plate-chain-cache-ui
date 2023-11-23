@@ -22,7 +22,7 @@
           :default-time="['00:00:00', '23:59:59']"
         />
       </template>
-	  
+
       <!-- 字典绑定 -->
       <!--<template #dict_type="{ row }">
         <dict-tag :options="dict.type.dict_type" :value="row.dict_type"/>
@@ -95,6 +95,10 @@ export default {
           {
             field: 'librariesId',
             title: '缓存库ID'
+          },
+          {
+            field: 'outletId',
+            title: '出库口ID'
           },
           {
             field: 'type',

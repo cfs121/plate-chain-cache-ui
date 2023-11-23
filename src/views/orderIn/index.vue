@@ -106,6 +106,10 @@ export default {
             title: '入库口ID'
           },
           {
+            field: 'plateChainId',
+            title: '板链ID'
+          },
+          {
             field: 'outletId',
             title: '出库口ID'
           },

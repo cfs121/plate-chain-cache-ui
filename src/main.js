@@ -37,6 +37,8 @@ import DictTag from '@/components/DictTag'
 import VueMeta from 'vue-meta'
 // 字典数据组件
 import DictData from '@/components/DictData'
+import vueRouter from 'vue-router'
+import Echarts from 'echarts'//引入echarts
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -48,6 +50,7 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
+Vue.prototype.$echarts = Echarts;
 
 // 全局组件挂载
 Vue.component('DictTag', DictTag)
@@ -58,6 +61,7 @@ Vue.component('FileUpload', FileUpload)
 Vue.component('ImageUpload', ImageUpload)
 Vue.component('ImagePreview', ImagePreview)
 
+Vue.use(vueRouter);
 Vue.use(directive)
 Vue.use(plugins)
 Vue.use(VueMeta)

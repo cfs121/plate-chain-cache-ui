@@ -18,7 +18,10 @@
             />
           </el-select>
         </div>
-        <div style="margin-top: 30px;margin-left:15px;width: 180px;">
+        <div class="capacity" style="margin-top: 10px;margin-left:22px;width: 150px;height: 180px;">
+          <div id="liquidFill11" style="width: 150px;height: 180px;"></div>
+        </div>
+        <div style="margin-left:15px;width: 180px;">
           <el-input
             placeholder="请输入货物名称或ID"
             v-model="input"
@@ -52,6 +55,30 @@
           <el-input placeholder="货物数量" v-model="good.number" style="width: 180px" clearable></el-input>
         </div>
         <div style="margin-top: 10px;">
+        <el-select
+          v-model="good.location" style="width: 90px"
+          placeholder="入库口"
+          @change="choseLocation">
+          <el-option
+            v-for="item in inlet1"
+            :key="item"
+            :label="'入库口'+item"
+            :value="item"
+          />
+        </el-select>
+          <el-select
+            v-model="good.location" style="width: 90px"
+            placeholder="出库口"
+            @change="choseLocation">
+            <el-option
+              v-for="item in outlet1"
+              :key="item"
+              :label="'出库口'+item"
+              :value="item"
+            />
+          </el-select>
+        </div>
+        <div style="margin-top: 10px;">
           <el-select
             v-model="good.location" style="width: 180px"
             placeholder="请选择货物位置"
@@ -77,45 +104,73 @@
           <!--             left: size.left + 'px' }"></div>-->
         </div>
         <div class="control">
-          //表格显示入库任务序列
-          <div>
-            <el-table
-              :data="tableData"
-              style="width: 100%">
+          <div >
+            <el-button
+              type="text"
+              icon="el-icon-delete"
+            >批量删除</el-button>
+            <el-table stripe border :data="tableData"
+                      max-height="250"
+              ref="multipleTable"
+              style="width: 100%;" @selection-change="handleSelectionChange">
+              <el-table-column
+                type="selection"
+                width="40">
+              </el-table-column>
               <el-table-column
                 prop="id"
-                label="任务编号"
-                width="180">
+                label="序号"
+                width="50">
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                label="货物名称"
+                width="120">
               </el-table-column>
               <el-table-column
                 prop="type"
-                label="任务类型"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="status"
-                label="任务状态"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="location"
-                label="目标位置"
-                width="180">
+                label="货物型号"
+                width="90">
               </el-table-column>
               <el-table-column
                 prop="goodsId"
                 label="货物编号"
-                width="180">
+                width="100">
               </el-table-column>
               <el-table-column
-                prop="amount"
+                prop="number"
                 label="货物数量"
-                width="180">
+                width="90">
+              </el-table-column>
+              <el-table-column
+                prop="location"
+                label="目标位置"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="status"
+                label="任务状态"
+                width="90" >
               </el-table-column>
               <el-table-column
                 prop="time"
-                label="任务时间"
-                width="180">
+                label="任务生成时间"
+                width="100">
+              </el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    type="primary"
+                    @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                  <el-button
+                    size="mini"
+                    @click="handleEdit(scope.$index, scope.row)">上移</el-button>
+                  <el-button
+                    size="mini"
+                    type="danger"
+                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                </template>
               </el-table-column>
             </el-table>
           </div>
@@ -141,6 +196,8 @@ import{outletPage}from '../../api/wcs/outlet'
 import{inletPage}from '../../api/wcs/inlet'
 import * as echarts from "echarts";
 import {qrcode} from "../../api/wcs/show";
+import Echarts from 'echarts'//引入echarts
+import "echarts-liquidfill";
 export default {
   computed: {
     backgroundImage() {
@@ -149,16 +206,11 @@ export default {
   },
   data() {
     return {
+      multipleSelection: [],
+      capacityUse:0,
+      capacity:0,
       tableData: [{
         id: '1',
-        type: '入库',
-        status: '已完成',
-        location: '1',
-        goodsId: '1',
-        amount: '1',
-        time: '2020-12-12 12:12:12'
-      }, {
-        id: '2',
         type: '入库',
         status: '已完成',
         location: '1',
@@ -176,7 +228,9 @@ export default {
         length:'',
         width:'',
         number:'',
-        location:''
+        inletId:'',
+        location:'',
+        outletId:'',
       },
       orderIn:[],
       input:'',
@@ -186,7 +240,9 @@ export default {
       plateChain:0,
       plateChain1:[],
       inlet:0,
+      inlet1:[],
       outlet:0,
+      outlet1:[],
       outRgv:0,
       inRgv:0,
       outletLocation:[],
@@ -204,12 +260,97 @@ export default {
     }
   },
   mounted(){
-
+    this.liquidFill();
   },
   created() {
     this.initial();
+
   },
   methods: {
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+
+    liquidFill (){//方法
+      let liquid = echarts.init(document.getElementById('liquidFill11'));//初始化echarts
+      liquid.setOption({
+        title: {//标题
+          text:'库存容量',
+          textStyle: {//标题的样式
+            color:'#f60',//字体颜色
+            fontFamily: 'Microsoft YaHei',//字体
+            align: 'center',//文字的水平方式
+            verticalAlign: 'middle'//文字位于图片中间位置
+          },
+          left: 'center',//定位
+          //backgroundColor: '#03dbdb'//文字区域的背景颜色
+        },
+        series: [{
+          type: 'liquidFill',//类型
+          data: [0.8, 0.8, 0.7,],//数据是个数组 数组的每一项的值是0-1
+          outline: {
+            show: true , //是否显示轮廓 布尔值
+            borderDistance: 0, //外部轮廓与图表的距离 数字
+            itemStyle:{
+              borderColor:'rgba(255,0,0,0.09)', //边框的颜色
+              borderWidth: 0,  //边框的宽度
+              shadowBlur: 5 , //外部轮廓的阴影范围 一旦设置了内外都有阴影
+              shadowColor: '#000' //外部轮廓的阴影颜色
+            }
+          },
+          backgroundStyle: {
+            color:'rgba(255,0,0,0.1)',//图表的背景颜色
+            //borderWidth: '10',//图表的边框宽度
+            //borderColor: '#000',//图表的边框颜色
+            itemStyle: {
+              shadowBlur:100,//设置无用
+              shadowColor: '#f60',//设置无用
+              opacity: 1 //设置无用
+            }
+          },
+          itemStyle: {
+            opacity:0.5,//波浪的透明度
+            shadowBlur: 10,//波浪的阴影范围
+            shadowColor:'#f60'//阴影颜色
+          },
+          emphasis:{
+            itemStyle: {
+              opacity :1 //鼠标经过波浪颜色的透明度
+            }
+          },
+          //水波的颜色 对应的是data里面值,当第一个值越高，整体颜色越红，否则越蓝
+          color: ['#03dbdb', '#03dbdb', '#03dbdb'],
+          //水波的形状
+          shape: 'circle',//水填充图的形状 circle默认圆形  rect圆角矩形  triangle三角形  diamond菱形  pin水滴状 arrow箭头状  还可以是svg的path
+          center: ['50%','50%'],//图表相对于盒子的位置 第一个是水平的位置 第二个是垂直的值 默认是[50%,50%]是在水平和垂直方向居中 可以设置百分比 也可以设置具体值
+          radius: '80%', //图表的大小 值是圆的直径 可以是百分比 也可以是具体值 100%则占满整个盒子 默认是40%; 百分比下是根据宽高最小的一个为参照依据
+          amplitude:3,   //振幅 是波浪的震荡幅度 可以取具体的值 也可以是百分比 百分比下是按图标的直径来算
+          waveLength:'50%',//波的长度 可以是百分比也可以是具体的像素值  百分比下是相对于直径的 取得越大波浪的起伏越小
+          phase:0 ,//波的相位弧度 默认情况下是自动
+          period: (value,index)=>{//控制波的移动速度 可以是函数 也可以是数字 两个参数  value 是data数据里面的值 index 是data值的索引
+
+            return index*2000;
+          },
+          direction: 'left',//波移动的速度 两个参数  left 从右往左 right 从左往右
+          waveAnimation: true, //控制波动画的开关  值是布尔值 false 是关闭动画 true 是开启动画 也是默认值
+          animationEasing: 'linear',//初始动画
+          animationEasingUpdate: 'quarticInOut',//数据更新的动画效果
+          animationDuration: 3000, //初始动画的时长，支持回调函数，可以通过每个数据返回不同的 delay 时间实现更绚丽的初始动画效果
+          animationDurationUpdate : 300 //数据更新动画的时长
+
+        }],
+        //backgroundColor: 'rgba(255,0,0,0.1)'容器背景颜色
+      })
+    },
     querySearchAsync(queryString, cb) {
       var restaurants = this.restaurants;
       var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
@@ -365,6 +506,7 @@ export default {
       await goodsAll().then(res=>{
           goods.push(res.body)
         this.goodss=goods[0]
+        this.restaurants=[]
         for (let i = 0; i < this.goodss.length; i++) {
           this.restaurants.push({
             value: this.goodss[i].name,
@@ -376,6 +518,7 @@ export default {
         }
       })
       await plateChainByLibrariesId(this.value1).then(res=>{
+        this.capacity=0
         let temp=[]
         //遍历plateChain数组,拿到plateChain的id为value1的plateChain
         for (let i = 0; i < res.body.length; i++) {
@@ -384,15 +527,31 @@ export default {
             }else {
               plateChain.push(res.body[i])
               temp.push(res.body[i].id)
+              this.capacity = this.capacity + res.body[i].length
             }
-
-
         }
         this.plateChain1=temp
       })
       //遍历plateChain数组,拿到plateChain的id作为storage的id
       await storageByLibrariesId(this.value1).then(res=>{
+        this.capacityUse=0
             let sto=res.body
+            for (let j = 0; j < sto.length; j++) {
+              //拿到每个sto的id,用这个id去goods中找到对应的goods
+              for (let k = 0; k < goods[0].length; k++) {
+                if(sto[j].goodsId==goods[0][k].id){
+                   this.capacityUse=this.capacityUse+goods[0][k].length+50
+                }
+              }
+            }
+            //将this.capacityUse/this.capacity作为库存容量的值
+            let liquid = echarts.init(document.getElementById('liquidFill11'));//初始化echarts
+            let capa=this.capacityUse/this.capacity
+            liquid.setOption({
+              series: [{
+                data: [capa, capa, capa-capa/5,],
+              }]
+            })
             //遍历plateChain数组,拿到plateChain的id作为storage的id
             for (let i = 0; i < plateChain.length; i++) {
               let storage1=[]
@@ -411,16 +570,50 @@ export default {
             rgv.push(res.body)
       })
       await outletByLibrariesId(this.value1).then(res=>{
+        let temp=[]
         //遍历outlet数组
         for (let i = 0; i < res.body.length; i++) {
             outletLocation.push(res.body[i].location)
+            temp.push(res.body[i].id)
         }
+        this.outlet1=temp
       })
       await inletByLibrariesId(this.value1).then(res=>{
+        let temp2=[]
         //遍历outlet数组
         for (let i = 0; i < res.body.length; i++) {
+          temp2.push(res.body[i].id)
           inletLocation.push(res.body[i].location)
+          orderByInletId(res.body[i].id).then(res=>{
+            //更新表格的数据
+            let temp=[]
+            for (let j = 0; j < res.body.length; j++) {
+              //根据id,拿到具体的goods
+              for (let k = 0; k < goods[0].length; k++) {
+                if(res.body[j].goodsId==goods[0][k].id){
+                  temp.push({
+                    id:j+1,
+                    name:goods[0][k].name,
+                    type:goods[0][k].type,
+                    goodsId:res.body[j].goodsId,
+                    number:res.body[j].number,
+                    location:"缓存区"+res.body[j].plateChainId,
+                    status:res.body[j].status,
+                    time:res.body[j].createdTime
+                  })
+                  if(res.body[j].status==1){
+                    temp.at(-1).status='待执行'
+                  }else {
+                    temp.at(-1).status='执行中'
+                  }
+                  break
+                }
+              }
+            }
+            this.tableData=temp
+          })
         }
+        this.inlet1=temp2
       })
       let left = []
       handleResize()
@@ -455,20 +648,24 @@ export default {
           //rect的内容清空
           rect.innerHTML = "";
           rect.style.width = (width-10*rects.length-50)/rects.length + "px";
-          console.log((width-10*rects.length-50)/rects.length)
           rect.style.height = rectHeight*0.5 + "px";
           //背景图片，同比例缩放
           rect.style.backgroundSize = "100% 100%";
           rect.style.backgroundImage = "url(" + require("@/assets/images/plateChain.png") + ")";
           //rect.style.backgroundColor = "#ccc";
-          rect.style.marginRight = "10px";
+          //如果num/3为整数,则marginRight为15px
+          if ((num-2) % 3 == 0) {
+            rect.style.marginRight = "20px";
+          }else {
+            rect.style.marginRight = "10px";
+          }
           //最后一个rect的marginRight设置为0
           if (rect === rects[rects.length - 1]) {
             rect.style.marginRight = "0px";
           }
           //第一个rect的marginLeft设置为10px
           if (rect === rects[0]) {
-            rect.style.marginLeft = "25px";
+            rect.style.marginLeft = "20px";
           }
             if(storage[num].length==0){
 
@@ -546,10 +743,8 @@ export default {
                     }
                     //点击canvas,显示goods的具体信息
                     canvas.onclick = function () {
-                      alert("货物名称:" + goods1.name + "\n" +"货物型号:" + goods1.name + "\n"+
-                        "货物编号:" + goods1.id + "\n" + "货物尺寸:" + goods1.length +
-                        "*" + goods1.width+ "\n"+ "数量:"+ number +
-                        "\n"+"位置:"+location )
+                      //将货物信息填到good中
+
                     }
                   }
                 }
