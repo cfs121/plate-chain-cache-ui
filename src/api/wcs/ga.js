@@ -32,6 +32,17 @@ export function gaDisplay2(gaId,librariesId,gas) {
     }
   })
 }
+export function gaDisplay3(gaId,librariesId,gas) {
+  return request({
+    url: '/ga/result2' ,
+    method: 'get',
+    params: {
+      gaId: gaId,
+      librariesId: librariesId,
+      gas: gas
+    }
+  })
+}
 // 查询Ga详细
 export function get(id) {
     return request({

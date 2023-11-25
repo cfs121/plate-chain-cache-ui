@@ -1,8 +1,6 @@
 <template>
   <div class="home">
-    <div style="text-align: center;height: 40px">
-      <h1>入库管理界面</h1>
-    </div>
+
     <div class="main0">
       <div class="aside">
         <div class="chose" style="margin-top: 15px">
@@ -31,71 +29,67 @@
         <div style="margin-top: 10px;">
           <el-button  type="primary" round @click="findGood">查 找</el-button>
         </div>
-        <div style="margin-top: 10px;">
-          <el-divider content-position="left">货物信息(扫码or输入)</el-divider></div>
-        <div style="margin-top: 10px;">
-          <el-autocomplete
-            v-model="state"
-            :fetch-suggestions="querySearchAsync"
-            placeholder="货物名称"
-            @select="handleSelect" style="width: 180px"
-          ></el-autocomplete>
-        </div>
-        <div style="margin-top: 10px;">
-          <el-input placeholder="货物型号" v-model="good.type" style="width: 180px" clearable></el-input>
-        </div>
-        <div style="margin-top: 10px;">
-          <el-input placeholder="货物编号" v-model="good.id" style="width: 180px" clearable></el-input>
-        </div>
-        <div style="margin-top: 10px;">
-          <el-input placeholder="货物长" v-model="good.length" style="width: 90px" clearable></el-input>
-          <el-input placeholder="货物宽" v-model="good.width" style="width: 90px" clearable></el-input>
-        </div>
-        <div style="margin-top: 10px;">
-          <el-input placeholder="货物数量" v-model="good.number" style="width: 180px" clearable></el-input>
-        </div>
-        <div style="margin-top: 10px;">
-        <el-select
-          v-model="good.location" style="width: 90px"
-          placeholder="入库口"
-          @change="choseLocation">
-          <el-option
-            v-for="item in inlet1"
-            :key="item"
-            :label="'入库口'+item"
-            :value="item"
-          />
-        </el-select>
+        <div style="margin: 15px 0">
           <el-select
-            v-model="good.location" style="width: 90px"
-            placeholder="出库口"
-            @change="choseLocation">
+            v-model="value" style="width: 130px"
+            placeholder="请选择算法参数"
+            @change="changeGAParameter">
             <el-option
-              v-for="item in outlet1"
-              :key="item"
-              :label="'出库口'+item"
-              :value="item"
+              v-for="item in gaSelect"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             />
           </el-select>
         </div>
-        <div style="margin-top: 10px;">
+<!--        <div style="margin: 15px 0">-->
+<!--          <el-select-->
+<!--            v-model="value2" style="width: 130px"-->
+<!--            placeholder="请选择缓存库"-->
+<!--            @change="choseLibraries">-->
+<!--            <el-option-->
+<!--              v-for="item in librariesSelect"-->
+<!--              :key="item.value2"-->
+<!--              :label="item.label"-->
+<!--              :value="item.value2"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </div>-->
+
+        <div style="margin: 5px 0">
+          <el-tag >种群数量：{{groupSize}}</el-tag>
+        </div><div style="margin: 5px 0">
+          <el-tag >迭代次数：{{generation}}</el-tag>
+        </div><div style="margin: 5px 0">
+          <el-tag type="success">交叉概率：{{crossRate}}</el-tag>
+        </div><div style="margin: 5px 0">
+          <el-tag type="warning">变异概率：{{mutationRate}}</el-tag>
+        </div>
+        <div style="margin: 10px 0">
           <el-select
-            v-model="good.location" style="width: 180px"
-            placeholder="请选择货物位置"
-            @change="choseLocation">
+            v-model="value3" style="width: 150px"
+            placeholder="请选择遗传算法"
+            @change="chosegas">
             <el-option
-              v-for="item in plateChain1"
-              :key="item"
-              :label="'缓存区'+item"
-              :value="item"
+              v-for="item in gasSelect"
+              :key="item.value3"
+              :label="item.label"
+              :value="item.value3"
             />
-          </el-select></div>
-        <div style="margin-top: 10px;">
-          <el-button  type="success" round @click="findGood">入 库</el-button>
+          </el-select>
+        </div>
+        <div style="margin: 15px 0">
+          <el-button type="success" round @click="start">执行算法规划</el-button>
         </div>
       </div>
       <div class="main">
-        <div id="display" style="margin-top: 10px">
+        <div class="inOrOut">
+          <div v-for="index in outlet" :key="index" class="out" ></div>
+        </div>
+        <div class="RGVorbit">
+          <div v-for="index in outRgv" :key="index" class="outRGV" ></div>
+        </div>
+        <div id="display" >
           <div v-for="index in plateChain" :key="index" class="rect"></div>
           <!--        <div v-for="(size, index) in sizes" :key="index" class="inner-rect"-->
           <!--             :style="{ width: size.width + 'px',-->
@@ -103,20 +97,21 @@
           <!--             top: size.top + 'px',-->
           <!--             left: size.left + 'px' }"></div>-->
         </div>
+        <div class="RGVorbit">
+          <div v-for="index in inRgv" :key="index" class="inRGV" ></div>
+        </div>
+        <div class="inOrOut">
+          <div v-for="index in inlet" :key="index" class="in" ></div>
+        </div>
+        <div style="display: flex">
+          <div>入库任务：</div>
+          <div style="margin-left: 570px">出库任务：</div>
+        </div>
         <div class="control">
           <div >
-            <el-button
-              type="text"
-              icon="el-icon-delete"
-            >批量删除</el-button>
             <el-table stripe border :data="tableData"
-                      max-height="250"
-              ref="multipleTable"
-              style="width: 100%;" @selection-change="handleSelectionChange">
-              <el-table-column
-                type="selection"
-                width="40">
-              </el-table-column>
+                      max-height="180"
+                      ref="multipleTable">
               <el-table-column
                 prop="id"
                 label="序号"
@@ -152,28 +147,75 @@
                 label="任务状态"
                 width="90" >
               </el-table-column>
+            </el-table>
+          </div>
+          <div >
+            <el-table stripe border :data="tableData2"
+                      max-height="180"
+                      ref="multipleTable">
               <el-table-column
-                prop="time"
-                label="任务生成时间"
+                               prop="id"
+                               label="序号"
+                               width="50">
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                label="货物名称"
+                width="120">
+              </el-table-column>
+              <el-table-column
+                prop="type"
+                label="货物型号"
+                width="90">
+              </el-table-column>
+              <el-table-column
+                prop="goodsId"
+                label="货物编号"
                 width="100">
               </el-table-column>
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <el-button
-                    size="mini"
-                    type="primary"
-                    @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-                  <el-button
-                    size="mini"
-                    @click="handleEdit(scope.$index, scope.row)">上移</el-button>
-                  <el-button
-                    size="mini"
-                    type="danger"
-                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                </template>
+              <el-table-column
+                prop="number"
+                label="货物数量(垛)"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="outlet"
+                label="出库口"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                prop="status"
+                label="任务状态"
+                width="90" >
               </el-table-column>
             </el-table>
           </div>
+        </div>
+      </div>
+      <div class="right">
+        <div style="margin-top: 40px">
+          算法出库规划结果
+        </div>
+        <div style="margin-top: 5px">
+          <el-table stripe border :data="gaResult"
+                    max-height="800"
+                    ref="multipleTable">
+            <el-table-column
+              prop="id"
+              label="序号"
+              width="50">
+            </el-table-column>
+            <el-table-column
+              prop="out"
+              label="出库口"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="num"
+              label="任务"
+              width="130">
+            </el-table-column>
+          </el-table>
         </div>
       </div>
     </div>
@@ -185,13 +227,16 @@
 
 <script>
 import {
-  orderByInletId,qrcode111,
+  orderByInletId,qrcode111,orderByOutletId,
   plateChainByLibrariesId,
   pageLibraries,
   pageRgv,
   storageByLibrariesId,
   goodsAll,outletByLibrariesId, inletByLibrariesId
 } from '../../api/wcs/show'
+import {
+  page,gaDisplay,gaDisplay2,gaDisplay3
+} from '@/api/wcs/ga'
 import{outletPage}from '../../api/wcs/outlet'
 import{inletPage}from '../../api/wcs/inlet'
 import * as echarts from "echarts";
@@ -206,6 +251,21 @@ export default {
   },
   data() {
     return {
+      gaResult:[],
+      groupSize: '',
+      generation: '',
+      crossRate: '',
+      mutationRate: '',
+      gaSelect:[],
+      gasSelect:[
+        {value3: '0', label: '标准遗传算法'},
+        {value3: '1', label: '改进-去重复的个体'},
+        {value3: '2', label: '改进-精英策略'},
+        {value3: '3', label: '基于排名选择'},
+        {value3: '4', label: '锦标赛选择'},
+      ],
+      value:'',
+      value3:'',
       multipleSelection: [],
       capacityUse:0,
       capacity:0,
@@ -215,6 +275,16 @@ export default {
         status: '已完成',
         location: '1',
         goodsId: '1',
+        amount: '1',
+        time: '2020-12-12 12:12:12'
+      }],
+      tableData2: [{
+        id: '1',
+        type: '入库',
+        status: '已完成',
+        location: '1',
+        goodsId: '1',
+        name:'1',
         amount: '1',
         time: '2020-12-12 12:12:12'
       }],
@@ -267,6 +337,47 @@ export default {
 
   },
   methods: {
+    changeGAParameter(){
+      alert(this.value)
+      this.groupSize = this.ga[this.value-1].groupSize
+      this.generation = this.ga[this.value-1].generation
+      this.crossRate = this.ga[this.value-1].crossRate
+      this.mutationRate = this.ga[this.value-1].mutationRate
+    },
+    chosegas(){},
+    start(){
+      this.gaResult=[]
+      //gaId,librariesId,gas
+      gaDisplay3(this.value,this.value1,this.value3).then(res=>{
+        console.log(res.body)
+        //res.body是 [0:"0-2"1:"1-5"2:"2-2"3:"3-4"4:"1-12"]，怎么将其转换为数组
+        let temp=[]
+        for (let i = 0; i < res.body.length; i++) {
+          let temp1=res.body[i].split("-")
+          temp.push(temp1)
+        }
+        //遍历temp数组，将其转换为数组
+        let temp2=[]
+        for (let i = 0; i < temp.length; i++) {
+          //遍历this.tableData2，找到它的outlet
+          for (let j = 0; j < this.tableData2.length; j++) {
+            if(this.tableData2[j].outlet==this.outlet1[temp[i][0]]+"号出库口"){
+              temp2.push({
+                id:i+1,
+                out:this.outlet1[temp[i][0]]+"号出库口",
+                num:temp[i][1]+"垛"+this.tableData2[j].name
+              })
+              break
+            }
+          }
+        }
+        this.gaResult=temp2
+        this.$message({
+          message: '执行成功',
+          type: 'success'
+        });
+      })
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -472,7 +583,21 @@ export default {
       })
     },
     initial() {
-
+      page().then(res => {
+        this.ga = res.body.content
+        //遍历ga数组，将其转换为select数组
+        for (let i = 0; i < this.ga.length; i++) {
+          this.gaSelect.push({
+            value: this.ga[i].id,
+            label: this.ga[i].id+'号GA参数'
+          })
+        }
+        this.value = this.gaSelect[0].value
+        this.groupSize = this.ga[this.value-1].groupSize
+        this.generation = this.ga[this.value-1].generation
+        this.crossRate = this.ga[this.value-1].crossRate
+        this.mutationRate = this.ga[this.value-1].mutationRate
+      }),
       pageLibraries().then(res => {
         this.libraries = res.body
         //遍历libraries数组，将其转换为select数组
@@ -497,6 +622,7 @@ export default {
       })
     },
     async shuxin(){
+      let value111=this.value1
       let outletLocation = []
       let inletLocation = []
       let plateChain = []
@@ -523,7 +649,7 @@ export default {
         //遍历plateChain数组,拿到plateChain的id为value1的plateChain
         for (let i = 0; i < res.body.length; i++) {
             if(res.body[i].type==1){
-              this.plateChain--
+              plateChain.push(res.body[i])
             }else {
               plateChain.push(res.body[i])
               temp.push(res.body[i].id)
@@ -571,11 +697,40 @@ export default {
       })
       await outletByLibrariesId(this.value1).then(res=>{
         let temp=[]
+        let temp3=[]
         //遍历outlet数组
         for (let i = 0; i < res.body.length; i++) {
+          let id=res.body[i].id
             outletLocation.push(res.body[i].location)
             temp.push(res.body[i].id)
+          orderByOutletId(res.body[i].id).then(res=>{
+            //更新表格的数据
+            for (let j = 0; j < res.body.length; j++) {
+              //根据id,拿到具体的goods
+              for (let k = 0; k < goods[0].length; k++) {
+                if(res.body[j].goodsId==goods[0][k].id){
+                  temp3.push({
+                    id:i+1,
+                    name:goods[0][k].name,
+                    type:goods[0][k].type,
+                    goodsId:res.body[j].goodsId,
+                    number:res.body[j].number,
+                    status:res.body[j].status,
+                    outlet:id+"号出库口",
+                    time:res.body[j].createdTime
+                  })
+                  if(res.body[j].status==1){
+                    temp3.at(-1).status='待执行'
+                  }else {
+                    temp3.at(-1).status='执行中'
+                  }
+                  break
+                }
+              }
+            }
+          })
         }
+        this.tableData2=temp3
         this.outlet1=temp
       })
       await inletByLibrariesId(this.value1).then(res=>{
@@ -639,7 +794,6 @@ export default {
         let rectHeight1 = document.documentElement.clientHeight;
         let rect = myDiv.getBoundingClientRect();
         let width = rect.width;
-        console.log(width)
         let rectHeight = rectHeight1-70;
         let rects = document.querySelectorAll(".rect");//获取所有的rect
         let num=0
@@ -654,18 +808,28 @@ export default {
           rect.style.backgroundImage = "url(" + require("@/assets/images/plateChain.png") + ")";
           //rect.style.backgroundColor = "#ccc";
           //如果num/3为整数,则marginRight为15px
-          if ((num-2) % 3 == 0) {
-            rect.style.marginRight = "20px";
+          if(value111==1){
+            if ((num) % 3 == 0) {
+              rect.style.marginRight = "20px";
+            }else {
+              rect.style.marginRight = "10px";
+            }
           }else {
-            rect.style.marginRight = "10px";
+            if ((num-2) % 3 == 0) {
+              rect.style.marginRight = "20px";
+            }else {
+              rect.style.marginRight = "10px";
+            }
           }
+
           //最后一个rect的marginRight设置为0
           if (rect === rects[rects.length - 1]) {
             rect.style.marginRight = "0px";
           }
           //第一个rect的marginLeft设置为10px
           if (rect === rects[0]) {
-            rect.style.marginLeft = "20px";
+            rect.style.marginLeft = "10px";
+
           }
             if(storage[num].length==0){
 
@@ -906,9 +1070,12 @@ export default {
           //遍历outletLocation,取出每个值
           //更改out到容器左边的距离
           if(i==0){
-            out.style.marginLeft = left[outletLocation[i]-1]-200 + "px";
+            out.style.marginLeft = left[outletLocation[i]-1]-200-215 + "px";
+            if(value111!=1){
+              out.style.marginLeft = left[outletLocation[i]-1]-200-208 + "px";
+            }
           }else {
-            out.style.marginLeft = left[outletLocation[i]-1]-left[outletLocation[i-1]-1]-width1 + "px";
+            out.style.marginLeft = left[outletLocation[i]-1]-left[outletLocation[i-1]-1]-width1+ "px";
           }
           i++
           //out的底部显示文字，显示out的id
@@ -934,7 +1101,10 @@ export default {
           //遍历outletLocation,取出每个值
           //更改out到容器左边的距离
           if(i==0){
-            in1.style.marginLeft = left[inletLocation[i]-1]-200 + "px";
+            in1.style.marginLeft = left[inletLocation[i]-1]-200-214 + "px";
+            if(value111!=1){
+              in1.style.marginLeft = left[inletLocation[i]-1]-200-207 + "px";
+            }
           }else {
             in1.style.marginLeft = left[inletLocation[i]-1]-left[inletLocation[i-1]-1]-width1 + "px";
           }
@@ -952,6 +1122,7 @@ export default {
       }
     },
     choseLibraries(){
+      this.gaResult=[]
       for (let i = 0; i < this.librariesSelect.length; i++) {
         if(this.value1==this.librariesSelect[i].value1){
           this.outlet=this.librariesSelect[i].outlet
@@ -984,6 +1155,11 @@ export default {
     height: calc(100vh - 84px);
     /* line-height: 20px; */
   }
+  .right{
+    text-align: center;
+    background-color: #d3dce6;
+    width: 300px;
+  }
   .main {
     //纵向排列
     display: flex;
@@ -991,6 +1167,53 @@ export default {
     width: 100%;
     height: 100%;
     }
+  .control{
+    width:100%;
+    height: 100px;
+    //水平均匀分布
+    display: flex;
+  }
+  .inOrOut {
+    width:100%;
+    height: 60px;
+    //水平均匀分布
+    display: flex;
+    .out{
+      width:20%;
+      height: 60px;
+      background:url("../../assets/images/out.png");
+      background-size: 100% 100%;
+      //background-color: #00afff;
+    }
+    .in{
+      width:20%;
+      height: 60px;
+      background:url("../../assets/images/out.png");
+      background-size: 100% 100%;
+      //background-color: #00afff;
+    }
+  }
+  .RGVorbit{
+    width:100%;
+    height: 60px;
+    //水平均匀分布
+    display: flex;
+    //背景图片同一目录下
+    background-color: #666666;
+    .outRGV{
+      width:20%;
+      height: 60px;
+      background:url("../../assets/images/RGV.png");
+      background-size: 100% 100%;
+    }
+    .inRGV{
+      width:20%;
+      height: 60px;
+      background:url("../../assets/images/RGV.png");
+      background-size: 100% 100%;
+    }
+
+  }
     .display{
       //display: flex;// 将容器设置为 flex 布局
       //flex-wrap: wrap; /* 如果想要自动换行 */

@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div style="text-align: center;height: 40px">
-      <h1>出库管理界面</h1>
+      <h1>入库管理界面</h1>
     </div>
     <div class="main0">
       <div class="aside">
@@ -15,17 +15,6 @@
               :key="item.value1"
               :label="item.label"
               :value="item.value1"
-            />
-          </el-select>
-          <el-select
-            v-model="value2" style="width: 130px"
-            placeholder="请选择出库口"
-            @change="choseOutlets">
-            <el-option
-              v-for="item in outletsSelect"
-              :key="item.value2"
-              :label="item.label"
-              :value="item.value2"
             />
           </el-select>
         </div>
@@ -66,6 +55,17 @@
           <el-input placeholder="货物数量" v-model="good.number" style="width: 180px" clearable></el-input>
         </div>
         <div style="margin-top: 10px;">
+        <el-select
+          v-model="good.location" style="width: 90px"
+          placeholder="入库口"
+          @change="choseLocation">
+          <el-option
+            v-for="item in inlet1"
+            :key="item"
+            :label="'入库口'+item"
+            :value="item"
+          />
+        </el-select>
           <el-select
             v-model="good.location" style="width: 90px"
             placeholder="出库口"
@@ -91,7 +91,7 @@
             />
           </el-select></div>
         <div style="margin-top: 10px;">
-          <el-button  type="success" round @click="findGood">出 库</el-button>
+          <el-button  type="success" round @click="findGood">入 库</el-button>
         </div>
       </div>
       <div class="main">
@@ -117,7 +117,7 @@
                 type="selection"
                 width="40">
               </el-table-column>
-              <el-table-column sortable :tabindex="tableData.id"
+              <el-table-column
                 prop="id"
                 label="序号"
                 width="50">
@@ -139,12 +139,12 @@
               </el-table-column>
               <el-table-column
                 prop="number"
-                label="货物数量(垛)"
+                label="货物数量"
                 width="90">
               </el-table-column>
               <el-table-column
-                prop="outlet"
-                label="出库口"
+                prop="location"
+                label="目标位置"
                 width="100">
               </el-table-column>
               <el-table-column
@@ -185,7 +185,7 @@
 
 <script>
 import {
-  orderByInletId,qrcode111,orderByOutletId,
+  orderByInletId,qrcode111,
   plateChainByLibrariesId,
   pageLibraries,
   pageRgv,
@@ -206,7 +206,6 @@ export default {
   },
   data() {
     return {
-
       multipleSelection: [],
       capacityUse:0,
       capacity:0,
@@ -238,11 +237,7 @@ export default {
       value1: '',
       libraries:[],
       librariesSelect:[],
-      value2:0,
-      outAndPC:[],
-      outletsSelect:[],
       plateChain:0,
-      plateChainCopy:0,
       plateChain1:[],
       inlet:0,
       inlet1:[],
@@ -272,7 +267,15 @@ export default {
 
   },
   methods: {
-
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
@@ -469,6 +472,7 @@ export default {
       })
     },
     initial() {
+
       pageLibraries().then(res => {
         this.libraries = res.body
         //遍历libraries数组，将其转换为select数组
@@ -489,13 +493,10 @@ export default {
         this.inRgv=this.librariesSelect[0].inRgv
         this.outRgv=this.librariesSelect[0].outRgv
         this.plateChain=this.librariesSelect[0].plateChain
-        this.plateChainCopy=this.plateChain
         this.shuxin()
       })
     },
     async shuxin(){
-      let value22=this.value2
-      let opc=this.outAndPC
       let outletLocation = []
       let inletLocation = []
       let plateChain = []
@@ -517,37 +518,19 @@ export default {
         }
       })
       await plateChainByLibrariesId(this.value1).then(res=>{
-        this.outAndPC=[]
-        if(this.value2==0){
-            this.plateChain=this.plateChainCopy
-        }
         this.capacity=0
-        let capacity2=0
         let temp=[]
-        let count=0;
         //遍历plateChain数组,拿到plateChain的id为value1的plateChain
         for (let i = 0; i < res.body.length; i++) {
             if(res.body[i].type==1){
               this.plateChain--
             }else {
               plateChain.push(res.body[i])
-              this.outAndPC.push({
-                outletId: res.body[i].outletId,
-                plateChainId:res.body[i].id
-              })
               temp.push(res.body[i].id)
               this.capacity = this.capacity + res.body[i].length
-              if(res.body[i].outletId==this.value2){
-                count++
-                capacity2=capacity2+res.body[i].length
-              }
             }
         }
         this.plateChain1=temp
-        if(this.value2!=0){
-          this.plateChain=count
-          this.capacity=capacity2
-        }
       })
       //遍历plateChain数组,拿到plateChain的id作为storage的id
       await storageByLibrariesId(this.value1).then(res=>{
@@ -558,10 +541,17 @@ export default {
               for (let k = 0; k < goods[0].length; k++) {
                 if(sto[j].goodsId==goods[0][k].id){
                    this.capacityUse=this.capacityUse+goods[0][k].length+50
-                   break
                 }
               }
             }
+            //将this.capacityUse/this.capacity作为库存容量的值
+            let liquid = echarts.init(document.getElementById('liquidFill11'));//初始化echarts
+            let capa=this.capacityUse/this.capacity
+            liquid.setOption({
+              series: [{
+                data: [capa, capa, capa-capa/5,],
+              }]
+            })
             //遍历plateChain数组,拿到plateChain的id作为storage的id
             for (let i = 0; i < plateChain.length; i++) {
               let storage1=[]
@@ -574,124 +564,19 @@ export default {
               storage.push(storage1)
             }
             this.storageGoods=storage
-
-        if(this.value2!=0){
-          this.capacityUse=0
-          //遍历this.outAndPC数组
-          for (let i = 0; i < this.outAndPC.length; i++) {
-            if(this.outAndPC[i].outletId==this.value2){
-              //遍历this.storageGoods数组
-              for (let j = 0; j < this.storageGoods.length; j++) {
-                if(this.storageGoods[j].length==0){
-                  continue
-                }
-                //遍历this.storageGoods[i]数组
-                if(this.storageGoods[j][0].plateChainId==this.outAndPC[i].plateChainId){
-                  //遍历该数组
-                  for (let k = 0; k < this.storageGoods[j].length; k++) {
-                    //遍历goods数组
-                    for (let l = 0; l < goods[0].length; l++) {
-                      if(this.storageGoods[j][k].goodsId==goods[0][l].id){
-                        this.capacityUse=this.capacityUse+goods[0][l].length+50
-                        break
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        //将this.capacityUse/this.capacity作为库存容量的值
-        let liquid = echarts.init(document.getElementById('liquidFill11'));//初始化echarts
-        let capa=this.capacityUse/this.capacity
-        liquid.setOption({
-          series: [{
-            data: [capa, capa, capa-capa/5,],
-          }]
-        })
       })
       await pageRgv(this.value1).then(res=>{
         //遍历rgv数组,拿到rgv的id为value1的rgv
             rgv.push(res.body)
       })
       await outletByLibrariesId(this.value1).then(res=>{
-        this.outletsSelect=[]
         let temp=[]
-        let temp3=[]
         //遍历outlet数组
         for (let i = 0; i < res.body.length; i++) {
-          let id=res.body[i].id
             outletLocation.push(res.body[i].location)
             temp.push(res.body[i].id)
-            this.outletsSelect.push({
-              value2: res.body[i].id,
-              label: res.body[i].id + '号出库口',
-            })
-          if(this.value2==0){
-            orderByOutletId(res.body[i].id).then(res=>{
-              //更新表格的数据
-              for (let j = 0; j < res.body.length; j++) {
-                //根据id,拿到具体的goods
-                for (let k = 0; k < goods[0].length; k++) {
-                  if(res.body[j].goodsId==goods[0][k].id){
-                    temp3.push({
-                      id:i+1,
-                      name:goods[0][k].name,
-                      type:goods[0][k].type,
-                      goodsId:res.body[j].goodsId,
-                      number:res.body[j].number,
-                      status:res.body[j].status,
-                      outlet:id+"号出库口",
-                      time:res.body[j].createdTime
-                    })
-                    if(res.body[j].status==1){
-                      temp3.at(-1).status='待执行'
-                    }else {
-                      temp3.at(-1).status='执行中'
-                    }
-                    break
-                  }
-                }
-              }
-            })
-          }
         }
-        if(this.value2!=0){
-          orderByOutletId(this.value2).then(res=>{
-            //更新表格的数据
-            for (let j = 0; j < res.body.length; j++) {
-              //根据id,拿到具体的goods
-              for (let k = 0; k < goods[0].length; k++) {
-                if(res.body[j].goodsId==goods[0][k].id){
-                  temp3.push({
-                    id:j+1,
-                    name:goods[0][k].name,
-                    type:goods[0][k].type,
-                    goodsId:res.body[j].goodsId,
-                    number:res.body[j].number,
-                    outlet:this.value2+"号出库口",
-                    status:res.body[j].status,
-                    time:res.body[j].createdTime
-                  })
-                  if(res.body[j].status==1){
-                    temp3.at(-1).status='待执行'
-                  }else {
-                    temp3.at(-1).status='执行中'
-                  }
-                  break
-                }
-              }
-            }
-          })
-        }
-        this.tableData=temp3
         this.outlet1=temp
-        this.outletsSelect.push({
-          value2: 0,
-          label: '所有出库口',
-        })
-
       })
       await inletByLibrariesId(this.value1).then(res=>{
         let temp2=[]
@@ -699,34 +584,34 @@ export default {
         for (let i = 0; i < res.body.length; i++) {
           temp2.push(res.body[i].id)
           inletLocation.push(res.body[i].location)
-          // orderByInletId(res.body[i].id).then(res=>{
-          //   //更新表格的数据
-          //   let temp=[]
-          //   for (let j = 0; j < res.body.length; j++) {
-          //     //根据id,拿到具体的goods
-          //     for (let k = 0; k < goods[0].length; k++) {
-          //       if(res.body[j].goodsId==goods[0][k].id){
-          //         temp.push({
-          //           id:j+1,
-          //           name:goods[0][k].name,
-          //           type:goods[0][k].type,
-          //           goodsId:res.body[j].goodsId,
-          //           number:res.body[j].number,
-          //           location:"缓存区"+res.body[j].plateChainId,
-          //           status:res.body[j].status,
-          //           time:res.body[j].createdTime
-          //         })
-          //         if(res.body[j].status==1){
-          //           temp.at(-1).status='待执行'
-          //         }else {
-          //           temp.at(-1).status='执行中'
-          //         }
-          //         break
-          //       }
-          //     }
-          //   }
-          //   this.tableData=temp
-          // })
+          orderByInletId(res.body[i].id).then(res=>{
+            //更新表格的数据
+            let temp=[]
+            for (let j = 0; j < res.body.length; j++) {
+              //根据id,拿到具体的goods
+              for (let k = 0; k < goods[0].length; k++) {
+                if(res.body[j].goodsId==goods[0][k].id){
+                  temp.push({
+                    id:j+1,
+                    name:goods[0][k].name,
+                    type:goods[0][k].type,
+                    goodsId:res.body[j].goodsId,
+                    number:res.body[j].number,
+                    location:"缓存区"+res.body[j].plateChainId,
+                    status:res.body[j].status,
+                    time:res.body[j].createdTime
+                  })
+                  if(res.body[j].status==1){
+                    temp.at(-1).status='待执行'
+                  }else {
+                    temp.at(-1).status='执行中'
+                  }
+                  break
+                }
+              }
+            }
+            this.tableData=temp
+          })
         }
         this.inlet1=temp2
       })
@@ -754,19 +639,15 @@ export default {
         let rectHeight1 = document.documentElement.clientHeight;
         let rect = myDiv.getBoundingClientRect();
         let width = rect.width;
+        console.log(width)
         let rectHeight = rectHeight1-70;
         let rects = document.querySelectorAll(".rect");//获取所有的rect
         let num=0
-        let num1=0
-        let num2=0
         //rects横向排列
         rects.forEach((rect) => {
           //rect的内容清空
           rect.innerHTML = "";
           rect.style.width = (width-10*rects.length-50)/rects.length + "px";
-          if(value22!=0){
-            rect.style.width = (width-10*rects.length-50)/8 + "px";
-          }
           rect.style.height = rectHeight*0.5 + "px";
           //背景图片，同比例缩放
           rect.style.backgroundSize = "100% 100%";
@@ -785,106 +666,7 @@ export default {
           //第一个rect的marginLeft设置为10px
           if (rect === rects[0]) {
             rect.style.marginLeft = "20px";
-            //如果value2不为0,则将所有rect居中
-            if(value22!=0){
-              let marginLeft=(width-((width-10*rects.length-50)/8)*rects.length-10*rects.length)/2
-              rect.style.marginLeft =marginLeft+"px"
-            }
           }
-          if(value22!=0){
-            //console.log(num)
-            //遍历this.outAndPC数组
-            for (let i = num1; i < opc.length; i++) {
-              //console.log("opc[i].outletId---"+opc[i].outletId)
-              if(opc[i].outletId==value22){
-                //console.log(5)
-                //遍历storage数组
-                for (let j = 0; j < storage.length; j++) {
-                  if (storage[j].length == 0) {
-                    continue
-                  }
-                  //console.log("storage[j][0].plateChainId---"+storage[j][0].plateChainId
-                  //  +"opc[i].plateChainId---"+opc[i].plateChainId)
-                  //遍历storage[j]数组
-                  if (storage[j][0].plateChainId == opc[i].plateChainId) {
-                    //console.log(6)
-                    let color = '#' + Math.floor(Math.random() * 16777215).toString(16);
-                    //遍历该数组
-                    for (let k = 0; k < storage[j].length; k++) {
-                      //console.log(7)
-                      //遍历goods数组
-                      for (let l = 0; l < goods[0].length; l++) {
-                        if (storage[j][k].goodsId == goods[0][l].id) {
-                          //根据goods的id,拿到goods的具体信息
-                          let goods1 = goods[0][l]
-                          //根据goods1的尺寸，对比rect的尺寸，将goods1的尺寸缩小
-                          let goodsWidth = goods1.width
-                          let goodsHeight = goods1.length
-                          let rectWidth = rect.offsetWidth
-                          let rectHeight = rect.offsetHeight
-                          let goodsWidth1 = (goodsWidth / plateChain[j].width) * rectWidth
-                          let goodsHeight1 = (goodsHeight / plateChain[j].length) * rectHeight - 3
-                          //根据这个尺寸画出对于的方框
-                          let canvas = document.createElement("canvas");//canvas是一个矩形区域，可以用来绘制图形，或者显示图像
-                          canvas.width = goodsWidth1;
-                          canvas.height = goodsHeight1;
-                          canvas.style.zIndex = "100";//z-index 属性设置元素的堆叠顺序
-                          canvas.style.border = "1px solid #000";//边框
-                          canvas.style.backgroundColor = color;//背景颜色
-                          //水平居中
-                          canvas.style.marginLeft = (rect.offsetWidth - canvas.width) / 2 + "px";
-                          canvas.style.marginTop = 2 + "px";
-                          canvas.style.opacity = "0.5";//透明度
-                          //canvas之间不在同一行
-                          canvas.style.display = "block";//block:元素将显示为块级元素，此元素前后会带有换行符
-                          //canvas中间位置显示文字goods1.name的前两个字
-                          let ctx = canvas.getContext("2d");//getContext() 方法返回一个用于在画布上绘图的环境
-                          ctx.font = "12px Arial";//font 属性设置或返回画布上文本内容的当前字体属性
-                          ctx.fillStyle = "#ffffff";//fillStyle 属性设置或返回用于填充绘画的颜色、渐变或模式
-                          ctx.textAlign = "center";//textAlign 属性根据锚点，设置或返回文本内容的当前对齐方式
-                          ctx.textBaseline = "middle";//textBaseline 属性设置或返回在绘制文本时使用的当前文本基线
-                          ctx.fontWeight = "bold";//fontWeight 属性设置或返回文本的粗细
-                          ctx.fillText(goods1.name.substring(0, 2), canvas.width / 2, canvas.height / 2);//fillText() 方法在画布上绘制填色的文本
-                          //将canvas添加到rect中
-                          rect.appendChild(canvas);
-                          //鼠标移动到canvas上，在该位置显示goods的具体信息，界面上这个信息框只能有一个，信息框内有个确认按钮，确认后消失。
-                          canvas.onmouseover = function () {
-                            let div = document.createElement("div");
-                            div.style.position = "absolute";
-                            div.style.zIndex = "100";
-                            div.style.backgroundColor = "#000";
-                            div.style.color = "#fff";
-                            div.style.fontSize = "12px";
-                            div.style.fontWeight = "bold";
-                            div.style.textAlign = "center";
-                            div.style.padding = "5px";
-                            div.style.borderRadius = "5px";
-                            div.style.left = event.clientX + "px";
-                            div.style.top = event.clientY + "px";
-                            div.innerHTML = "货物名称:" + goods1.name + "<br/>"
-                              + "货物型号:" + goods1.type + "<br/>"
-                              + "货物编号:" + goods1.id + "<br/>" + "货物尺寸:"
-                              + goods1.length + "*" + goods1.width
-                              + "<br/>" + "数量:" + storage[j][k].amount
-                              + "<br/>" + "位置:" + storage[j][k].location ;
-                            document.body.appendChild(div);
-                          }
-                          canvas.onmouseout = function () {
-                            let div = document.getElementsByTagName("div");
-                            document.body.removeChild(div[div.length - 1]);
-                          }
-                          break
-                        }
-                      }
-                    }
-                    break
-                  }
-                }
-                num1=i+1
-                break
-              }
-            }
-          }else {
             if(storage[num].length==0){
 
             }else {
@@ -966,28 +748,18 @@ export default {
                     }
                   }
                 }
-              }
             }
           }
           //获取rect在当前视窗的位置
           let rect1 = rect.getBoundingClientRect();
           left.push(rect1.left);
+
           //rect的最后位置显示文字，显示plateChain的id
           let text = document.createElement("div");
           if(plateChain[num].type==1){
             text.innerHTML ="快速通道"+ plateChain[num].id;
           }else {
             text.innerHTML ="缓存区"+ plateChain[num].id;
-          }
-          if(value22!=0){
-            //遍历opc
-            for (let i = num2; i < opc.length; i++) {
-              if(opc[i].outletId==value22){
-                text.innerHTML ="缓存区"+ opc[i].plateChainId;
-                num2=i+1
-                break
-              }
-            }
           }
           text.style.zIndex = "100";
           text.style.color = "#000";
@@ -1179,10 +951,6 @@ export default {
         });
       }
     },
-    choseOutlets(){
-      console.log(this.value2)
-      this.shuxin()
-    },
     choseLibraries(){
       for (let i = 0; i < this.librariesSelect.length; i++) {
         if(this.value1==this.librariesSelect[i].value1){
@@ -1193,7 +961,6 @@ export default {
           this.plateChain=this.librariesSelect[i].plateChain
         }
       }
-      this.plateChainCopy=this.plateChain
       this.shuxin()
     },
   },
