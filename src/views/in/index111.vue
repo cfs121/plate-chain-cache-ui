@@ -30,6 +30,9 @@
         </div>
         <div style="margin-top: 10px;">
           <el-button  type="primary" round @click="findGood">查 找</el-button>
+          <el-button  type="primary" round @click="ts">任务生成</el-button>
+          <el-button  type="primary" round @click="ran">随机入库</el-button>
+          <el-button  type="primary" round @click="sto">入库算法</el-button>
         </div>
         <div style="margin-top: 10px;">
           <el-divider content-position="left">货物信息(扫码or输入)</el-divider></div>
@@ -162,10 +165,10 @@
                   <el-button
                     size="mini"
                     type="primary"
-                    @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                    @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
                   <el-button
                     size="mini"
-                    @click="handleEdit(scope.$index, scope.row)">上移</el-button>
+                    @click="handleUp(scope.$index, scope.row)">上移</el-button>
                   <el-button
                     size="mini"
                     type="danger"
@@ -190,7 +193,8 @@ import {
   pageLibraries,
   pageRgv,
   storageByLibrariesId,
-  goodsAll,outletByLibrariesId, inletByLibrariesId
+  goodsAll,outletByLibrariesId, inletByLibrariesId,
+  task,storage333,random
 } from '../../api/wcs/show'
 import{outletPage}from '../../api/wcs/outlet'
 import{inletPage}from '../../api/wcs/inlet'
@@ -376,6 +380,36 @@ export default {
     choseLocation(){
 
     },
+    ts(){
+      task().then(res=>{
+        this.$message({
+          message: '任务生成成功',
+          type: 'success'
+        });
+        console.log(res.body)
+      })
+    },
+    ran(){
+      random().then(res=>{
+        this.$message({
+          message: '随机入库成功',
+          type: 'success'
+        });
+        console.log("随机入库成功")
+        console.log(res.body)
+
+      })
+    },
+    sto(){
+      storage333().then(res=>{
+        this.$message({
+          message: '入库算法成功',
+          type: 'success'
+        });
+        console.log("入库算法成功")
+        console.log(res.body)
+      })
+    },
     findGood(){
       if(this.input==''){
         this.$message({
@@ -429,7 +463,7 @@ export default {
                 if(this.storageGoods[j].length==0){
                   continue
                 }
-                //遍历storageGoods[j]数组
+                //遍历storageGoods[j]数组cha
                 for (let k = 0; k < this.storageGoods[j].length; k++) {
                   if(this.storageGoods[j][k].goodsId==id){
                     //其中j表示第几个rect,k表示第几个canvas
@@ -563,6 +597,10 @@ export default {
               }
               storage.push(storage1)
             }
+            // storage333().then(res=>{
+            //   console.log("随机入库成功2")
+            //   storage=res.body
+            // })
             this.storageGoods=storage
       })
       await pageRgv(this.value1).then(res=>{
@@ -673,6 +711,10 @@ export default {
               //随机生成某个颜色
               let color = '#' + Math.floor(Math.random() * 16777215).toString(16);
               for (let j = 0; j < storage[num].length; j++) {
+                if(j==0){
+                }else if(storage[num][j].goodsId!=storage[num][j-1].goodsId){
+                  color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+                }
                 //遍历goods
                 for (let k = 0; k < goods[0].length; k++) {
                   if (storage[num][j].goodsId == goods[0][k].id) {
@@ -681,8 +723,8 @@ export default {
                     let number=storage[num][j].amount
                     let location=storage[num][j].location
                     //根据goods1的尺寸，对比rect的尺寸，将goods1的尺寸缩小
-                    let goodsWidth = goods1.width
-                    let goodsHeight = goods1.length
+                    let goodsWidth = goods1.length
+                    let goodsHeight = goods1.width
                     let rectWidth = rect.offsetWidth
                     let rectHeight = rect.offsetHeight
                     let goodsWidth1 =( goodsWidth / plateChain[num].width)*rectWidth
@@ -759,7 +801,7 @@ export default {
           if(plateChain[num].type==1){
             text.innerHTML ="快速通道"+ plateChain[num].id;
           }else {
-            text.innerHTML ="缓存区"+ plateChain[num].id;
+            text.innerHTML ="板链线"+ plateChain[num].id;
           }
           text.style.zIndex = "100";
           text.style.color = "#000";

@@ -7,6 +7,27 @@ export function inletByLibrariesId(librariesId) {
     params: {librariesId}
   })
 }
+//任务生成
+export function task() {
+  return request({
+    url: '/ga/task',
+    method: 'get',
+  })
+}
+//随机
+export function random() {
+  return request({
+    url: '/ga/random',
+    method: 'get',
+  })
+}
+//入库分配算法
+export function storage333() {
+  return request({
+    url: '/ga/storage',
+    method: 'get',
+  })
+}
 //根据缓存库id查询出库口
 export function outletByLibrariesId(librariesId) {
   return request({

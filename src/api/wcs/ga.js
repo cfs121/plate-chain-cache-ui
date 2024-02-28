@@ -32,6 +32,18 @@ export function gaDisplay2(gaId,librariesId,gas) {
     }
   })
 }
+export function gaDisplay22(gaId,librariesId,gas,n) {
+  return request({
+    url: '/ga/result' ,
+    method: 'get',
+    params: {
+      gaId: gaId,
+      librariesId: librariesId,
+      gas: gas,
+      n:n
+    }
+  })
+}
 export function gaDisplay3(gaId,librariesId,gas) {
   return request({
     url: '/ga/result2' ,
